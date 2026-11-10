@@ -1,0 +1,13 @@
+{
+  "identities": [
+    {
+      "name": "xpass_dev",
+      "credentials": [{ "accessKey": "xpass_s3_dev", "secretKey": "xpass_s3_dev_secret" }],
+      "actions": ["Admin", "Read", "List", "Tagging", "Write"]
+    },
+    {
+      "name": "anonymous",
+      "actions": ["Read:xpass-public"]
+    }
+  ]
+}

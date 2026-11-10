@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base href="$FLUTTER_BASE_HREF">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="XPASS">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="XPASS">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>XPASS</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    html, body { margin: 0; height: 100%; background: #0a0f1c; }
+    #xpass-boot {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      font-family: system-ui, sans-serif;
+      color: #ffffff;
+      background: #0a0f1c;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    #xpass-boot p { margin: 0; opacity: .7; }
+  </style>
+</head>
+<body>
+  <div id="xpass-boot">
+    <strong>XPASS</strong>
+    <p id="xpass-boot-msg">Chargement de l’application…</p>
+  </div>
+  <script>
+    function hideXpassBoot() {
+      var el = document.getElementById("xpass-boot");
+      if (el) el.remove();
+    }
+    window.addEventListener("flutter-first-frame", hideXpassBoot);
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.getRegistrations().then(function (regs) {
+        regs.forEach(function (r) { r.unregister(); });
+      });
+    }
+    setTimeout(function () {
+      var msg = document.getElementById("xpass-boot-msg");
+      if (msg) msg.textContent = "Premier chargement un peu long, encore quelques secondes…";
+    }, 8000);
+  </script>
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>

@@ -1,0 +1,229 @@
+{
+  "@@locale": "ar",
+  "navExplore": "استكشاف",
+  "navBookings": "الحجوزات",
+  "navCredits": "رصيدي",
+  "navProfile": "الإعدادات",
+  "retry": "إعادة المحاولة",
+  "unexpectedError": "حدث خطأ غير متوقع.",
+  "comingSoon": "قريبًا",
+  "understood": "حسنًا",
+  "loading": "جارٍ التحميل",
+  "back": "رجوع",
+  "chooseCity": "اختر مدينة",
+  "nearYou": "احجز بالقرب منك",
+  "seeAll": "عرض الكل",
+  "seeOnMap": "عرض على الخريطة",
+  "homeSearchHint": "يوغا، حفلة، سبا، متحف…",
+  "todayChip": "اليوم",
+  "tomorrowChip": "غدًا",
+  "allUniverses": "الكل",
+  "noSlotsThatDay": "لا مواعيد في هذا التاريخ. جرّب يومًا أو عالمًا آخر.",
+  "welcomeTitle": "اشتراك واحد، كل رغباتك",
+  "welcomeSubtitle": "رياضة وثقافة وجمال وخروج — احجز بالأرصدة بالقرب منك.",
+  "signIn": "تسجيل الدخول",
+  "signInHint": "سجّل الدخول للحجز بأرصدتك في كل العوالم.",
+  "or": "أو",
+  "createAccount": "إنشاء حساب",
+  "passwordNotice": "تُدخل كلمة المرور في صفحة XPASS الآمنة: التطبيق لا يراها أبدًا.",
+  "exploreWithoutAccount": "الاستكشاف بدون حساب",
+  "demoMode": "وضع العرض التجريبي",
+  "legalPending": "الشروط العامة وسياسة الخصوصية: المستندات قيد الإعداد.",
+  "myProfile": "الإعدادات",
+  "profileSubtitle": "الحساب والتفضيلات والإشعارات والخصوصية.",
+  "emailVerified": "تم التحقق من البريد الإلكتروني",
+  "emailNotVerified": "حساب تجريبي (البريد الإلكتروني غير موثّق)",
+  "account": "الحساب",
+  "personalInfo": "المعلومات الشخصية",
+  "country": "البلد",
+  "france": "فرنسا",
+  "mySubscription": "اشتراكي",
+  "preferences": "التفضيلات",
+  "language": "اللغة",
+  "bookingEmails": "رسائل الحجز الإلكترونية",
+  "bookingEmailsHint": "التأكيدات والإلغاءات والإيصالات",
+  "support": "المساعدة",
+  "helpCenter": "مركز المساعدة",
+  "contactSupport": "التواصل مع الدعم",
+  "myRequests": "طلباتي",
+  "privacy": "الخصوصية",
+  "locationPermission": "إذن الموقع",
+  "cameraPermission": "إذن الكاميرا",
+  "optional": "اختياري",
+  "exportData": "تصدير بياناتي",
+  "deleteAccount": "حذف حسابي",
+  "permissionsNotice": "الموقع والكاميرا اختياريان: لا يُطلبان إلا عند استخدامهما (خريطة «بالقرب مني»)، ويمكنك رفضهما من إعدادات هاتفك.",
+  "signOut": "تسجيل الخروج",
+  "translationNotice": "يبقى محتوى المؤسسات بلغته الأصلية.",
+  "nearbyTitle": "بالقرب مني",
+  "nearbySubtitle": "اعثر على تجارب بالقرب منك",
+  "myPosition": "موقعي",
+  "locateMe": "حدّد موقعي",
+  "locating": "جارٍ تحديد الموقع…",
+  "category": "الفئة",
+  "allCategories": "الكل",
+  "budget": "الميزانية",
+  "anyBudget": "الكل",
+  "upToCredits": "≤ {count} رصيد",
+  "@upToCredits": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "searchThisArea": "البحث في هذه المنطقة",
+  "noResultsArea": "لا توجد تجارب في هذه المنطقة: وسّع النطاق أو غيّر عوامل التصفية.",
+  "loadPlacesError": "تعذّر تحميل الأماكن.",
+  "placesInRadius": "{count, plural, =1{مكان واحد} other{{count} أماكن}} ضمن {km} كم. المس السعر لعرض التفاصيل.",
+  "@placesInRadius": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "km": {
+        "type": "int"
+      }
+    }
+  },
+  "directions": "الاتجاهات",
+  "seeDetails": "عرض التفاصيل",
+  "locationDisabled": "خدمة الموقع متوقفة على هذا الجهاز.",
+  "locationDenied": "تم رفض الموقع: تبقى الخريطة متمركزة على المدينة.",
+  "myBookings": "حجوزاتي",
+  "myBookingsSubtitle": "كل تجاربك في مكان واحد.",
+  "myCredits": "رصيدي",
+  "signInToSeeBookings": "سجّل الدخول لعرض حجوزاتك.",
+  "signInToSeeCredits": "سجّل الدخول لعرض رصيدك.",
+  "distanceAway": "على بعد {distance}",
+  "@distanceAway": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "creditsCount": "{count} رصيد",
+  "@creditsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "radiusKm": "{km} كيلومتر",
+  "@radiusKm": {
+    "placeholders": {
+      "km": {
+        "type": "int"
+      }
+    }
+  },
+  "filterDate": "التاريخ",
+  "filterParticipants": "المشاركون",
+  "nextSlotAt": "الموعد القادم: {when}",
+  "dateFilterSoon": "التصفية حسب التاريخ قريبًا: تعرض الخريطة الأماكن، ويُختار الموعد من صفحة المكان.",
+  "participantsFilterSoon": "التصفية حسب عدد المشاركين قريبًا: يُحدَّد العدد عند الحجز.",
+  "recenter": "إعادة توسيط الخريطة",
+  "creditsUnit": "رصيد",
+  "@nextSlotAt": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "soonShort": "قريبًا",
+  "myFavorites": "مفضلاتي",
+  "participantsCount": "{count} أشخاص",
+  "@participantsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "anyDate": "أي وقت",
+  "anyParticipants": "الكل",
+  "openThatDay": "مفتوح في ذلك اليوم",
+  "settings": "الإعدادات",
+  "mySpace": "مساحتي",
+  "help": "المساعدة",
+  "emailAddress": "البريد الإلكتروني",
+  "passwordSecurity": "كلمة المرور والأمان",
+  "notifications": "الإشعارات",
+  "pushNotifications": "إشعارات الهاتف",
+  "legalDocs": "الشروط والخصوصية",
+  "inDrafting": "قيد الإعداد",
+  "about": "حول التطبيق",
+  "appVersion": "إصدار التطبيق",
+  "dangerZone": "منطقة حساسة",
+  "settingsSubtitle": "الحساب والتفضيلات والإشعارات والخصوصية.",
+  "noOffersYet": "لا يقدم هذا المكان أي تجربة حاليًا.",
+  "externalTicket": "تذكرة خارجية",
+  "externalTicketIssued": "يصدر التذكرة الموزّع الشريك.",
+  "nextOpeningSlot": "أقرب موعد متاح",
+  "accordingToHours": "حسب ساعات العمل. تظهر الأماكن المتبقية في التقويم.",
+  "noSlot14Days": "لا توجد مواعيد خلال 14 يومًا القادمة",
+  "ticketAtDistributor": "التذكرة لدى الموزّع",
+  "externalTicketNoSlot": "تصدر هذه التذكرة من الموزّع الشريك: لا تُحجز بموعد XPASS.",
+  "seeCalendar": "عرض التقويم",
+  "wheelchairAccessible": "مهيأ لذوي الحركة المحدودة",
+  "accessibilityNotGuaranteed": "إمكانية الوصول غير مضمونة",
+  "chooseMySlot": "اختر موعدي",
+  "availableTimes": "الأوقات المتاحة",
+  "noTimeThatDay": "لا توجد أوقات متاحة في هذا اليوم. جرّب تاريخًا آخر.",
+  "holdingSlot": "جارٍ حجز الموعد…",
+  "noPreference": "بدون تفضيل",
+  "removeParticipant": "إزالة مشارك",
+  "addParticipant": "إضافة مشارك",
+  "confirmBooking": "تأكيد الحجز",
+  "checkBeforeConfirm": "تحقق من تفاصيل حجزك قبل التأكيد.",
+  "timeExpired": "انتهت المهلة",
+  "slotReleased": "تم تحرير الموعد وإرجاع رصيدك. اختر موعدًا جديدًا.",
+  "chooseAnotherSlot": "اختر موعدًا آخر",
+  "bookingConfirmed": "تم تأكيد الحجز",
+  "creditsHeld": "رصيدك محجوز ولم يُستخدم بعد.",
+  "freeCancelUntil": "يمكنك الإلغاء مجانًا حتى هذا التاريخ.",
+  "cancelAfterDate": "في حال الإلغاء بعد هذا التاريخ",
+  "sessionConfirmed": "تم تأكيد موعدك. إلى اللقاء قريبًا!",
+  "addToCalendar": "أضف إلى تقويمي",
+  "writeToVenue": "راسل المكان",
+  "cancelBooking": "إلغاء الحجز",
+  "needHelp": "تحتاج مساعدة؟",
+  "cancelBookingQuestion": "إلغاء الحجز؟",
+  "cancelledCharged": "تم إلغاء الحجز وخصم الرصيد.",
+  "cancelledRefunded": "تم إلغاء الحجز وإرجاع الرصيد.",
+  "qrSemantics": "رمز QR للحجز لتقديمه للشريك",
+  "showToPartner": "قدّمه للشريك",
+  "calendarIntro": "اعثر على تفاصيل حجزك في التقويم الذي تختاره.",
+  "chooseCalendar": "اختر تقويمًا",
+  "phoneCalendar": "تقويم الهاتف (ملف ‎.ics)",
+  "reminderSuggested": "تذكير مقترح: قبل ساعة (مضمّن في ملف ‎.ics)",
+  "calendarNoQr": "يحتوي الحدث على الوقت والعنوان وليس رمز QR: قدّمه من التطبيق.",
+  "serviceDoneTitle": "انتهت تجربتك!",
+  "thanksBenefit": "شكرًا لاستفادتك من ميزتك مع XPASS.",
+  "serviceDone": "تمت الخدمة",
+  "validatedByPartner": "صادق عليها الشريك.",
+  "creditsUsed": "الرصيد المستخدم",
+  "receiptReference": "مرجع الإيصال",
+  "reviewOnGoogle": "اكتب رأيك على Google",
+  "reviewFree": "رأيك حر واختياري.",
+  "noReviewLink": "لم يضف هذا المكان رابط تقييم بعد.",
+  "askForHelp": "اطلب المساعدة",
+  "slotPricePeak": "وقت الذروة",
+  "slotPriceDemand": "طلب مرتفع",
+  "slotPriceLastMinute": "اللحظة الأخيرة",
+  "slotPriceLegend": "يتغير السعر حسب الوقت والطلب: ↑ وقت الذروة أو طلب مرتفع، ↓ اللحظة الأخيرة.",
+  "lateCancelInfo": "بعد هذا الموعد، يعيد الإلغاء {refund} من أصل {total} (النصف). بدون إلغاء ولا حضور، يُستهلك كل شيء.",
+  "cancelledPartlyRefunded": "تم إلغاء الحجز: أُعيد إليك {refund}.",
+  "creditRulesTitle": "كيف تعمل أرصدتك",
+  "creditRulePrice": "يتغير سعر الموعد: أغلى في أوقات الذروة (↑) وأرخص في اللحظة الأخيرة (↓). يُثبَّت السعر عند الحجز.",
+  "creditRuleCancel": "الإلغاء مجاني حتى الموعد المحدد؛ بعده يُعاد إليك نصف الأرصدة. بدون إلغاء ولا حضور، يُستهلك كل شيء.",
+  "creditRuleRollover": "أرصدة الاشتراك غير المستخدمة تُرحَّل إلى الشهر التالي في حدود شهر من باقتك، وتنتهي عند إيقاف الاشتراك.",
+  "creditRuleEmployer": "الأرصدة المقدمة من صاحب العمل تُستخدم أولاً، ضمن مدة الصلاحية التي تحددها الشركة.",
+  "madeByAlystra": "من تطوير Alystra",
+  "pushNotificationsHint": "تنبيهات الحجوزات والمدفوعات والرسائل",
+  "noNotifications": "لا توجد إشعارات حالياً.",
+  "notificationsSubtitle": "الحجوزات والمدفوعات وردود الفريق."
+}

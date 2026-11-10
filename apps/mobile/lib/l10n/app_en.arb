@@ -1,0 +1,229 @@
+{
+  "@@locale": "en",
+  "navExplore": "Explore",
+  "navBookings": "Bookings",
+  "navCredits": "My credits",
+  "navProfile": "Settings",
+  "retry": "Try again",
+  "unexpectedError": "An unexpected error occurred.",
+  "comingSoon": "Coming soon",
+  "understood": "Got it",
+  "loading": "Loading",
+  "back": "Back",
+  "chooseCity": "Choose a city",
+  "nearYou": "Book near you",
+  "seeAll": "See all",
+  "seeOnMap": "See on the map",
+  "homeSearchHint": "Yoga, concert, spa, museum…",
+  "todayChip": "Today",
+  "tomorrowChip": "Tomorrow",
+  "allUniverses": "All",
+  "noSlotsThatDay": "No slots on this date. Try another day or universe.",
+  "welcomeTitle": "One pass, every craving",
+  "welcomeSubtitle": "Sport, culture, beauty and nights out — book with credits, near you.",
+  "signIn": "Sign in",
+  "signInHint": "Sign in to book with your credits, across every universe.",
+  "or": "or",
+  "createAccount": "Create an account",
+  "passwordNotice": "You enter your password on the secure XPASS page: the app never sees it.",
+  "exploreWithoutAccount": "Explore without an account",
+  "demoMode": "Demo mode",
+  "legalPending": "Terms of use and privacy policy: documents being drafted.",
+  "myProfile": "Settings",
+  "profileSubtitle": "Account, preferences, notifications and privacy.",
+  "emailVerified": "Email address verified",
+  "emailNotVerified": "Demo account (email not verified)",
+  "account": "Account",
+  "personalInfo": "Personal information",
+  "country": "Country",
+  "france": "France",
+  "mySubscription": "My subscription",
+  "preferences": "Preferences",
+  "language": "Language",
+  "bookingEmails": "Booking emails",
+  "bookingEmailsHint": "Confirmations, cancellations and receipts",
+  "support": "Support",
+  "helpCenter": "Help centre",
+  "contactSupport": "Contact support",
+  "myRequests": "My requests",
+  "privacy": "Privacy",
+  "locationPermission": "Location permission",
+  "cameraPermission": "Camera permission",
+  "optional": "Optional",
+  "exportData": "Export my data",
+  "deleteAccount": "Delete my account",
+  "permissionsNotice": "Location and camera are optional: they are only requested when you use them (\"Near me\" map), and you can refuse them in your phone settings.",
+  "signOut": "Sign out",
+  "translationNotice": "Venue content stays in its original language.",
+  "nearbyTitle": "Near me",
+  "nearbySubtitle": "Find experiences close to you",
+  "myPosition": "My location",
+  "locateMe": "Locate me",
+  "locating": "Locating…",
+  "category": "Category",
+  "allCategories": "All",
+  "budget": "Budget",
+  "anyBudget": "Any",
+  "upToCredits": "≤ {count} credits",
+  "@upToCredits": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "searchThisArea": "Search this area",
+  "noResultsArea": "No experiences in this area: widen the radius or change the filters.",
+  "loadPlacesError": "Unable to load places.",
+  "placesInRadius": "{count, plural, =1{1 place} other{{count} places}} within {km} km. Tap a price to see the details.",
+  "@placesInRadius": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "km": {
+        "type": "int"
+      }
+    }
+  },
+  "directions": "Directions",
+  "seeDetails": "See details",
+  "locationDisabled": "Location is turned off on this device.",
+  "locationDenied": "Location denied: the map stays centred on the city.",
+  "myBookings": "My bookings",
+  "myBookingsSubtitle": "All your experiences in one place.",
+  "myCredits": "My credits",
+  "signInToSeeBookings": "Sign in to see your bookings.",
+  "signInToSeeCredits": "Sign in to see your credits.",
+  "distanceAway": "{distance} away",
+  "@distanceAway": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "creditsCount": "{count, plural, =1{1 credit} other{{count} credits}}",
+  "@creditsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "radiusKm": "{km} kilometres",
+  "@radiusKm": {
+    "placeholders": {
+      "km": {
+        "type": "int"
+      }
+    }
+  },
+  "filterDate": "Date",
+  "filterParticipants": "Participants",
+  "nextSlotAt": "Next slot: {when}",
+  "dateFilterSoon": "Filtering by date is coming soon: the map shows places, and you pick a slot on the place page.",
+  "participantsFilterSoon": "Filtering by number of participants is coming soon: you choose it when booking.",
+  "recenter": "Recentre the map",
+  "creditsUnit": "credits",
+  "@nextSlotAt": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "soonShort": "Soon",
+  "myFavorites": "My favourites",
+  "participantsCount": "{count, plural, =1{1 person} other{{count} people}}",
+  "@participantsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "anyDate": "Any time",
+  "anyParticipants": "Any",
+  "openThatDay": "Open that day",
+  "settings": "Settings",
+  "mySpace": "My space",
+  "help": "Help",
+  "emailAddress": "Email address",
+  "passwordSecurity": "Password and security",
+  "notifications": "Notifications",
+  "pushNotifications": "Phone notifications",
+  "legalDocs": "Terms and privacy",
+  "inDrafting": "Being drafted",
+  "about": "About",
+  "appVersion": "App version",
+  "dangerZone": "Danger zone",
+  "settingsSubtitle": "Account, preferences, notifications and privacy.",
+  "noOffersYet": "This venue has no experiences yet.",
+  "externalTicket": "External ticket",
+  "externalTicketIssued": "The ticket is issued by the partner distributor.",
+  "nextOpeningSlot": "Next opening slot",
+  "accordingToHours": "Based on opening hours. Remaining places are shown in the calendar.",
+  "noSlot14Days": "No slot in the next 14 days",
+  "ticketAtDistributor": "Ticket from the distributor",
+  "externalTicketNoSlot": "This ticket is issued by the partner distributor: it is not booked with an XPASS slot.",
+  "seeCalendar": "See the calendar",
+  "wheelchairAccessible": "Wheelchair accessible",
+  "accessibilityNotGuaranteed": "Accessibility not guaranteed",
+  "chooseMySlot": "Choose my slot",
+  "availableTimes": "Available times",
+  "noTimeThatDay": "No time available that day. Try another date.",
+  "holdingSlot": "Holding the slot…",
+  "noPreference": "No preference",
+  "removeParticipant": "Remove a participant",
+  "addParticipant": "Add a participant",
+  "confirmBooking": "Confirm the booking",
+  "checkBeforeConfirm": "Check your booking details before confirming.",
+  "timeExpired": "Time expired",
+  "slotReleased": "The slot was released and your credits returned. Choose a new slot.",
+  "chooseAnotherSlot": "Choose another slot",
+  "bookingConfirmed": "Booking confirmed",
+  "creditsHeld": "Your credits are held, not yet used.",
+  "freeCancelUntil": "You can cancel free of charge until this date.",
+  "cancelAfterDate": "If you cancel after this date",
+  "sessionConfirmed": "Your session is confirmed. See you soon!",
+  "addToCalendar": "Add to my calendar",
+  "writeToVenue": "Message the venue",
+  "cancelBooking": "Cancel the booking",
+  "needHelp": "Need help?",
+  "cancelBookingQuestion": "Cancel the booking?",
+  "cancelledCharged": "Booking cancelled, credits charged.",
+  "cancelledRefunded": "Booking cancelled, credits returned.",
+  "qrSemantics": "Booking QR code to show to the partner",
+  "showToPartner": "Show it to the partner",
+  "calendarIntro": "Find your booking details in the calendar of your choice.",
+  "chooseCalendar": "Choose a calendar",
+  "phoneCalendar": "Phone calendar (.ics file)",
+  "reminderSuggested": "Suggested reminder: 1 h before (included in the .ics file)",
+  "calendarNoQr": "The event contains the time and address, never your QR: show it from the app.",
+  "serviceDoneTitle": "Your experience is complete!",
+  "thanksBenefit": "Thank you for enjoying your benefit with XPASS.",
+  "serviceDone": "Experience completed",
+  "validatedByPartner": "Validated by the partner.",
+  "creditsUsed": "Credits used",
+  "receiptReference": "Receipt reference",
+  "reviewOnGoogle": "Leave a review on Google",
+  "reviewFree": "Your review is free and optional.",
+  "noReviewLink": "This venue has not added a review link yet.",
+  "askForHelp": "Ask for help",
+  "slotPricePeak": "Peak time",
+  "slotPriceDemand": "High demand",
+  "slotPriceLastMinute": "Last minute",
+  "slotPriceLegend": "Prices vary with time and demand: ↑ peak time or high demand, ↓ last minute.",
+  "lateCancelInfo": "After this time, cancelling gives back {refund} out of {total} (half). If you neither cancel nor show up, everything is used.",
+  "cancelledPartlyRefunded": "Booking cancelled: {refund} have been given back.",
+  "creditRulesTitle": "How your credits work",
+  "creditRulePrice": "Slot prices vary: higher at peak times (↑), lower at the last minute (↓). The price is fixed when you book.",
+  "creditRuleCancel": "Free cancellation until the stated time; after that, half of the credits are given back. If you neither cancel nor show up, everything is used.",
+  "creditRuleRollover": "Unused subscription credits roll over to the next month, up to one month of your plan; they expire when the subscription ends.",
+  "creditRuleEmployer": "Credits offered by your employer are used first, within the validity period set by your company.",
+  "madeByAlystra": "Made by Alystra",
+  "pushNotificationsHint": "Alerts for bookings, payments and messages",
+  "noNotifications": "No notifications yet.",
+  "notificationsSubtitle": "Bookings, payments and replies from the team."
+}

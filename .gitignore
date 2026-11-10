@@ -1,0 +1,35 @@
+# Secrets locaux
+.env
+.env.*
+!.env.example
+!.env.production.example
+.env.local
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+
+# Node / Next.js
+node_modules/
+.next/
+next-env.d.ts
+*.tsbuildinfo
+
+# Flutter
+apps/mobile/.dart_tool/
+apps/mobile/build/
+apps/mobile/.flutter-plugins
+apps/mobile/.flutter-plugins-dependencies
+apps/mobile/*.iml
+apps/mobile/.idea/
+
+# Production : secrets et realm généré (contient le secret des portails)
+infra/production/.env.production
+infra/production/keycloak/xpass-realm.prod.json
+
+# Hébergement de test (tunnels publics)
+infra/preview/.urls
+infra/preview/*.log
+infra/preview/cloudflared.exe

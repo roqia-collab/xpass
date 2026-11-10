@@ -1,0 +1,66 @@
+# HTTPS automatique (Let's Encrypt) pour les quatre sous-domaines de XPASS.
+{
+	email {$ACME_EMAIL}
+}
+
+(securite) {
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+	encode zstd gzip
+}
+
+# Application client (XPASS, version web Flutter).
+app.{$DOMAIN} {
+	import securite
+	root * /srv/app
+	try_files {path} /index.html
+	file_server
+	header /index.html Cache-Control "no-cache"
+}
+
+# Administration seule.
+admin.{$DOMAIN} {
+	import securite
+	@accueil path /
+	redir @accueil /admin 302
+	@interdit not path /admin /admin/* /auth /auth/* /login /login/* /legal /legal/* /_next /_next/* /favicon.ico
+	respond @interdit "Introuvable" 404
+	reverse_proxy portals:3000
+}
+
+# Espace RH seul.
+rh.{$DOMAIN} {
+	import securite
+	@accueil path /
+	redir @accueil /company 302
+	@interdit not path /company /company/* /auth /auth/* /login /login/* /legal /legal/* /_next /_next/* /favicon.ico
+	respond @interdit "Introuvable" 404
+	reverse_proxy portals:3000
+}
+
+# Espace commerçant.
+pro.{$DOMAIN} {
+	import securite
+	reverse_proxy portals:3000
+}
+
+# API.
+api.{$DOMAIN} {
+	import securite
+	request_body /api/v1/partner/* {
+		max_size 10MB
+	}
+	reverse_proxy api:8000
+}
+
+# Connexion sécurisée (Keycloak). La console d'administration n'est pas exposée publiquement.
+auth.{$DOMAIN} {
+	import securite
+	@admin path /admin*
+	respond @admin "Introuvable" 404
+	reverse_proxy keycloak:8080
+}

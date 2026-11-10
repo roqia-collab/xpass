@@ -1,0 +1,50 @@
+# Site local : portails, API et photos sur http://localhost:3080
+# L'application client est sur /client/ . Keycloak reste sur http://localhost:8080 .
+{
+	auto_https off
+}
+
+:3080 {
+	encode gzip {
+		match {
+			header Content-Type text/*
+			header Content-Type application/javascript*
+			header Content-Type application/json*
+			header Content-Type image/svg+xml*
+		}
+	}
+
+	handle /api* {
+		reverse_proxy api:8000
+	}
+	handle /health* {
+		reverse_proxy api:8000
+	}
+	handle /docs* {
+		reverse_proxy api:8000
+	}
+	handle /redoc* {
+		reverse_proxy api:8000
+	}
+	handle /openapi.json {
+		reverse_proxy api:8000
+	}
+	handle /xpass-public* {
+		reverse_proxy storage:8333
+	}
+	redir /client /client/ 308
+	handle_path /client/* {
+		header Cache-Control "no-store"
+		root * /srv/app
+		try_files {path} /index.html
+		file_server
+	}
+	handle {
+		reverse_proxy host.docker.internal:3000
+	}
+}
+
+# Ancien port de l'application : même site local.
+:5174 {
+	redir http://localhost:3080/client/ 302
+}

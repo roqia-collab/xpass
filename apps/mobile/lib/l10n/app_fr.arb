@@ -1,0 +1,246 @@
+{
+  "@@locale": "fr",
+  "navExplore": "Explorer",
+  "navBookings": "Réservations",
+  "navCredits": "Mes crédits",
+  "navProfile": "Paramètres",
+  "retry": "Réessayer",
+  "unexpectedError": "Une erreur inattendue est survenue.",
+  "comingSoon": "Bientôt disponible",
+  "understood": "Compris",
+  "loading": "Chargement",
+  "back": "Retour",
+  "chooseCity": "Choisir une ville",
+  "nearYou": "À réserver près de vous",
+  "seeAll": "Voir tout",
+  "seeOnMap": "Voir sur la carte",
+  "homeSearchHint": "Yoga, concert, spa, musée…",
+  "todayChip": "Aujourd'hui",
+  "tomorrowChip": "Demain",
+  "allUniverses": "Tout",
+  "noSlotsThatDay": "Aucun créneau à cette date. Changez de jour ou d’univers.",
+  "welcomeTitle": "Un pass, toutes vos envies",
+  "welcomeSubtitle": "Sport, culture, beauté et sorties — réservez avec des crédits, près de chez vous.",
+  "signIn": "Continuer avec Google",
+  "signInHint": "Connectez-vous pour réserver avec vos crédits, dans tous les univers.",
+  "or": "ou",
+  "createAccount": "Créer un compte",
+  "passwordNotice": "Connexion avec votre compte Google. L’application ne voit jamais votre mot de passe.",
+  "exploreWithoutAccount": "Explorer sans compte",
+  "demoMode": "Mode démonstration",
+  "legalPending": "Conditions générales et politique de confidentialité : documents en cours de rédaction.",
+  "myProfile": "Paramètres",
+  "profileSubtitle": "Compte, préférences, notifications et confidentialité.",
+  "emailVerified": "Adresse e-mail vérifiée",
+  "emailNotVerified": "Compte de démonstration (e-mail non vérifié)",
+  "account": "Compte",
+  "personalInfo": "Informations personnelles",
+  "country": "Pays",
+  "france": "France",
+  "mySubscription": "Mon abonnement",
+  "preferences": "Préférences",
+  "language": "Langue",
+  "bookingEmails": "E-mails de réservation",
+  "bookingEmailsHint": "Confirmations, annulations et reçus",
+  "support": "Assistance",
+  "helpCenter": "Centre d’aide",
+  "contactSupport": "Contacter le support",
+  "myRequests": "Mes demandes",
+  "privacy": "Confidentialité",
+  "locationPermission": "Permissions localisation",
+  "cameraPermission": "Permissions caméra",
+  "optional": "Optionnel",
+  "exportData": "Exporter mes données",
+  "deleteAccount": "Supprimer mon compte",
+  "permissionsNotice": "La localisation et la caméra sont optionnelles : elles ne sont demandées qu’au moment de les utiliser (carte « Autour de moi »), et vous pouvez les refuser dans les réglages de votre téléphone.",
+  "signOut": "Se déconnecter",
+  "translationNotice": "Les contenus des établissements restent dans leur langue d’origine.",
+  "nearbyTitle": "Autour de moi",
+  "nearbySubtitle": "Trouvez des expériences près de chez vous",
+  "myPosition": "Ma position",
+  "locateMe": "Me localiser",
+  "locating": "Localisation…",
+  "category": "Catégorie",
+  "allCategories": "Toutes",
+  "budget": "Budget",
+  "anyBudget": "Tous",
+  "upToCredits": "≤ {count} crédits",
+  "@upToCredits": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "searchThisArea": "Rechercher dans cette zone",
+  "noResultsArea": "Aucune expérience dans cette zone : élargissez le rayon ou changez les filtres.",
+  "loadPlacesError": "Impossible de charger les lieux.",
+  "placesInRadius": "{count, plural, =1{1 lieu} other{{count} lieux}} dans un rayon de {km} km. Touchez un prix pour voir la fiche.",
+  "@placesInRadius": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "km": {
+        "type": "int"
+      }
+    }
+  },
+  "directions": "Itinéraire",
+  "seeDetails": "Voir la fiche",
+  "locationDisabled": "Localisation désactivée sur cet appareil.",
+  "locationDenied": "Localisation refusée : la carte reste centrée sur la ville.",
+  "myBookings": "Mes réservations",
+  "myBookingsSubtitle": "Toutes vos expériences, au même endroit.",
+  "myCredits": "Mes crédits",
+  "signInToSeeBookings": "Connectez-vous pour retrouver vos réservations.",
+  "signInToSeeCredits": "Connectez-vous pour voir vos crédits.",
+  "distanceAway": "À {distance}",
+  "@distanceAway": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "creditsCount": "{count, plural, =1{1 crédit} other{{count} crédits}}",
+  "@creditsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "radiusKm": "{km} kilomètres",
+  "@radiusKm": {
+    "placeholders": {
+      "km": {
+        "type": "int"
+      }
+    }
+  },
+  "filterDate": "Date",
+  "filterParticipants": "Participants",
+  "nextSlotAt": "Prochain créneau : {when}",
+  "dateFilterSoon": "Le filtre par date arrive bientôt : la carte montre les lieux, les créneaux se choisissent sur la fiche.",
+  "participantsFilterSoon": "Le filtre par nombre de participants arrive bientôt : il se choisit au moment de réserver.",
+  "recenter": "Recentrer la carte",
+  "creditsUnit": "crédits",
+  "@nextSlotAt": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "soonShort": "Bientôt",
+  "myFavorites": "Mes favoris",
+  "participantsCount": "{count, plural, =1{1 personne} other{{count} personnes}}",
+  "@participantsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "anyDate": "N'importe quand",
+  "anyParticipants": "Tous",
+  "openThatDay": "Ouvert ce jour-là",
+  "settings": "Paramètres",
+  "mySpace": "Mon espace",
+  "help": "Aide",
+  "emailAddress": "Adresse e-mail",
+  "passwordSecurity": "Mot de passe et sécurité",
+  "notifications": "Notifications",
+  "pushNotifications": "Notifications sur le téléphone",
+  "legalDocs": "Conditions et confidentialité",
+  "inDrafting": "En rédaction",
+  "about": "À propos",
+  "appVersion": "Version de l’application",
+  "dangerZone": "Zone sensible",
+  "settingsSubtitle": "Compte, préférences, notifications et confidentialité.",
+  "noOffersYet": "Cet établissement ne propose aucune prestation pour le moment.",
+  "externalTicket": "Billet externe",
+  "externalTicketIssued": "Le billet est émis par le distributeur partenaire.",
+  "nextOpeningSlot": "Prochain créneau d’ouverture",
+  "accordingToHours": "Selon les horaires. Les places restantes s’affichent dans le calendrier.",
+  "noSlot14Days": "Aucun créneau dans les 14 prochains jours",
+  "ticketAtDistributor": "Billet chez le distributeur",
+  "externalTicketNoSlot": "Ce billet est émis par le distributeur partenaire : il ne se réserve pas avec un créneau XPASS.",
+  "seeCalendar": "Voir le calendrier",
+  "wheelchairAccessible": "Accessible aux personnes à mobilité réduite",
+  "accessibilityNotGuaranteed": "Accessibilité non garantie",
+  "chooseMySlot": "Choisir mon créneau",
+  "availableTimes": "Horaires disponibles",
+  "noTimeThatDay": "Aucun horaire disponible ce jour-là. Essayez une autre date.",
+  "holdingSlot": "Réservation du créneau…",
+  "noPreference": "Sans préférence",
+  "removeParticipant": "Retirer un participant",
+  "addParticipant": "Ajouter un participant",
+  "confirmBooking": "Confirmer la réservation",
+  "checkBeforeConfirm": "Vérifiez les détails de votre réservation avant de confirmer.",
+  "timeExpired": "Délai dépassé",
+  "slotReleased": "Le créneau a été libéré et vos crédits restitués. Choisissez un nouveau créneau.",
+  "chooseAnotherSlot": "Choisir un autre créneau",
+  "bookingConfirmed": "Réservation confirmée",
+  "creditsHeld": "Vos crédits sont bloqués, pas encore utilisés.",
+  "freeCancelUntil": "Vous pouvez annuler sans frais jusqu’à cette date.",
+  "cancelAfterDate": "En cas d’annulation après cette date",
+  "sessionConfirmed": "Votre séance est bien confirmée. À bientôt !",
+  "addToCalendar": "Ajouter à mon agenda",
+  "writeToVenue": "Écrire à l’établissement",
+  "cancelBooking": "Annuler la réservation",
+  "needHelp": "Besoin d’aide ?",
+  "cancelBookingQuestion": "Annuler la réservation ?",
+  "cancelledCharged": "Réservation annulée, crédits débités.",
+  "cancelledRefunded": "Réservation annulée, crédits restitués.",
+  "qrSemantics": "QR code de la réservation à présenter au partenaire",
+  "showToPartner": "À présenter au partenaire",
+  "calendarIntro": "Retrouvez les détails de votre réservation dans l’agenda de votre choix.",
+  "chooseCalendar": "Choisir un agenda",
+  "phoneCalendar": "Calendrier du téléphone (fichier .ics)",
+  "reminderSuggested": "Rappel suggéré : 1 h avant (inclus dans le fichier .ics)",
+  "calendarNoQr": "L’événement contient l’horaire et l’adresse, jamais votre QR : présentez-le depuis l’application.",
+  "serviceDoneTitle": "Votre prestation est terminée !",
+  "thanksBenefit": "Merci d’avoir profité de votre avantage avec XPASS.",
+  "serviceDone": "Prestation effectuée",
+  "validatedByPartner": "Validée par le partenaire.",
+  "creditsUsed": "Crédits consommés",
+  "receiptReference": "Référence du reçu",
+  "reviewOnGoogle": "Donner mon avis sur Google",
+  "reviewFree": "Votre avis est libre et facultatif.",
+  "noReviewLink": "Cet établissement n’a pas encore renseigné de lien d’avis.",
+  "askForHelp": "Demander de l’aide",
+  "slotPricePeak": "Heure de pointe",
+  "slotPriceDemand": "Forte demande",
+  "slotPriceLastMinute": "Dernière minute",
+  "slotPriceLegend": "Le prix varie selon l’heure et la demande : ↑ heure de pointe ou forte demande, ↓ dernière minute.",
+  "lateCancelInfo": "Après ce délai, une annulation vous rend {refund} sur {total} (la moitié). Sans annulation ni présentation, tout est consommé.",
+  "@lateCancelInfo": {
+    "placeholders": {
+      "refund": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "cancelledPartlyRefunded": "Réservation annulée : {refund} vous ont été rendus.",
+  "@cancelledPartlyRefunded": {
+    "placeholders": {
+      "refund": {
+        "type": "String"
+      }
+    }
+  },
+  "creditRulesTitle": "Comment fonctionnent vos crédits",
+  "creditRulePrice": "Le prix d’un créneau varie : plus cher aux heures de pointe (↑), moins cher en dernière minute (↓). Il est fixé au moment de la réservation.",
+  "creditRuleCancel": "Annulation gratuite jusqu’au délai indiqué ; après, la moitié des crédits vous est rendue. Sans annulation ni présentation, tout est consommé.",
+  "creditRuleRollover": "Crédits d’abonnement non utilisés : reportés au mois suivant jusqu’à un mois de formule ; ils expirent à l’arrêt de l’abonnement.",
+  "creditRuleEmployer": "Crédits offerts par votre employeur : utilisés en priorité, selon la durée de validité fixée par l’entreprise.",
+  "madeByAlystra": "Réalisée par Alystra",
+  "pushNotificationsHint": "Alertes de réservation, de paiement et de messages",
+  "noNotifications": "Aucune notification pour le moment.",
+  "notificationsSubtitle": "Réservations, paiements et réponses de l’équipe."
+}

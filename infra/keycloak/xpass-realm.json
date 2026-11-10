@@ -1,0 +1,104 @@
+{
+  "realm": "xpass",
+  "displayName": "XPASS",
+  "loginTheme": "xpass",
+  "enabled": true,
+  "sslRequired": "external",
+  "registrationAllowed": true,
+  "registrationEmailAsUsername": true,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "verifyEmail": true,
+  "resetPasswordAllowed": true,
+  "rememberMe": true,
+  "bruteForceProtected": true,
+  "accessTokenLifespan": 900,
+  "ssoSessionIdleTimeout": 86400,
+  "ssoSessionMaxLifespan": 2592000,
+  "offlineSessionIdleTimeout": 2592000,
+  "passwordPolicy": "length(10) and notUsername and notEmail",
+  "internationalizationEnabled": true,
+  "supportedLocales": [
+    "fr",
+    "en",
+    "ar"
+  ],
+  "defaultLocale": "fr",
+  "smtpServer": {
+    "host": "mailpit",
+    "port": "1025",
+    "from": "no-reply@xpass.local",
+    "fromDisplayName": "XPASS (développement)"
+  },
+  "clients": [
+    {
+      "clientId": "xpass-mobile",
+      "baseUrl": "http://localhost:5173/",
+      "name": "Application XPASS",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "implicitFlowEnabled": false,
+      "redirectUris": [
+        "http://localhost:5173/*",
+        "http://localhost:5174/*",
+        "xpass://auth/*"
+      ],
+      "webOrigins": [
+        "http://localhost:5173",
+        "http://localhost:5174"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:5173/*##http://localhost:5174/*##xpass://auth/*"
+      },
+      "protocolMappers": [
+        {
+          "name": "audience xpass-api",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "config": {
+            "included.custom.audience": "xpass-api",
+            "access.token.claim": "true",
+            "id.token.claim": "false"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "xpass-portals",
+      "baseUrl": "http://localhost:3000/",
+      "name": "Portails XPASS",
+      "enabled": true,
+      "publicClient": false,
+      "secret": "dev-portals-secret-0123456789abcdef",
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "implicitFlowEnabled": false,
+      "redirectUris": [
+        "http://localhost:3000/auth/callback"
+      ],
+      "webOrigins": [
+        "http://localhost:3000"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:3000/login"
+      },
+      "protocolMappers": [
+        {
+          "name": "audience xpass-api",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "config": {
+            "included.custom.audience": "xpass-api",
+            "access.token.claim": "true",
+            "id.token.claim": "false"
+          }
+        }
+      ]
+    }
+  ],
+  "users": []
+}

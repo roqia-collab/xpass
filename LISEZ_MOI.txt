@@ -1,0 +1,40 @@
+XPASS - KIT DE DEMARRAGE
+
+Contenu : 28 maquettes PNG originales, une proposition de logo PNG et un prompt complet pour Claude Code.
+
+Les maquettes sont des references visuelles, pas des composants executables. Les photos d’activites font partie des images generees ; elles ne sont pas fournies comme originaux photographiques independants. Les donnees, prix et etablissements sont illustratifs. Le logo est une proposition raster PNG, pas un fichier vectoriel.
+
+Pour commencer : extraire ce ZIP dans le dossier du projet, ajouter le cahier technique puis ouvrir PROMPT_CLAUDE_CODE_XPASS.md et copier son contenu dans Claude Code.
+
+Developpeuse : Benaboud Roqia
+Directeur : Zaki Mohamed Mehri
+
+Interfaces
+01. Accueil client
+02. Connexion et inscription
+03. Divertissement
+04. Activité sportive
+05. Activité culturelle
+06. Beauté
+07. Autour de moi
+08. Fiche partenaire
+09. Calendrier
+10. Confirmation réservation
+11. Mes réservations
+12. Réservation et QR
+13. Reçu et avis
+14. Mes crédits
+15. Abonnement
+16. Profil et assistance
+17. Ajouter à l’agenda
+18. Commerçant planning
+19. Scanner commerçant
+20. Vérification commerçant
+21. Prestations et équipe
+22. Règlements commerçant
+23. Portail RH budgets
+24. RH salariés invitations
+25. RH factures rapports
+26. Administration opérations
+27. Vérification partenaire
+28. Litige et remboursement

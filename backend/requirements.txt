@@ -1,0 +1,21 @@
+# Dépendances directes (versions exactes). Le verrou complet est requirements.lock.
+fastapi==0.162.0
+uvicorn[standard]==0.34.2
+pydantic==2.11.4
+pydantic-settings==2.9.1
+sqlalchemy==2.0.40
+alembic==1.15.2
+psycopg[binary]==3.2.7
+geoalchemy2==0.17.1
+celery==5.5.2
+redis==5.2.1
+kafka-python-ng==2.2.3
+pyjwt[crypto]==2.15.0
+email-validator==2.2.0
+httpx==0.28.1
+pillow==13.0.0
+python-multipart==0.0.31
+# Tests
+pytest==9.0.3
+boto3==1.38.8
+sentry-sdk==2.19.2

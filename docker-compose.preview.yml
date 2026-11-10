@@ -1,0 +1,17 @@
+# Passerelle locale pour héberger un aperçu public (voir infra/preview/heberger.ps1).
+services:
+  preview:
+    image: caddy:2.8.4-alpine
+    ports:
+      - "3080:3080"
+      - "5174:5174"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./infra/preview/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./apps/mobile/build/web:/srv/app:ro
+    depends_on:
+      api:
+        condition: service_healthy
+      storage:
+        condition: service_healthy
