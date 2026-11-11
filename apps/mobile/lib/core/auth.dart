@@ -139,14 +139,14 @@ class AuthController extends AsyncNotifier<AuthSession?> {
   }
 
   /// Ouvre la connexion (ou l'inscription) du fournisseur d'identité. Sur le web, la page est remplacée.
-  Future<void> signIn({bool register = false, String? locale}) async {
+  Future<void> signIn({bool register = false, String? locale, String identity = 'google'}) async {
     if (!OidcClient.configured) {
       throw ApiException('La connexion sécurisée n’est pas configurée sur cette version.');
     }
     final client = ref.read(oidcClientProvider);
     final pending = client.newLogin(OidcPlatform.redirectUri());
-    final result =
-        await OidcPlatform.authenticate(client.authorizeUrl(pending, register: register, locale: locale), pending);
+    final result = await OidcPlatform.authenticate(
+        client.authorizeUrl(pending, register: register, locale: locale, identity: identity), pending);
     if (result == null) return; // web : la suite se fait au retour sur l'application
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {

@@ -11,6 +11,7 @@ import '../account/account_repository.dart';
 import '../booking/booking_repository.dart';
 import '../catalog/catalog_repository.dart';
 import '../catalog/models.dart';
+import 'events_screen.dart';
 import 'location_cards.dart';
 import '../../core/l10n.dart';
 
@@ -43,6 +44,7 @@ class HomeScreen extends ConsumerWidget {
         onRefresh: () async {
           ref.invalidate(categoriesProvider);
           ref.invalidate(locationSearchProvider);
+          ref.invalidate(eventsProvider);
         },
         child: ListView(
           padding: EdgeInsets.zero,
@@ -62,6 +64,8 @@ class HomeScreen extends ConsumerWidget {
                   _CategoryGrid(categories: list),
                 ]),
               ),
+              const SizedBox(height: 28),
+              const _EventsStrip(),
               const SizedBox(height: 28),
               Row(children: [
                 Expanded(child: Text(context.l10n.nearYou, style: serif(26))),
@@ -501,6 +505,42 @@ class _CategoryTile extends StatelessWidget {
           ),
         ),
       );
+}
+
+class _EventsStrip extends ConsumerWidget {
+  const _EventsStrip();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final city = ref.watch(selectedCityProvider);
+    final events = ref.watch(eventsProvider(city.slug));
+    return events.maybeWhen(
+      data: (list) {
+        if (list.isEmpty) return const SizedBox.shrink();
+        final shown = list.take(3).toList();
+        return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(children: [
+            Expanded(child: Text('Événements', style: serif(26))),
+            TextButton(
+              onPressed: () => context.push('/explore/evenements'),
+              child: const Row(children: [
+                Text('Voir tout', style: TextStyle(color: XColors.lavenderText, fontSize: 16)),
+                Icon(Icons.chevron_right, color: XColors.lavenderText),
+              ]),
+            ),
+          ]),
+          const SizedBox(height: 4),
+          const Text('Séances datées, publiées par les services RH.', style: TextStyle(color: XColors.navyMuted)),
+          const SizedBox(height: 12),
+          for (final (i, event) in shown.indexed) ...[
+            FadeSlideIn(index: i, child: EventPoster(event: event)),
+            const SizedBox(height: 14),
+          ],
+        ]);
+      },
+      orElse: () => const SizedBox.shrink(),
+    );
+  }
 }
 
 class _EmployeeBenefitBanner extends StatelessWidget {

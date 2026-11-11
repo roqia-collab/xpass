@@ -52,6 +52,18 @@ class BookingRepository {
         (d) => Booking.fromJson(d as Map<String, dynamic>),
       );
 
+  Future<Booking> holdEvent({
+    required String eventId,
+    required int expectedPriceCredits,
+    required String idempotencyKey,
+  }) =>
+      _call(
+        () => _auth.post('/bookings/events',
+            data: {'event_id': eventId, 'party_size': 1, 'expected_price_credits': expectedPriceCredits},
+            options: Options(headers: {'Idempotency-Key': idempotencyKey})),
+        (d) => Booking.fromJson(d as Map<String, dynamic>),
+      );
+
   Future<Booking> confirm(String id, String idempotencyKey) => _call(
       () => _auth.post('/bookings/$id/confirm', options: Options(headers: {'Idempotency-Key': idempotencyKey})),
       (d) => Booking.fromJson(d as Map<String, dynamic>));

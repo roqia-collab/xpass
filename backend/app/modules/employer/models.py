@@ -30,6 +30,9 @@ class EmployerContract(IdMixin, Base):
     __table_args__ = (
         Index("uq_employer_contracts_org", "organization_id", unique=True),
         CheckConstraint("credit_price_minor > 0", name="price_positive"),
+        CheckConstraint("term_months BETWEEN 1 AND 36", name="term_range"),
+        CheckConstraint("commission_bps BETWEEN 0 AND 10000", name="commission_range"),
+        CheckConstraint("free_cancellation_hours BETWEEN 0 AND 168", name="cancellation_range"),
     )
     organization_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("organizations.id"))
     status: Mapped[str] = mapped_column(_enum(*CONTRACT_STATUS, name="contract_status"))
@@ -38,6 +41,13 @@ class EmployerContract(IdMixin, Base):
     currency: Mapped[str] = mapped_column(String(3))
     payment_terms_days: Mapped[int] = mapped_column(Integer, default=7)
     starts_on: Mapped[date] = mapped_column(Date)
+    # Conditions écrites du contrat : durée, villes, commission commerçant, annulation.
+    term_months: Mapped[int] = mapped_column(Integer, default=12, server_default="12")
+    covered_cities: Mapped[list[str]] = mapped_column(
+        ARRAY(String(80)), default=lambda: ["Paris"], server_default=text("ARRAY['Paris']::varchar[]")
+    )
+    commission_bps: Mapped[int] = mapped_column(Integer, default=1000, server_default="1000")
+    free_cancellation_hours: Mapped[int] = mapped_column(Integer, default=24, server_default="24")
     is_demo: Mapped[bool] = mapped_column(Boolean, default=False)
 
 

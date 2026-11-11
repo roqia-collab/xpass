@@ -5,13 +5,13 @@ import uuid
 from datetime import date, datetime
 from typing import Annotated, Literal
 
-from fastapi import APIRouter, Header, HTTPException, Query
+from fastapi import APIRouter, File, Header, HTTPException, Query, UploadFile
 from fastapi.responses import Response
 from pydantic import BaseModel, Field
 from sqlalchemy import func, or_, select
 
 from app.api.deps import CurrentPrincipal, DbSession, forbidden
-from app.modules.catalog.models import Category
+from app.modules.catalog.models import Category, Offer
 from app.modules.employer import service as s
 from app.modules.employer.models import BudgetPolicy, Employee, EmployerAllocation, EmployerInvoice
 
@@ -63,6 +63,10 @@ class ContractOut(BaseModel):
     credit_price_minor: int
     currency: str
     starts_on: date
+    term_months: int = 12
+    covered_cities: list[str] = ["Paris"]
+    commission_bps: int = 1000
+    free_cancellation_hours: int = 24
     is_demo: bool
 
 
@@ -450,6 +454,13 @@ class VenueBrief(BaseModel):
     name: str
     slug: str
     status: str
+    address_line: str = ""
+    postal_code: str = ""
+    district_label: str = ""
+    description: str = ""
+    cover_image_key: str | None = None
+    price_credits: int | None = None
+    subcategory_slug: str = ""
 
 
 class CompanyMerchantOut(BaseModel):
@@ -496,6 +507,195 @@ def create_company_merchant(body: CompanyMerchantIn, principal: CurrentPrincipal
         raise HTTPException(exc.status, {"code": exc.code, "message": exc.message}) from exc
     row = next(item for item in list_for_org(db, org.id) if item["id"] == merchant.id)
     return row
+
+
+class AddressIn(BaseModel):
+    address_line: str = Field(min_length=3, max_length=200)
+    postal_code: str = Field(min_length=4, max_length=12)
+    city: str = Field(min_length=2, max_length=80)
+
+
+class AddressOut(BaseModel):
+    label: str
+    address_line: str
+    postal_code: str
+    city: str
+    district: str
+    latitude: float
+    longitude: float
+
+
+class VisibilityIn(BaseModel):
+    published: bool
+
+
+@router.post("/company/merchants/locate", response_model=AddressOut)
+def locate_merchant(body: AddressIn, principal: CurrentPrincipal, db: DbSession) -> AddressOut:
+    from app.modules.catalog import onboarding
+    from app.modules.catalog.chain import preview_address
+
+    _org(db, principal, s.HR_WRITE)
+    try:
+        return AddressOut(**preview_address(body.address_line, body.postal_code, body.city))
+    except onboarding.OnboardingError as exc:
+        raise HTTPException(exc.status, {"code": exc.code, "message": exc.message}) from exc
+
+
+@router.patch("/company/merchants/{merchant_id}", response_model=CompanyMerchantOut)
+def update_company_merchant(merchant_id: uuid.UUID, body: CompanyMerchantIn, principal: CurrentPrincipal, db: DbSession) -> CompanyMerchantOut:
+    from app.modules.catalog import management, onboarding
+    from app.modules.catalog.chain import MerchantDraft, list_for_org, update_merchant_for_org
+    from app.modules.ops.service import OpsError
+
+    org = _org(db, principal, s.HR_WRITE)
+    try:
+        merchant = update_merchant_for_org(db, org, principal.user, merchant_id, MerchantDraft(**body.model_dump()))
+        db.commit()
+    except (onboarding.OnboardingError, management.ManageError, OpsError) as exc:
+        db.rollback()
+        raise HTTPException(exc.status, {"code": exc.code, "message": exc.message}) from exc
+    return next(item for item in list_for_org(db, org.id) if item["id"] == merchant.id)
+
+
+@router.post("/company/merchants/{merchant_id}/visibility", response_model=CompanyMerchantOut)
+def merchant_visibility(merchant_id: uuid.UUID, body: VisibilityIn, principal: CurrentPrincipal, db: DbSession) -> CompanyMerchantOut:
+    from app.modules.catalog import onboarding
+    from app.modules.catalog.chain import list_for_org, set_visibility
+
+    org = _org(db, principal, s.HR_WRITE)
+    try:
+        merchant = set_visibility(db, org, principal.user, merchant_id, body.published)
+        db.commit()
+    except onboarding.OnboardingError as exc:
+        db.rollback()
+        raise HTTPException(exc.status, {"code": exc.code, "message": exc.message}) from exc
+    return next(item for item in list_for_org(db, org.id) if item["id"] == merchant.id)
+
+
+@router.post("/company/merchants/{merchant_id}/cover", response_model=dict)
+async def merchant_cover(merchant_id: uuid.UUID, principal: CurrentPrincipal, db: DbSession, file: UploadFile = File(...)) -> dict:
+    from app.modules.catalog import onboarding, photos
+    from app.modules.catalog.chain import _owned
+    from app.modules.catalog.models import Location
+
+    org = _org(db, principal, s.HR_WRITE)
+    try:
+        merchant = _owned(db, org, merchant_id)
+    except onboarding.OnboardingError as exc:
+        raise HTTPException(exc.status, {"code": exc.code, "message": exc.message}) from exc
+    location = db.scalar(select(Location).where(Location.merchant_id == merchant.id).order_by(Location.name))
+    if location is None:
+        raise HTTPException(404, {"code": "location_missing", "message": "Aucun établissement à illustrer."})
+    data = await file.read(photos.MAX_BYTES + 1)
+    try:
+        jpeg = photos.prepare(data)
+    except photos.PhotoError as exc:
+        raise HTTPException(422, {"code": exc.code, "message": exc.message}) from exc
+    key = onboarding.new_media_key(merchant.id)
+    photos.store(key, jpeg)
+    location.cover_image_key = key
+    offer = db.scalar(select(Offer).where(Offer.location_id == location.id).order_by(Offer.sort_order))
+    if offer is not None and not offer.image_key:
+        offer.image_key = key
+    db.commit()
+    return {"image_key": key}
+
+
+class CompanyEventIn(BaseModel):
+    location_id: uuid.UUID
+    title: str = Field(min_length=2, max_length=120)
+    summary: str = Field("", max_length=500)
+    starts_at: datetime
+    ends_at: datetime
+    price_credits: int = Field(ge=1, le=500)
+
+
+class CompanyEventVisibility(BaseModel):
+    published: bool
+
+
+def _event_http(exc) -> HTTPException:
+    return HTTPException(exc.status, {"code": exc.code, "message": exc.message})
+
+
+@router.get("/company/events")
+def company_events(principal: CurrentPrincipal, db: DbSession) -> list[dict]:
+    from app.modules.catalog.events import list_managed
+
+    org = _org(db, principal, s.HR_READ)
+    return list_managed(db, org.id)
+
+
+@router.post("/company/events", status_code=201)
+def company_create_event(body: CompanyEventIn, principal: CurrentPrincipal, db: DbSession) -> dict:
+    from app.modules.catalog.events import EventError, create_event
+
+    org = _org(db, principal, s.HR_WRITE)
+    try:
+        event = create_event(
+            db, location_id=body.location_id, title=body.title, summary=body.summary,
+            starts_at=body.starts_at, ends_at=body.ends_at, price_credits=body.price_credits,
+            by=principal.user.id, actor_kind="hr", organization_id=org.id,
+        )
+        db.commit()
+    except EventError as exc:
+        db.rollback()
+        raise _event_http(exc) from exc
+    return {"id": event.id}
+
+
+@router.patch("/company/events/{event_id}")
+def company_update_event(event_id: uuid.UUID, body: CompanyEventIn, principal: CurrentPrincipal, db: DbSession) -> dict:
+    from app.modules.catalog.events import EventError, update_event
+
+    org = _org(db, principal, s.HR_WRITE)
+    try:
+        event = update_event(
+            db, event_id, title=body.title, summary=body.summary, starts_at=body.starts_at, ends_at=body.ends_at,
+            price_credits=body.price_credits, by=principal.user.id, actor_kind="hr", organization_id=org.id,
+        )
+        db.commit()
+    except EventError as exc:
+        db.rollback()
+        raise _event_http(exc) from exc
+    return {"id": event.id}
+
+
+@router.post("/company/events/{event_id}/visibility")
+def company_event_visibility(event_id: uuid.UUID, body: CompanyEventVisibility, principal: CurrentPrincipal, db: DbSession) -> dict:
+    from app.modules.catalog.events import EventError, set_event_visible
+
+    org = _org(db, principal, s.HR_WRITE)
+    try:
+        event = set_event_visible(
+            db, event_id, published=body.published, by=principal.user.id, actor_kind="hr", organization_id=org.id,
+        )
+        db.commit()
+    except EventError as exc:
+        db.rollback()
+        raise _event_http(exc) from exc
+    return {"id": event.id, "status": event.status}
+
+
+@router.post("/company/events/{event_id}/cover")
+async def company_event_cover(event_id: uuid.UUID, principal: CurrentPrincipal, db: DbSession, file: UploadFile = File(...)) -> dict:
+    from app.modules.catalog import onboarding, photos
+    from app.modules.catalog.events import EventError, set_cover
+
+    org = _org(db, principal, s.HR_WRITE)
+    data = await file.read(photos.MAX_BYTES + 1)
+    try:
+        jpeg = photos.prepare(data)
+        event = set_cover(db, event_id, onboarding.new_media_key(org.id), org.id)
+        photos.store(event.cover_image_key, jpeg)
+        db.commit()
+    except photos.PhotoError as exc:
+        db.rollback()
+        raise HTTPException(422, {"code": exc.code, "message": exc.message}) from exc
+    except EventError as exc:
+        db.rollback()
+        raise _event_http(exc) from exc
+    return {"image_key": event.cover_image_key}
 
 
 @router.post("/company/api-keys/{key_id}/revoke", response_model=dict)

@@ -5,7 +5,7 @@ from datetime import date
 from geoalchemy2 import Geography
 from geoalchemy2 import Geometry
 from sqlalchemy import Select, and_, exists, func, null, or_, select
-from sqlalchemy.orm import Session, selectinload
+from sqlalchemy.orm import Session, aliased, selectinload
 
 from app.modules.catalog.models import (
     OpeningHours,
@@ -77,6 +77,7 @@ def list_cities(db: Session) -> list[tuple[City, float, float]]:
             func.ST_Y(City.center.cast(_geometry())),
             func.ST_X(City.center.cast(_geometry())),
         )
+        .where(City.opened.is_(True))
         .options(selectinload(City.market))
         .order_by(City.name)
     )
@@ -87,11 +88,29 @@ def _geometry() -> Geometry:
     return Geometry("POINT", srid=4326)
 
 
-def _public_filter(stmt: Select) -> Select:
-    return stmt.where(
+def _active_offer():
+    return exists().where(
+        Offer.location_id == Location.id,
+        Offer.is_active.is_(True),
+        Offer.current_version_id.is_not(None),
+    )
+
+
+def _public_filter(stmt: Select, *, real: bool) -> Select:
+    """Catalogue client.
+
+    Tant que Paris n'a pas 15 vrais établissements avec une prestation active, la démo reste visible.
+    Dès ce seuil, l'application ne montre que des lieux validés, ouverts, avec une prestation active.
+    """
+    opened_city = aliased(City)
+    stmt = stmt.where(
         Location.status == PUBLIC_LOCATION_STATUS,
         Merchant.commercial_status == PUBLIC_MERCHANT_STATUS,
+        exists().where(opened_city.id == Location.city_id, opened_city.opened.is_(True)),
     )
+    if real:
+        stmt = stmt.where(Location.is_demo.is_(False), Merchant.is_demo.is_(False), _active_offer())
+    return stmt
 
 
 def search_locations(
@@ -104,7 +123,9 @@ def search_locations(
         .join(Category, Category.id == Subcategory.category_id)
         .join(City, City.id == Location.city_id)
     )
-    base = _public_filter(base)
+    from app.modules.catalog.launch import network_is_real
+
+    base = _public_filter(base, real=network_is_real(db))
 
     if params.category:
         base = base.where(Category.slug == params.category)
@@ -216,7 +237,9 @@ def get_public_location(db: Session, slug_or_id: str) -> tuple[Location, float, 
         .join(Merchant, Merchant.id == Location.merchant_id)
         .options(*_location_loader())
     )
-    stmt = _public_filter(stmt)
+    from app.modules.catalog.launch import network_is_real
+
+    stmt = _public_filter(stmt, real=network_is_real(db))
     try:
         stmt = stmt.where(Location.id == uuid.UUID(slug_or_id))
     except ValueError:

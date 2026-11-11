@@ -437,7 +437,7 @@ def seed(db: Session, with_accounts: bool = True) -> bool:
         ("bordeaux", "Bordeaux", 44.8378, -0.5792),
         ("reims", "Reims", 49.2583, 4.0317),
     ]:
-        cities[slug] = City(market_id=fr.id, slug=slug, name=name, center=point(lat, lng))
+        cities[slug] = City(market_id=fr.id, slug=slug, name=name, center=point(lat, lng), opened=slug == "paris")
         db.add(cities[slug])
 
     subs: dict[str, Subcategory] = {}

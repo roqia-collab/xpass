@@ -204,7 +204,7 @@ def manage(location_id: uuid.UUID, principal: CurrentPrincipal, db: DbSession) -
                 current=VersionOut.model_validate(o.current_version, from_attributes=True),
                 resource_ids=[r.id for r in o.resources], versions_count=counts.get(o.id, 1),
             )
-            for o in loc.offers if o.current_version is not None
+            for o in loc.offers if o.current_version is not None and o.sort_order < 90
         ],
         resources=[ManagedResourceOut.model_validate(r, from_attributes=True) for r in loc.resources],
         hours=[ManagedHoursOut(weekday=h.weekday, opens_at=_hm(h.opens_at), closes_at=_hm(h.closes_at))

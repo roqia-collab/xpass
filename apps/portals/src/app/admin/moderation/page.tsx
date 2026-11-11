@@ -6,6 +6,7 @@ import { COMMERCIAL_LABEL } from "@/lib/roles";
 import { apiFetch } from "@/lib/session";
 
 import { ChangeRequests } from "../change-requests";
+import { ModerationActions } from "./row-actions";
 
 export const metadata = { title: "Modération" };
 
@@ -25,7 +26,7 @@ export default async function ModerationPage({ searchParams }: { searchParams: P
   ]);
   return (
     <>
-      <PageHead title="Modération" subtitle="Établissements visibles dans le catalogue. Masquer ou publier se fait depuis la fiche partenaire, avec un motif." />
+      <PageHead title="Modération" subtitle="Publiez ou retirez un établissement. Le motif est enregistré dans le journal." />
       <h2>Demandes de modification</h2>
       <ChangeRequests rows={changes} />
       <h2>Établissements</h2>
@@ -38,7 +39,7 @@ export default async function ModerationPage({ searchParams }: { searchParams: P
       </div>
       <div className="card" style={{ overflowX: "auto" }}>
         <table className="table">
-          <thead><tr><th>Établissement</th><th>Partenaire</th><th>Dossier</th><th>Prestations publiées</th><th>Statut</th></tr></thead>
+          <thead><tr><th>Établissement</th><th>Commerçant</th><th>Dossier</th><th>Prestations publiées</th><th>Statut</th><th>Actions</th></tr></thead>
           <tbody>
             {rows.map((r) => (
               <tr key={r.id}>
@@ -47,6 +48,7 @@ export default async function ModerationPage({ searchParams }: { searchParams: P
                 <td><Badge tone={COMMERCIAL_LABEL[r.commercial_status].tone}>{COMMERCIAL_LABEL[r.commercial_status].label}</Badge></td>
                 <td>{r.published_offers}</td>
                 <td><Badge tone={STATUS[r.status]?.tone ?? "grey"}>{STATUS[r.status]?.label ?? r.status}</Badge></td>
+                <td><ModerationActions id={r.id} published={r.status === "published"} /></td>
               </tr>
             ))}
           </tbody>

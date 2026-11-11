@@ -18,7 +18,7 @@ export default async function CompanySettingsPage() {
   return (
     <>
       <PageHead
-        eyebrow="Entreprise"
+        eyebrow="RH"
         title="Paramètres"
         subtitle="Les informations de votre organisation, telles qu’elles sont enregistrées chez XPASS."
         image={`${process.env.NEXT_PUBLIC_MEDIA_BASE_URL ?? "http://localhost:3080/xpass-public"}/demo/locations/le-cercle.jpg`}
@@ -41,7 +41,9 @@ export default async function CompanySettingsPage() {
                 {c.is_demo && <Badge tone="grey">Démo</Badge>}
               </div>
               <p>Prix du crédit : {money(c.credit_price_minor, c.currency)}</p>
-              <p className="muted">Début : {c.starts_on} · devise {c.currency}</p>
+              <p>Durée : {c.term_months} mois · {c.covered_cities.join(", ")}</p>
+              <p>Commission commerçant : {c.commission_bps / 100} % · annulation gratuite {c.free_cancellation_hours} h avant la séance.</p>
+              <p className="muted">Début : {c.starts_on} · devise {c.currency}. Les crédits des salariés sont crédités après paiement confirmé de la facture.</p>
             </>
           )}
         </section>

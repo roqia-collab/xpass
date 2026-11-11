@@ -2,7 +2,7 @@ import { ArrowRight, Building2, ShieldCheck, Smartphone, Store } from "lucide-re
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { SPACE_HOME, SPACE_LABEL, spacesFor } from "@/lib/roles";
+import { NETWORK_LINE, SPACE_LABEL, spacesFor } from "@/lib/roles";
 import { clientAppUrl, getMe, spaceHrefs } from "@/lib/session";
 import type { Space } from "@/lib/types";
 
@@ -13,9 +13,9 @@ const ICONS: Record<Space, typeof ShieldCheck> = {
 };
 
 const HINT: Record<Space, string> = {
-  admin: "Partenaires, entreprises, assistance, formules.",
-  company: "Budgets, salariés, factures.",
-  partner: "Planning, messages, scanner, établissement.",
+  admin: "Services RH, commerçants, paiements.",
+  company: "Salariés, commerçants, factures.",
+  partner: "Prestations, planning, versements.",
 };
 
 /** Après connexion : Admin, puis RH, puis site commerçant, plus l'application client. */
@@ -34,7 +34,7 @@ export default async function Home() {
       <p className="eyebrow hub-kicker">Vos espaces</p>
       <h1 className="hub-title">Où allez-vous maintenant ?</h1>
       <p className="hub-sub muted">
-        Même compte, mêmes données. Admin, RH, site commerçant et application client — le pass crédits en un réseau.
+        {NETWORK_LINE}
       </p>
       <ul className="hub-list">
         {spaces.map((space) => {

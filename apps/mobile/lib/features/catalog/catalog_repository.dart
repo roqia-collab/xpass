@@ -100,6 +100,15 @@ class CatalogRepository {
 
   Future<LocationDetail> location(String slug) =>
       _get('/catalog/locations/$slug', (d) => LocationDetail.fromJson(d as Map<String, dynamic>));
+
+  Future<List<VenueEvent>> events({String? city, String? locationSlug}) => _get(
+        locationSlug == null ? '/catalog/events' : '/catalog/locations/$locationSlug/events',
+        (d) => (d as List).map((e) => VenueEvent.fromJson(e as Map<String, dynamic>)).toList(),
+        params: {if (city != null) 'city': city},
+      );
+
+  Future<VenueEvent> event(String id) =>
+      _get('/catalog/events/$id', (d) => VenueEvent.fromJson(d as Map<String, dynamic>));
 }
 
 final catalogRepositoryProvider = Provider((ref) => CatalogRepository(ref.watch(dioProvider)));
@@ -116,6 +125,15 @@ final locationSearchProvider = FutureProvider.family<LocationPage, LocationQuery
 
 final locationDetailProvider =
     FutureProvider.family<LocationDetail, String>((ref, slug) => ref.watch(catalogRepositoryProvider).location(slug));
+
+final eventsProvider = FutureProvider.family<List<VenueEvent>, String>(
+    (ref, city) => ref.watch(catalogRepositoryProvider).events(city: city));
+
+final locationEventsProvider = FutureProvider.family<List<VenueEvent>, String>(
+    (ref, slug) => ref.watch(catalogRepositoryProvider).events(locationSlug: slug));
+
+final eventDetailProvider =
+    FutureProvider.family<VenueEvent, String>((ref, id) => ref.watch(catalogRepositoryProvider).event(id));
 
 final categoryProvider = FutureProvider.family<Category?, String>((ref, slug) async {
   final all = await ref.watch(categoriesProvider.future);

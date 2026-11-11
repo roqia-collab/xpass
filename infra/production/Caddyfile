@@ -27,7 +27,7 @@ admin.{$DOMAIN} {
 	import securite
 	@accueil path /
 	redir @accueil /admin 302
-	@interdit not path /admin /admin/* /auth /auth/* /login /login/* /legal /legal/* /_next /_next/* /favicon.ico
+	@interdit not path /admin /admin/* /auth /auth/* /login /login/* /legal /legal/* /_next /_next/* /api/bff /api/bff/* /favicon.ico
 	respond @interdit "Introuvable" 404
 	reverse_proxy portals:3000
 }
@@ -37,7 +37,7 @@ rh.{$DOMAIN} {
 	import securite
 	@accueil path /
 	redir @accueil /company 302
-	@interdit not path /company /company/* /auth /auth/* /login /login/* /legal /legal/* /_next /_next/* /favicon.ico
+	@interdit not path /company /company/* /auth /auth/* /login /login/* /legal /legal/* /_next /_next/* /api/bff /api/bff/* /favicon.ico
 	respond @interdit "Introuvable" 404
 	reverse_proxy portals:3000
 }

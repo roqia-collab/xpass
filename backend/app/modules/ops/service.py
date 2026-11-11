@@ -326,15 +326,22 @@ def create_rh_service(db: Session, *, name: str, city_label: str, hr_email: str,
     market_id = db.scalar(select(Market.id).where(Market.code == "FR"))
     if market_id is None:
         raise OpsError("market_missing", "Le marché France n'est pas prêt.", 503)
+    from app.modules.catalog.launch import LaunchError, require_opened_label
+
+    try:
+        city_name = require_opened_label(db, city_label)
+    except LaunchError as exc:
+        raise OpsError(exc.code, exc.message, exc.status) from exc
     org = Organization(
-        market_id=market_id, name=name, city_label=(city_label or "").strip()[:80] or None, is_demo=False,
+        market_id=market_id, name=name, city_label=city_name, is_demo=False,
     )
     db.add(org)
     db.flush()
     today = datetime.now(UTC).date().replace(day=1)
     db.add(EmployerContract(
         organization_id=org.id, status="active", credit_price_minor=100, currency="EUR",
-        payment_terms_days=30, starts_on=today, is_demo=False,
+        payment_terms_days=30, starts_on=today, term_months=12, covered_cities=["Paris"],
+        commission_bps=1000, free_cancellation_hours=24, is_demo=False,
     ))
     db.flush()
     grant_access(db, email=hr_email, scope_type="organization", scope_id=org.id, role="hr_admin",

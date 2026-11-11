@@ -30,6 +30,10 @@ export const SPACE_LABEL: Record<Space, string> = {
   partner: "Commerçant",
 };
 
+/** Même phrase sur l’admin, le RH, le commerçant et l’accueil. */
+export const NETWORK_LINE =
+  "L’admin ouvre le service RH. Le RH ajoute ses commerçants. Leurs prestations publiées apparaissent dans l’application client.";
+
 export const COMMERCIAL_LABEL: Record<CommercialStatus, { label: string; tone: "lavender" | "coral" | "mint" | "grey" }> = {
   draft: { label: "Brouillon", tone: "grey" },
   pending_review: { label: "À vérifier", tone: "lavender" },

@@ -227,7 +227,17 @@ export interface CompanyReport {
 export interface CompanyOverview {
   organization_name: string;
   can_edit: boolean;
-  contract: { status: string; credit_price_minor: number; currency: string; starts_on: string; is_demo: boolean } | null;
+  contract: {
+    status: string;
+    credit_price_minor: number;
+    currency: string;
+    starts_on: string;
+    term_months: number;
+    covered_cities: string[];
+    commission_bps: number;
+    free_cancellation_hours: number;
+    is_demo: boolean;
+  } | null;
   policy: CompanyPolicy | null;
   next_policy: CompanyPolicy | null;
   categories: { slug: string; name: string }[];

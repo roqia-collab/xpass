@@ -16,7 +16,8 @@ SLOT_MODES = ("resource_slot", "capacity_session", "open_access")
 
 
 def _active_offers(location: Location) -> list[Offer]:
-    return [o for o in location.offers if o.is_active and o.current_version is not None]
+    # sort_order >= 90 : séance d'un événement, réservée depuis sa fiche, pas dans la liste des prestations.
+    return [o for o in location.offers if o.is_active and o.current_version is not None and o.sort_order < 90]
 
 
 def offer_out(location: Location, offer: Offer, now: datetime) -> OfferOut:
@@ -92,9 +93,9 @@ def location_detail(
     location: Location, lat: float, lng: float, now: datetime | None = None, *, include_inactive: bool = False
 ) -> LocationDetailOut:
     now = now or datetime.now(UTC)
-    offers = [o for o in location.offers if o.current_version is not None] if include_inactive else _active_offers(
-        location
-    )
+    offers = [o for o in location.offers if o.current_version is not None and o.sort_order < 90]
+    if not include_inactive:
+        offers = [o for o in offers if o.is_active]
     offer_list = [offer_out(location, o, now) for o in offers]
     return LocationDetailOut(
         **_card_fields(location, None, offer_list[0] if offer_list else None),

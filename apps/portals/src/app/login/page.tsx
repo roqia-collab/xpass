@@ -2,6 +2,7 @@ import { ArrowRight, Building2, CircleHelp, Lock, ShieldCheck, Store } from "luc
 import type { Metadata } from "next";
 
 import { oidcConfigured } from "@/lib/oidc";
+import { NETWORK_LINE } from "@/lib/roles";
 
 import { LoginForm } from "./login-form";
 
@@ -49,9 +50,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
               XPASS
             </p>
             <h1 className="login-title">Un pass. Toutes vos envies.</h1>
-            <p className="login-sub">
-              Sport, culture, beauté et sorties — les clients réservent avec des crédits. Vous gérez le reste ici.
-            </p>
+            <p className="login-sub">{NETWORK_LINE}</p>
             <ul className="login-universes" aria-label="Univers">
               {UNIVERSES.map((u) => (
                 <li key={u}>{u}</li>
@@ -79,8 +78,14 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
                 <a className="btn primary login-cta" href="/auth/login?suite=inscription">
                   Continuer avec Google <ArrowRight size={18} aria-hidden />
                 </a>
+                <a className="btn outline login-cta" href="/auth/login?methode=email&suite=inscription">
+                  Continuer avec un e-mail
+                </a>
+                <a className="btn ghost login-cta" href="/auth/login?methode=email&creer=1&suite=inscription">
+                  Créer un compte avec un e-mail
+                </a>
                 <p className="login-secure">
-                  <Lock size={14} aria-hidden /> Authentification sécurisée
+                  <Lock size={14} aria-hidden /> Le mot de passe est saisi sur la page sécurisée. Un e-mail de confirmation est envoyé pour un nouveau compte.
                 </p>
               </>
             )}

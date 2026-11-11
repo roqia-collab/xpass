@@ -2,12 +2,12 @@ import { PageHead } from "@/components/ui";
 
 import { MerchantsTable } from "./merchants-table";
 
-export const metadata = { title: "Partenaires" };
+export const metadata = { title: "Commerçants" };
 
 export default function PartenairesPage() {
   return (
     <>
-      <PageHead title="Partenaires" subtitle="Statut commercial et statut PSP de chaque marchand." />
+      <PageHead title="Commerçants" subtitle="Chaque commerçant publié apparaît dans l’application client." />
       <MerchantsTable />
     </>
   );

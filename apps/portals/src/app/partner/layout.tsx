@@ -28,9 +28,9 @@ export default async function PartnerLayout({ children }: { children: ReactNode 
 
   return (
     <PortalShell
-      brandSub="Partenaires"
+      brandSub="Commerçant"
       nav={NAV}
-      promo={<>Vos clients réservent avec des crédits.</>}
+      promo={<>Les salariés réservent chez vous avec leurs crédits.</>}
       promoImage={mediaUrl(location?.cover_image_key ?? "demo/heroes/beaute.jpg") ?? undefined}
       searchPlaceholder="Rechercher un client, une prestation…"
       accountName={me.display_name}
@@ -53,7 +53,7 @@ export default async function PartnerLayout({ children }: { children: ReactNode 
         <div className="notice" role="status">
           <span aria-hidden>ⓘ</span>
           <span>
-            <strong>{location.merchant_status === "documents_missing" ? "Compléments demandés par XPASS." : location.merchant_status === "suspended" ? "Compte partenaire suspendu." : "Dossier en cours de validation par XPASS."}</strong>{" "}
+            <strong>{location.merchant_status === "documents_missing" ? "Compléments demandés par XPASS." : location.merchant_status === "suspended" ? "Compte commerçant suspendu." : "Dossier en cours de validation par XPASS."}</strong>{" "}
             Votre établissement n’est pas encore visible des clients. Complétez photo, prestations et horaires en attendant.
           </span>
         </div>

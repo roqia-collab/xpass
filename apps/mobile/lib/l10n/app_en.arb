@@ -25,6 +25,8 @@
   "signInHint": "Sign in to book with your credits, across every universe.",
   "or": "or",
   "createAccount": "Create an account",
+  "signInEmail": "Continue with email",
+  "createAccountEmail": "Create an account with email",
   "passwordNotice": "You enter your password on the secure XPASS page: the app never sees it.",
   "exploreWithoutAccount": "Explore without an account",
   "demoMode": "Demo mode",

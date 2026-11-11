@@ -9,7 +9,7 @@ export function DemoLocationsPanel({ counts, canEdit }: { counts: Record<string,
   const hidden = counts.hidden ?? 0;
   if (!published && !hidden) return null;
   const description = `${published} lieu(x) de démonstration visible(s) dans l’application, ${hidden} masqué(s). ` +
-    "Masquez-les quand les vrais partenaires sont validés et publiés.";
+    "Masquez-les quand les vrais commerçants sont validés et publiés.";
   if (!canEdit) return <p className="muted">{description}</p>;
   return (
     <DecisionPanel

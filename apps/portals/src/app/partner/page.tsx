@@ -5,6 +5,7 @@ import { LiveRefresh } from "@/components/live-refresh";
 import { Badge, ErrorCard, Kpi, Notice, PageHead } from "@/components/ui";
 import { money } from "@/lib/money";
 import { apiFetch, mediaUrl } from "@/lib/session";
+import { NETWORK_LINE } from "@/lib/roles";
 import type { Settlements } from "@/lib/types";
 
 import { getCurrentLocation, getManagedLocation } from "./data";
@@ -35,14 +36,11 @@ export default async function PartnerOverview() {
         subtitle={`${location.address_line}, ${location.postal_code} ${location.city_name}`}
         image={cover ?? undefined}
       />
-      {affiliation?.organization_name && (
-        <Notice>
-          Rattaché au service RH {affiliation.organization_name}.
-          {affiliation.published_locations > 0
-            ? " Vos prestations publiées sont visibles dans l’application client."
-            : " Publiez une prestation pour qu’elle apparaisse dans l’application client."}
-        </Notice>
-      )}
+      <Notice>
+        {NETWORK_LINE}
+        {affiliation?.organization_name ? ` Service RH : ${affiliation.organization_name}.` : ""}
+        {affiliation && affiliation.published_locations > 0 ? " Vos prestations publiées sont dans l’application." : ""}
+      </Notice>
 
       {offerPhotos.length > 0 && (
         <section className="photo-band">
@@ -78,6 +76,9 @@ export default async function PartnerOverview() {
             {" · "}période en cours, net {money(settlements.open_period.net_minor, settlements.currency)}
             {" · "}compte de versement {settlements.has_payout_account ? "enregistré" : "à configurer"}
           </p>
+        )}
+        {settlements && !settlements.has_payout_account && (
+          <p className="muted">La commission XPASS est déduite du versement. Rien n’est viré tant que le compte de versement n’est pas relié.</p>
         )}
         {settlements && settlements.payouts.slice(0, 5).map((p) => (
           <Link key={p.id} href={`/partner/reglements?versement=${p.id}`} className="list-row" style={{ display: "flex", gap: 12, alignItems: "center" }}>

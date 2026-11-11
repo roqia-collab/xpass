@@ -4,8 +4,9 @@ import Link from "next/link";
 import { Badge, PageHead } from "@/components/ui";
 
 import { DemoLocationsPanel } from "./demo-locations";
-import { ACTOR_LABEL, DISPUTE_LABEL, type AdminOverview } from "@/lib/admin-types";
-import { COMMERCIAL_LABEL } from "@/lib/roles";
+import { ACTOR_LABEL, DISPUTE_LABEL, type AdminOverview, type LaunchStatus } from "@/lib/admin-types";
+import { COMMERCIAL_LABEL, NETWORK_LINE } from "@/lib/roles";
+import { OpenCityForm } from "./launch-city";
 import { VenuePhotos } from "@/components/venue-photos";
 import { apiFetch, mediaUrl } from "@/lib/session";
 import type { CommercialStatus } from "@/lib/types";
@@ -18,11 +19,12 @@ const timeFmt = new Intl.DateTimeFormat("fr-FR", { dateStyle: "short", timeStyle
 /** Maquette 26 — files réelles : vérifications partenaires, litiges, rapprochement, journal d'audit. */
 export default async function AdminOverviewPage() {
   const o = await apiFetch<AdminOverview>("/admin/overview");
+  const launch = await apiFetch<LaunchStatus>("/admin/launch").catch(() => null);
   const p = o.payouts;
   return (
     <>
       <PageHead
-        eyebrow="Administration des opérations"
+        eyebrow="Admin"
         title="Pilotage des opérations"
         subtitle="Suivez et traitez les tâches opérationnelles : vérifications, litiges, paiements."
         image={`${process.env.NEXT_PUBLIC_MEDIA_BASE_URL ?? "http://localhost:3080/xpass-public"}/demo/heroes/culture.jpg`}
@@ -30,19 +32,29 @@ export default async function AdminOverviewPage() {
       />
       <div className="card" style={{ display: "flex", justifyContent: "space-between", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
         <div>
-          <h3>Chaîne des espaces</h3>
-          <p className="muted">Admin crée le service RH. Le RH crée ses commerçants. Leurs prestations publiées s’affichent dans l’application client.</p>
+          <h3>Le réseau</h3>
+          <p className="muted">{NETWORK_LINE}</p>
         </div>
         <Link href="/admin/entreprises" className="btn outline">Services RH <ArrowRight size={16} /></Link>
       </div>
+      {launch && (
+        <section className="card" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <h3>Réseau {launch.city}</h3>
+          <p>{launch.venues} / {launch.venues_target} établissements publiés avec une prestation active. {launch.demo_hidden ? "Le catalogue de démonstration est masqué dans l’application." : "La démonstration reste visible tant que ce seuil n’est pas atteint."}</p>
+          <p>{launch.paid_companies} entreprise(s) ont payé une facture (objectif : {launch.companies_target} ou 3). Les crédits n’apparaissent qu’après ce paiement.</p>
+          <p>Stripe : {launch.stripe_mode === "live" ? "mode réel" : "mode test, aucun argent ne circule"}. Comptes de versement vérifiés : {launch.payout_accounts}. La commission est déduite du virement.</p>
+          <p className="muted">{launch.lawyer_validated ? "Contrat validé par un juriste." : "Un juriste doit encore valider les CGU, la confidentialité et les conditions commerçants avant l’ouverture au public."}</p>
+          <OpenCityForm allowed={launch.second_city_allowed} />
+        </section>
+      )}
       <div className="grid grid-3">
-        <Tile href="/admin/partenaires" icon={<Users />} label="Partenaires à vérifier" value={o.merchants_to_review} detail="Dossiers en attente de validation" />
+        <Tile href="/admin/partenaires" icon={<Users />} label="Commerçants à vérifier" value={o.merchants_to_review} detail="Dossiers en attente de validation" />
         <Tile href="/admin/litiges" icon={<MessageCircle />} label="Litiges ouverts" value={o.open_disputes} detail="À examiner et traiter" />
         <Tile href="/admin/paiements" icon={<Calculator />} label="Écarts de rapprochement" value={o.reconciliation_issues} detail="Paiements et virements à investiguer" />
       </div>
       <VenuePhotos title="Établissements du catalogue" text="Photos des lieux publiés à Paris." />
       <div className="grid grid-2" style={{ alignItems: "start" }}>
-        <Queue title="File de vérification partenaires" href="/admin/partenaires" empty="Aucun dossier en attente.">
+        <Queue title="Commerçants à vérifier" href="/admin/partenaires" empty="Aucun dossier en attente.">
           {o.merchants.map((m) => (
             <Row key={m.id} href={`/admin/partenaires/${m.id}`} title={m.title} subtitle={m.subtitle} at={m.at} image={mediaUrl(m.image_key)}>
               <Badge tone={COMMERCIAL_LABEL[m.status as CommercialStatus].tone}>{COMMERCIAL_LABEL[m.status as CommercialStatus].label}</Badge>
@@ -60,7 +72,7 @@ export default async function AdminOverviewPage() {
       <DemoLocationsPanel counts={o.demo_locations ?? {}} canEdit={o.is_admin} />
       <div className="grid grid-2" style={{ alignItems: "start" }}>
         <div className="card">
-          <h3>Statut des versements partenaires</h3>
+          <h3>Versements aux commerçants</h3>
           <div className="grid grid-3" style={{ marginTop: 12 }}>
             <Stat label="En attente / en cours" value={(p.pending ?? 0) + (p.in_transit ?? 0)} />
             <Stat label="Effectués" value={p.paid ?? 0} tone="mint" />

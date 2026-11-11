@@ -8,8 +8,9 @@ import { clientAppUrl, mediaUrl, requireSpace, spaceHrefs } from "@/lib/session"
 
 const NAV: NavItem[] = [
   { href: "/admin", label: "Vue d’ensemble", short: "Accueil", icon: "home" },
-  { href: "/admin/partenaires", label: "Partenaires", icon: "users" },
+  { href: "/admin/partenaires", label: "Commerçants", icon: "users" },
   { href: "/admin/entreprises", label: "Services RH", icon: "store" },
+  { href: "/admin/evenements", label: "Événements", icon: "calendar" },
   { href: "/admin/moderation", label: "Modération", icon: "message" },
   { href: "/admin/litiges", label: "Litiges", icon: "shield" },
   { href: "/admin/avis", label: "Avis", icon: "star" },
@@ -23,11 +24,11 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   const me = await requireSpace("admin");
   return (
     <PortalShell
-      brandSub="Administration"
+      brandSub="Admin"
       nav={NAV}
-      promo={<>Le pass crédits. Sport, culture, beauté, sorties.</>}
+      promo={<>L’admin ouvre le service RH. Le RH ajoute ses commerçants.</>}
       promoImage={mediaUrl("demo/heroes/culture.jpg") ?? undefined}
-      searchPlaceholder="Rechercher un partenaire, une demande, un numéro…"
+      searchPlaceholder="Rechercher un commerçant, une demande, un numéro…"
       accountName={me.display_name}
       accountDetail="Opérations XPASS"
       contextSwitcher={<SpaceSwitcher spaces={spacesFor(me)} appUrl={clientAppUrl()} homes={spaceHrefs()} />}

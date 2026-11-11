@@ -25,6 +25,8 @@
   "signInHint": "سجّل الدخول للحجز بأرصدتك في كل العوالم.",
   "or": "أو",
   "createAccount": "إنشاء حساب",
+  "signInEmail": "المتابعة بالبريد",
+  "createAccountEmail": "إنشاء حساب بالبريد",
   "passwordNotice": "تُدخل كلمة المرور في صفحة XPASS الآمنة: التطبيق لا يراها أبدًا.",
   "exploreWithoutAccount": "الاستكشاف بدون حساب",
   "demoMode": "وضع العرض التجريبي",

@@ -87,8 +87,14 @@ class AppLocalizationsFr extends AppLocalizations {
   String get createAccount => 'Créer un compte';
 
   @override
+  String get signInEmail => 'Continuer avec un e-mail';
+
+  @override
+  String get createAccountEmail => 'Créer un compte avec un e-mail';
+
+  @override
   String get passwordNotice =>
-      'Connexion avec votre compte Google. L’application ne voit jamais votre mot de passe.';
+      'Google ou e-mail, sur la page sécurisée. L’application ne voit jamais votre mot de passe.';
 
   @override
   String get exploreWithoutAccount => 'Explorer sans compte';

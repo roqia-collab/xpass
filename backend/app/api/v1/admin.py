@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Annotated, Literal
 from zoneinfo import ZoneInfo
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, File, HTTPException, Query, UploadFile
 from pydantic import BaseModel, Field
 from sqlalchemy import func, or_, select
 
@@ -37,13 +37,16 @@ def _guard(principal, roles) -> None:
 
 
 def _commit(db, fn):
+    from app.modules.catalog.events import EventError
+    from app.modules.catalog.launch import LaunchError
+
     try:
         result = fn()
         db.commit()
         return result
-    except ops.OpsError as exc:
+    except (ops.OpsError, LaunchError, EventError) as exc:
         db.rollback()
-        raise _http(exc) from exc
+        raise HTTPException(exc.status, {"code": exc.code, "message": exc.message}) from exc
 
 
 class ReasonIn(BaseModel):
@@ -565,6 +568,41 @@ def create_organization(body: RhServiceIn, principal: CurrentPrincipal, db: DbSe
                            hr_accounts=1, merchants=list_for_org(db, org.id))
 
 
+class LaunchOut(BaseModel):
+    city: str
+    venues: int
+    venues_target: int
+    paid_companies: int
+    companies_target: int
+    payout_accounts: int
+    stripe_mode: str
+    demo_hidden: bool
+    second_city_allowed: bool
+    lawyer_validated: bool
+
+
+class OpenCityIn(BaseModel):
+    slug: str = Field(min_length=2, max_length=64)
+    reason: str = Field(min_length=5, max_length=2000)
+
+
+@router.get("/launch", response_model=LaunchOut)
+def launch_status(principal: CurrentPrincipal, db: DbSession) -> LaunchOut:
+    from app.modules.catalog.launch import status as network_status
+
+    _guard(principal, ops.STAFF)
+    return LaunchOut(**network_status(db))
+
+
+@router.post("/cities/open")
+def open_city(body: OpenCityIn, principal: CurrentPrincipal, db: DbSession) -> dict:
+    from app.modules.catalog.launch import open_city as open_city_row
+
+    _guard(principal, ops.ADMIN)
+    city = _commit(db, lambda: open_city_row(db, body.slug, by=principal.user.id, reason=body.reason))
+    return {"slug": city.slug, "name": city.name, "opened": city.opened}
+
+
 class AccessRow(BaseModel):
     id: uuid.UUID
     email: str
@@ -741,3 +779,81 @@ def create_plan(body: AdminPlanIn, principal: CurrentPrincipal, db: DbSession, m
 def update_plan(plan_id: uuid.UUID, body: AdminPlanIn, principal: CurrentPrincipal, db: DbSession,
                 market: str = "FR") -> list[AdminPlanOut]:
     return _save_plan(db, principal, market, plan_id, body)
+
+
+class VenueEventIn(BaseModel):
+    location_id: uuid.UUID
+    title: str = Field(min_length=2, max_length=120)
+    summary: str = Field("", max_length=500)
+    starts_at: datetime
+    ends_at: datetime
+    price_credits: int = Field(ge=1, le=500)
+
+
+class VenueEventVisibility(BaseModel):
+    published: bool
+
+
+@router.get("/events")
+def admin_events(principal: CurrentPrincipal, db: DbSession) -> list[dict]:
+    from app.modules.catalog.events import list_managed
+
+    _guard(principal, ops.STAFF)
+    return list_managed(db)
+
+
+@router.post("/events", status_code=201)
+def admin_create_event(body: VenueEventIn, principal: CurrentPrincipal, db: DbSession) -> dict:
+    from app.modules.catalog.events import create_event
+
+    _guard(principal, ops.ADMIN)
+    event = _commit(db, lambda: create_event(
+        db, location_id=body.location_id, title=body.title, summary=body.summary,
+        starts_at=body.starts_at, ends_at=body.ends_at, price_credits=body.price_credits,
+        by=principal.user.id, actor_kind="operator",
+    ))
+    return {"id": event.id}
+
+
+@router.patch("/events/{event_id}")
+def admin_update_event(event_id: uuid.UUID, body: VenueEventIn, principal: CurrentPrincipal, db: DbSession) -> dict:
+    from app.modules.catalog.events import update_event
+
+    _guard(principal, ops.ADMIN)
+    event = _commit(db, lambda: update_event(
+        db, event_id, title=body.title, summary=body.summary, starts_at=body.starts_at, ends_at=body.ends_at,
+        price_credits=body.price_credits, by=principal.user.id, actor_kind="operator",
+    ))
+    return {"id": event.id}
+
+
+@router.post("/events/{event_id}/visibility")
+def admin_event_visibility(event_id: uuid.UUID, body: VenueEventVisibility, principal: CurrentPrincipal, db: DbSession) -> dict:
+    from app.modules.catalog.events import set_event_visible
+
+    _guard(principal, ops.ADMIN)
+    event = _commit(db, lambda: set_event_visible(
+        db, event_id, published=body.published, by=principal.user.id, actor_kind="operator",
+    ))
+    return {"id": event.id, "status": event.status}
+
+
+@router.post("/events/{event_id}/cover")
+async def admin_event_cover(event_id: uuid.UUID, principal: CurrentPrincipal, db: DbSession, file: UploadFile = File(...)) -> dict:
+    from app.modules.catalog import onboarding, photos
+    from app.modules.catalog.events import EventError, set_cover
+
+    _guard(principal, ops.ADMIN)
+    data = await file.read(photos.MAX_BYTES + 1)
+    try:
+        jpeg = photos.prepare(data)
+        event = set_cover(db, event_id, onboarding.new_media_key(principal.user.id))
+        photos.store(event.cover_image_key, jpeg)
+        db.commit()
+    except photos.PhotoError as exc:
+        db.rollback()
+        raise HTTPException(422, {"code": exc.code, "message": exc.message}) from exc
+    except EventError as exc:
+        db.rollback()
+        raise HTTPException(exc.status, {"code": exc.code, "message": exc.message}) from exc
+    return {"image_key": event.cover_image_key}

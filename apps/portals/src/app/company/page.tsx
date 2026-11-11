@@ -5,6 +5,7 @@ import { Badge, Kpi, Notice, PageHead } from "@/components/ui";
 import { money } from "@/lib/money";
 import { VenuePhotos } from "@/components/venue-photos";
 import { apiFetch } from "@/lib/session";
+import { NETWORK_LINE } from "@/lib/roles";
 import type { CompanyInvoice, CompanyOverview, CompanyPolicy } from "@/lib/types";
 
 import { PolicyEditor } from "./forms";
@@ -43,8 +44,8 @@ export default async function CompanyBudgets() {
       )}
       <div className="card" style={{ display: "flex", justifyContent: "space-between", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
         <div>
-          <h3>Vos commerçants</h3>
-          <p className="muted">Créez un commerçant : son établissement est publié dans l’application client.</p>
+          <h3>Le réseau</h3>
+          <p className="muted">{NETWORK_LINE}</p>
         </div>
         <Link href="/company/commercants" className="btn outline">Gérer les commerçants <ArrowRight size={16} /></Link>
       </div>
@@ -92,7 +93,9 @@ export default async function CompanyBudgets() {
             <>
               <p>Statut : {o.contract.status === "active" ? "actif" : o.contract.status}</p>
               <p>Prix du crédit : {money(o.contract.credit_price_minor, o.contract.currency)}</p>
-              <p className="muted">Début le {o.contract.starts_on}</p>
+              <p>Durée : {o.contract.term_months} mois · villes : {o.contract.covered_cities.join(", ")}</p>
+              <p>Commission commerçant : {o.contract.commission_bps / 100} % · annulation gratuite : {o.contract.free_cancellation_hours} h</p>
+              <p className="muted">Début le {o.contract.starts_on}. Les crédits arrivent dans l’application seulement après confirmation du paiement.</p>
             </>
           )}
         </section>

@@ -86,6 +86,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get createAccount => 'إنشاء حساب';
 
   @override
+  String get signInEmail => 'المتابعة بالبريد';
+
+  @override
+  String get createAccountEmail => 'إنشاء حساب بالبريد';
+
+  @override
   String get passwordNotice =>
       'تُدخل كلمة المرور في صفحة XPASS الآمنة: التطبيق لا يراها أبدًا.';
 

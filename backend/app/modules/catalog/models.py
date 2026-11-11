@@ -52,6 +52,8 @@ class City(IdMixin, Base):
     slug: Mapped[str] = mapped_column(String(64))
     name: Mapped[str] = mapped_column(String(80))
     center = mapped_column(Geography("POINT", srid=4326), nullable=False)
+    # Seule une ville ouverte apparaît dans l'application. Paris est la première.
+    opened: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false")
 
     market: Mapped[Market] = relationship()
 
@@ -242,6 +244,33 @@ class OfferVersion(IdMixin, TimestampMixin, Base):
     capacity: Mapped[int | None] = mapped_column(Integer)
     free_cancellation_hours: Mapped[int] = mapped_column(Integer, default=24)
     external_ticket_note: Mapped[str | None] = mapped_column(String(160))
+
+
+EVENT_STATUS = ("published", "hidden")
+
+
+class VenueEvent(IdMixin, TimestampMixin, Base):
+    """Événement daté d'un établissement, publié par le service RH ou l'admin."""
+
+    __tablename__ = "venue_events"
+    __table_args__ = (
+        CheckConstraint("ends_at > starts_at", name="event_span"),
+        CheckConstraint("price_credits > 0", name="event_price_positive"),
+    )
+    organization_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("organizations.id"), index=True)
+    location_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("locations.id"), index=True)
+    title: Mapped[str] = mapped_column(String(120))
+    summary: Mapped[str] = mapped_column(String(500), default="")
+    starts_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    ends_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    price_credits: Mapped[int] = mapped_column(Integer)
+    cover_image_key: Mapped[str | None] = mapped_column(String(255))
+    status: Mapped[str] = mapped_column(_enum(*EVENT_STATUS, name="venue_event_status"), default="published")
+    capacity: Mapped[int] = mapped_column(Integer, default=20, server_default="20")
+    offer_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("offers.id", use_alter=True))
+    created_by: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id"))
+
+    location: Mapped[Location] = relationship()
 
 
 class OfferResource(Base):

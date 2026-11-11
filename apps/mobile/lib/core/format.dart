@@ -62,6 +62,14 @@ String longDate(DateTime d) => '${_days[d.weekday - 1]} ${d.day} ${_months[d.mon
 /// « 11 novembre »
 String dayMonth(DateTime d) => '${d.day} ${_months[d.month - 1]}';
 
+/// « samedi 21 novembre · 18:00 – 20:00 »
+String eventSpan(DateTime start, DateTime end) {
+  final sameDay = start.year == end.year && start.month == end.month && start.day == end.day;
+  final when = '${_days[start.weekday - 1]} ${start.day} ${_months[start.month - 1]} · ${hhmm(start)}';
+  if (sameDay) return '$when – ${hhmm(end)}';
+  return '$when – ${_days[end.weekday - 1]} ${end.day} ${_months[end.month - 1]} · ${hhmm(end)}';
+}
+
 const _shortMonths = [
   'janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.', //
 ];

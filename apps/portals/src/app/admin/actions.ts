@@ -1,9 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 import { z } from "zod";
 
-import { apiFetch } from "@/lib/session";
+import { apiFetch, SESSION_COOKIE } from "@/lib/session";
 
 /** Décisions d'administration (Server Actions). Motif obligatoire, droits et règles contrôlés par l'API. */
 export type ActionResult = { ok: true } | { ok: false; error: string };
@@ -121,6 +122,14 @@ export async function revokeAccess(id: string) {
   return call(`/admin/access/${id}/revoke`, {});
 }
 
+export async function openCity(slug: string, why: string) {
+  const city = z.string().trim().min(2, "Indiquez la ville.").max(64).safeParse(slug);
+  if (!city.success) return { ok: false, error: city.error.issues[0].message } as const;
+  const r = reason.safeParse(why);
+  if (!r.success) return { ok: false, error: r.error.issues[0].message } as const;
+  return call("/admin/cities/open", { slug: city.data, reason: why });
+}
+
 export async function setDemoLocations(visible: boolean, why: string) {
   const r = reason.safeParse(why);
   if (!r.success) return { ok: false, error: r.error.issues[0].message } as const;
@@ -137,4 +146,56 @@ export async function hideReview(id: string, why: string) {
   const err = check(id, why);
   if (err) return { ok: false, error: err } as const;
   return call(`/admin/reviews/${id}/hide`, { reason: why });
+}
+
+const eventSchema = z.object({
+  location_id: z.string().uuid(),
+  title: z.string().trim().min(2).max(120),
+  summary: z.string().trim().max(500),
+  starts_at: z.string().min(16),
+  ends_at: z.string().min(16),
+  price_credits: z.number().int().min(1).max(500),
+});
+
+export async function saveAdminEvent(id: string | null, raw: unknown): Promise<{ ok: true; id: string } | { ok: false; error: string }> {
+  const parsed = eventSchema.safeParse(raw);
+  if (!parsed.success) return { ok: false, error: "Vérifiez le titre, les horaires et le prix." };
+  try {
+    const data = await apiFetch<{ id: string }>(id ? `/admin/events/${id}` : "/admin/events", {
+      method: id ? "PATCH" : "POST",
+      body: JSON.stringify(parsed.data),
+    });
+    revalidatePath("/admin/evenements");
+    return { ok: true, id: data.id };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Erreur inattendue." };
+  }
+}
+
+export async function setAdminEventVisible(id: string, published: boolean): Promise<ActionResult> {
+  if (!uuid.safeParse(id).success) return { ok: false, error: "Requête invalide." };
+  try {
+    await apiFetch(`/admin/events/${id}/visibility`, { method: "POST", body: JSON.stringify({ published }) });
+    revalidatePath("/admin/evenements");
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Erreur inattendue." };
+  }
+}
+
+export async function uploadAdminEventPhoto(id: string, file: File): Promise<ActionResult> {
+  if (!uuid.safeParse(id).success) return { ok: false, error: "Requête invalide." };
+  const token = (await cookies()).get(SESSION_COOKIE)?.value;
+  if (!token) return { ok: false, error: "Session expirée." };
+  const body = new FormData();
+  body.set("file", file, file.name);
+  const res = await fetch(`${process.env.XPASS_API_URL ?? "http://localhost:8000"}/api/v1/admin/events/${id}/cover`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body,
+    cache: "no-store",
+  });
+  revalidatePath("/admin/evenements");
+  if (!res.ok) return { ok: false, error: "Photo refusée : JPEG, PNG ou WebP, 400 pixels minimum." };
+  return { ok: true };
 }

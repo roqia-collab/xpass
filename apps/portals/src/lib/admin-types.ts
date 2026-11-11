@@ -22,6 +22,19 @@ export interface QueueItem {
   image_key: string | null;
 }
 
+export interface LaunchStatus {
+  city: string;
+  venues: number;
+  venues_target: number;
+  paid_companies: number;
+  companies_target: number;
+  payout_accounts: number;
+  stripe_mode: string;
+  demo_hidden: boolean;
+  second_city_allowed: boolean;
+  lawyer_validated: boolean;
+}
+
 export interface AdminOverview {
   merchants_to_review: number;
   open_disputes: number;

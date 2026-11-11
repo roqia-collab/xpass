@@ -7,6 +7,7 @@ import '../../core/theme.dart';
 import '../../core/widgets.dart';
 import '../catalog/catalog_repository.dart';
 import '../catalog/models.dart';
+import 'events_screen.dart';
 import '../engagement/engagement.dart';
 import '../../core/l10n.dart';
 
@@ -113,6 +114,7 @@ class _LocationScreenState extends ConsumerState<LocationScreen> {
                 ),
                 const SizedBox(height: 12),
               ],
+              LocationEvents(slug: card.slug),
               _InfoCard(detail: d),
             ] else
               _InfosTab(detail: d),

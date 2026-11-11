@@ -70,10 +70,15 @@ export function newPending() {
 /** Pages autorisées après connexion (liste fermée : pas de redirection ouverte). */
 export const AFTER_LOGIN = { inscription: "/inscription-partenaire" } as const;
 
-export function authorizeUrl(state: string, challenge: string, register = false, origin = OIDC.publicUrl): string {
-  // « Créer un compte » : page d'inscription du fournisseur, puis même retour que la connexion.
+export function authorizeUrl(
+  state: string,
+  challenge: string,
+  register = false,
+  origin = OIDC.publicUrl,
+  method: "google" | "email" = "google",
+): string {
   const url = new URL(`${OIDC.browserIssuer}/protocol/openid-connect/${register ? "registrations" : "auth"}`);
-  url.search = new URLSearchParams({
+  const params: Record<string, string> = {
     client_id: OIDC.clientId,
     response_type: "code",
     scope: "openid profile email",
@@ -82,9 +87,9 @@ export function authorizeUrl(state: string, challenge: string, register = false,
     code_challenge: challenge,
     code_challenge_method: "S256",
     ui_locales: "fr",
-    // Le bouton des portails ouvre Google directement, sans formulaire e-mail.
-    kc_idp_hint: "google",
-  }).toString();
+  };
+  if (method === "google") params.kc_idp_hint = "google";
+  url.search = new URLSearchParams(params).toString();
   return url.toString();
 }
 

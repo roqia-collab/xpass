@@ -144,6 +144,27 @@ def hold(body: HoldIn, principal: CurrentPrincipal, db: DbSession, idempotency_k
     return _idempotent(db, principal, "bookings.hold", idempotency_key, body.model_dump(mode="json"), action)
 
 
+class EventHoldIn(BaseModel):
+    event_id: uuid.UUID
+    party_size: int = Field(1, ge=1, le=1)
+    expected_price_credits: int | None = Field(None, ge=1, le=500)
+
+
+@router.post("/bookings/events", status_code=201, response_model=BookingOut, responses={409: {}, 422: {}})
+def hold_event(body: EventHoldIn, principal: CurrentPrincipal, db: DbSession, idempotency_key: IdemKey):
+    """Réserve une place sur la séance publiée. Même confirmation ensuite qu'une prestation."""
+
+    def action():
+        booking = service.create_event_hold(
+            db, user_id=principal.user.id, event_id=body.event_id, party_size=body.party_size,
+            expected_price_credits=body.expected_price_credits,
+        )
+        db.flush()
+        return 201, _out(db, booking.id)
+
+    return _idempotent(db, principal, "bookings.event_hold", idempotency_key, body.model_dump(mode="json"), action)
+
+
 @router.post("/bookings/{booking_id}/confirm", response_model=BookingOut)
 def confirm(booking_id: uuid.UUID, principal: CurrentPrincipal, db: DbSession, idempotency_key: IdemKey):
     def action():

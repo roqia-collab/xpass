@@ -7,7 +7,7 @@ import { apiFetch } from "@/lib/session";
 export const metadata = { title: "Audit" };
 
 const TYPES: Record<string, string> = {
-  merchant: "Partenaires",
+  merchant: "Commerçants",
   location: "Établissements",
   dispute: "Litiges",
   partner_payout: "Versements",

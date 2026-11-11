@@ -268,7 +268,8 @@ def create_hold(
     location = offer.location
     if offer.booking_mode not in BOOKABLE_MODES:
         raise BookingError("not_bookable", "Cette prestation se réserve auprès du distributeur (billet externe).", 422)
-    if location.merchant.psp_status != "verified":
+    # Les crédits se réservent dès que le commerçant est publié. Le virement Stripe attend un compte Connect vérifié.
+    if location.merchant.commercial_status != "approved":
         raise BookingError("partner_not_ready", "Ce partenaire n'accepte pas encore de réservation.", 409)
     if not version.participants_min <= party_size <= version.participants_max:
         raise BookingError(
@@ -347,6 +348,65 @@ def create_hold(
         ) from exc
 
     emit(db, "booking", booking.id, "booking.held", {"booking_id": str(booking.id), "total_credits": total})
+    db.flush()
+    return booking
+
+
+def create_event_hold(
+    db: Session, *, user_id: uuid.UUID, event_id: uuid.UUID, party_size: int,
+    expected_price_credits: int | None = None, now: datetime | None = None,
+) -> Booking:
+    """Réserve la séance publiée, à son horaire exact, au prix affiché."""
+    from app.modules.catalog.events import ensure_offer
+    from app.modules.catalog.models import VenueEvent
+
+    now = now or datetime.now(UTC)
+    event = db.get(VenueEvent, event_id)
+    if event is None or event.status != "published":
+        raise BookingError("event_not_found", "Événement introuvable.", 404)
+    if event.ends_at <= now:
+        raise BookingError("event_ended", "Cet événement est terminé.", 409)
+    if party_size != 1:
+        raise BookingError("invalid_party_size", "Une place par réservation.", 422)
+    if event.starts_at > now + timedelta(days=120):
+        raise BookingError("out_of_horizon", "Date trop lointaine.", 422)
+    location = db.get(Location, event.location_id)
+    if location is None:
+        raise BookingError("event_not_found", "Événement introuvable.", 404)
+    ensure_offer(db, event, location)
+    if expected_price_credits is not None and expected_price_credits != event.price_credits:
+        raise BookingError(
+            "price_changed", f"Le prix de cette séance est de {event.price_credits} crédits.", 409,
+            {"price_credits": event.price_credits},
+        )
+    offer = load_offer(db, event.offer_id)
+    expire_due_holds(db, now)
+    total = event.price_credits
+    wallet = wallet_service.get_or_create_wallet(db, user_id, location.merchant.market_id, lock=True)
+    booking = Booking(
+        id=uuid.uuid4(), user_id=user_id, wallet_id=wallet.id, location_id=location.id, offer_id=offer.id,
+        offer_version_id=offer.current_version.id, starts_at=event.starts_at, ends_at=event.ends_at, party_size=1,
+        price_credits_per_person=event.price_credits, price_adjustments=[], total_credits=total, status="held",
+        hold_expires_at=now + timedelta(minutes=HOLD_MINUTES),
+        free_cancellation_until=event.starts_at - timedelta(hours=offer.current_version.free_cancellation_hours),
+    )
+    try:
+        with db.begin_nested():
+            db.add(booking)
+            db.flush()
+    except IntegrityError as exc:
+        raise BookingError("duplicate_booking", "Vous avez déjà une réservation pour cette séance.", 409) from exc
+    _take_capacity(db, offer, booking)
+    try:
+        wallet_service.reserve(
+            db, wallet, amount=total, category_slug=location.subcategory.category.slug, at=event.starts_at,
+            booking_id=booking.id, memo=f"Événement · {event.title}",
+        )
+    except wallet_service.InsufficientCredits as exc:
+        raise BookingError(
+            "insufficient_credits", str(exc), 409, {"needed": exc.needed, "available": exc.available}
+        ) from exc
+    emit(db, "booking", booking.id, "booking.held", {"booking_id": str(booking.id), "event_id": str(event.id), "total_credits": total})
     db.flush()
     return booking
 

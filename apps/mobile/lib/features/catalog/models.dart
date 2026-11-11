@@ -253,3 +253,49 @@ class LocationDetail {
         team: (j['team'] as List).map((e) => TeamMember.fromJson(e as Map<String, dynamic>)).toList(),
       );
 }
+
+/// Événement daté publié par un service RH ou l'admin sur un établissement.
+class VenueEvent {
+  const VenueEvent({
+    required this.id,
+    required this.title,
+    required this.summary,
+    required this.startsAt,
+    required this.endsAt,
+    required this.priceCredits,
+    required this.coverImageKey,
+    required this.locationSlug,
+    required this.locationName,
+    required this.addressLine,
+    required this.districtLabel,
+    required this.categorySlug,
+  });
+
+  final String id;
+  final String title;
+  final String summary;
+  final DateTime startsAt;
+  final DateTime endsAt;
+  final int priceCredits;
+  final String? coverImageKey;
+  final String locationSlug;
+  final String locationName;
+  final String addressLine;
+  final String districtLabel;
+  final String categorySlug;
+
+  factory VenueEvent.fromJson(Map<String, dynamic> j) => VenueEvent(
+        id: j['id'] as String,
+        title: j['title'] as String,
+        summary: j['summary'] as String? ?? '',
+        startsAt: DateTime.parse(j['starts_at'] as String).toLocal(),
+        endsAt: DateTime.parse(j['ends_at'] as String).toLocal(),
+        priceCredits: j['price_credits'] as int,
+        coverImageKey: j['cover_image_key'] as String?,
+        locationSlug: j['location_slug'] as String,
+        locationName: j['location_name'] as String,
+        addressLine: j['address_line'] as String? ?? '',
+        districtLabel: j['district_label'] as String? ?? '',
+        categorySlug: j['category_slug'] as String? ?? '',
+      );
+}

@@ -1,7 +1,9 @@
-from datetime import date
+import uuid
+from datetime import date, datetime
 from typing import Annotated, Literal
 
 from fastapi import APIRouter, HTTPException, Query, status
+from pydantic import BaseModel
 
 from app.api.deps import DbSession
 from app.modules.catalog import repository, service
@@ -102,3 +104,42 @@ def get_location(slug_or_id: str, db: DbSession) -> LocationDetailOut:
     out = service.location_detail(location, lat, lng)
     out.rating_average, out.rating_count = rating_summary(db, location.id)
     return out
+
+
+class PublicEventOut(BaseModel):
+    id: uuid.UUID
+    title: str
+    summary: str
+    starts_at: datetime
+    ends_at: datetime
+    price_credits: int
+    cover_image_key: str | None
+    location_slug: str
+    location_name: str
+    address_line: str
+    district_label: str
+    category_slug: str
+
+
+@router.get("/catalog/events", response_model=list[PublicEventOut])
+def public_events(db: DbSession, city: str | None = None, limit: Annotated[int, Query(ge=1, le=50)] = 30) -> list[dict]:
+    from app.modules.catalog.events import list_public
+
+    return list_public(db, city=city, limit=limit)
+
+
+@router.get("/catalog/events/{event_id}", response_model=PublicEventOut)
+def public_event(event_id: uuid.UUID, db: DbSession) -> dict:
+    from app.modules.catalog.events import get_public
+
+    found = get_public(db, event_id)
+    if found is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, {"code": "event_not_found", "message": "Événement introuvable."})
+    return found
+
+
+@router.get("/catalog/locations/{slug}/events", response_model=list[PublicEventOut])
+def location_events(slug: str, db: DbSession) -> list[dict]:
+    from app.modules.catalog.events import list_public
+
+    return list_public(db, location_slug=slug, limit=20)

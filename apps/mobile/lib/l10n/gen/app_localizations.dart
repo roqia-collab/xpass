@@ -250,10 +250,22 @@ abstract class AppLocalizations {
   /// **'Créer un compte'**
   String get createAccount;
 
+  /// No description provided for @signInEmail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Continuer avec un e-mail'**
+  String get signInEmail;
+
+  /// No description provided for @createAccountEmail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer un compte avec un e-mail'**
+  String get createAccountEmail;
+
   /// No description provided for @passwordNotice.
   ///
   /// In fr, this message translates to:
-  /// **'Connexion avec votre compte Google. L’application ne voit jamais votre mot de passe.'**
+  /// **'Google ou e-mail, sur la page sécurisée. L’application ne voit jamais votre mot de passe.'**
   String get passwordNotice;
 
   /// No description provided for @exploreWithoutAccount.

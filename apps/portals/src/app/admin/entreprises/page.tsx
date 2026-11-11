@@ -17,7 +17,7 @@ export default async function OrganizationsPage() {
   return (
     <>
       <PageHead
-        eyebrow="Administration"
+        eyebrow="Admin"
         title="Services RH"
         subtitle="Vous créez le service RH. Ce service crée ses commerçants. Leurs prestations publiées s’affichent dans l’application client."
         image={mediaUrl("demo/heroes/culture.jpg") ?? undefined}

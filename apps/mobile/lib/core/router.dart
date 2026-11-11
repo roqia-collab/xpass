@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 
 import '../features/explore/category_screen.dart';
+import '../features/explore/events_screen.dart';
 import '../features/explore/home_screen.dart';
 import '../features/explore/location_screen.dart';
 import '../features/explore/search_screen.dart';
@@ -46,6 +47,8 @@ final appRouter = GoRouter(
               ),
               GoRoute(path: 'reservation/:id', builder: (_, s) => ConfirmScreen(bookingId: s.pathParameters['id']!)),
               GoRoute(path: 'recherche', builder: (_, s) => SearchScreen(initialQuery: s.uri.queryParameters['q'])),
+              GoRoute(path: 'evenements', builder: (_, __) => const EventsScreen()),
+              GoRoute(path: 'evenement/:id', builder: (_, s) => EventScreen(id: s.pathParameters['id']!)),
             ],
           ),
         ]),

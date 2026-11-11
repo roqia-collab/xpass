@@ -19,9 +19,9 @@ export default async function PaymentsPage() {
       {ro && <Notice>Lecture seule : les actions de rapprochement sont réservées aux administrateurs XPASS.</Notice>}
 
       <div className="card" style={{ overflowX: "auto" }}>
-        <h3>Versements partenaires à rapprocher</h3>
+        <h3>Versements commerçants à rapprocher</h3>
         <table className="table">
-          <thead><tr><th>Partenaire</th><th>Semaine du</th><th>Net attendu</th><th>Confirmé par le prestataire</th><th>Statut</th><th /></tr></thead>
+          <thead><tr><th>Commerçant</th><th>Semaine du</th><th>Net attendu</th><th>Confirmé par le prestataire</th><th>Statut</th><th /></tr></thead>
           <tbody>
             {r.payouts.map((p) => (
               <tr key={p.id}>

@@ -87,6 +87,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get createAccount => 'Create an account';
 
   @override
+  String get signInEmail => 'Continue with email';
+
+  @override
+  String get createAccountEmail => 'Create an account with email';
+
+  @override
   String get passwordNotice =>
       'You enter your password on the secure XPASS page: the app never sees it.';
 

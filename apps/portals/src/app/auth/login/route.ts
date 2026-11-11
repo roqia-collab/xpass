@@ -36,7 +36,8 @@ export async function GET(req: NextRequest) {
   const suite = req.nextUrl.searchParams.get("suite");
   const next = suite === "inscription" ? AFTER_LOGIN.inscription : undefined;
   const register = req.nextUrl.searchParams.get("creer") === "1";
-  const res = NextResponse.redirect(authorizeUrl(p.state, p.challenge, register, origin));
+  const method = req.nextUrl.searchParams.get("methode") === "email" ? "email" : "google";
+  const res = NextResponse.redirect(authorizeUrl(p.state, p.challenge, register, origin, method));
   res.cookies.set(
     pendingCookie(p.state),
     JSON.stringify({ state: p.state, verifier: p.verifier, next }),

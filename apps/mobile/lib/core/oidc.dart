@@ -73,7 +73,7 @@ class OidcClient {
       PendingLogin(state: _random(16), verifier: _random(48), redirectUri: redirectUri);
 
   /// Page de connexion (ou d'inscription) du fournisseur d'identité.
-  Uri authorizeUrl(PendingLogin p, {bool register = false, String? locale}) =>
+  Uri authorizeUrl(PendingLogin p, {bool register = false, String? locale, String identity = 'google'}) =>
       Uri.parse('$_base/${register ? 'registrations' : 'auth'}').replace(queryParameters: {
         'client_id': AppConfig.oidcClientId,
         'response_type': 'code',
@@ -83,7 +83,7 @@ class OidcClient {
         'code_challenge': pkceChallenge(p.verifier),
         'code_challenge_method': 'S256',
         if (locale != null) 'ui_locales': locale,
-        'kc_idp_hint': 'google',
+        if (identity == 'google') 'kc_idp_hint': 'google',
       });
 
   Future<TokenSet> exchange({required String code, required PendingLogin pending}) => _token({

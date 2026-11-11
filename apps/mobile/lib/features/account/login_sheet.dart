@@ -117,10 +117,11 @@ class _SignInPanelState extends ConsumerState<SignInPanel> {
     super.dispose();
   }
 
-  Future<void> _oidc({required bool register}) async {
+  Future<void> _oidc({required bool register, String identity = 'google'}) async {
     setState(() => _error = null);
     try {
-      await ref.read(authProvider.notifier).signIn(register: register, locale: ref.read(preferredLocaleProvider));
+      await ref.read(authProvider.notifier).signIn(
+          register: register, locale: ref.read(preferredLocaleProvider), identity: identity);
       if (mounted && widget.closeOnSuccess && ref.read(authProvider).valueOrNull != null) Navigator.of(context).pop();
     } catch (e) {
       if (mounted) setState(() => _error = e.toString());
@@ -148,13 +149,6 @@ class _SignInPanelState extends ConsumerState<SignInPanel> {
       if (OidcClient.configured) ...[
         CoralButton(label: context.l10n.signIn, onPressed: busy ? null : () => _oidc(register: false)),
         const SizedBox(height: 12),
-        Row(children: [
-          const Expanded(child: Divider()),
-          Padding(padding: const EdgeInsets.symmetric(horizontal: 12), child: Text(context.l10n.or)),
-          const Expanded(child: Divider()),
-        ]),
-        const SizedBox(height: 12),
-        // Maquette 02 : bouton contour bleu nuit, même hauteur que le bouton principal.
         OutlinedButton(
           style: OutlinedButton.styleFrom(
             foregroundColor: XColors.navy,
@@ -163,8 +157,26 @@ class _SignInPanelState extends ConsumerState<SignInPanel> {
             shape: const StadiumBorder(),
             textStyle: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
           ),
-          onPressed: busy ? null : () => _oidc(register: true),
-          child: Text(context.l10n.createAccount),
+          onPressed: busy ? null : () => _oidc(register: false, identity: 'email'),
+          child: Text(context.l10n.signInEmail),
+        ),
+        const SizedBox(height: 12),
+        Row(children: [
+          const Expanded(child: Divider()),
+          Padding(padding: const EdgeInsets.symmetric(horizontal: 12), child: Text(context.l10n.or)),
+          const Expanded(child: Divider()),
+        ]),
+        const SizedBox(height: 12),
+        OutlinedButton(
+          style: OutlinedButton.styleFrom(
+            foregroundColor: XColors.navy,
+            minimumSize: const Size.fromHeight(56),
+            side: const BorderSide(color: XColors.navy, width: 1.5),
+            shape: const StadiumBorder(),
+            textStyle: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+          ),
+          onPressed: busy ? null : () => _oidc(register: true, identity: 'email'),
+          child: Text(context.l10n.createAccountEmail),
         ),
         const SizedBox(height: 8),
         Text(

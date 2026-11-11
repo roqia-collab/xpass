@@ -14,7 +14,7 @@ export default async function PlansPage() {
       <PageHead
         eyebrow="Administration"
         title="Formules d’abonnement"
-        subtitle="Les clients choisissent une formule mensuelle et dépensent leurs crédits chez les partenaires."
+        subtitle="Les salariés et les abonnés dépensent leurs crédits chez les commerçants."
       />
       <PlansManager plans={plans} canEdit={canEdit} />
       <section className="card" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
