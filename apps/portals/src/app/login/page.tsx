@@ -24,8 +24,9 @@ const SPACES = [
 
 const UNIVERSES = ["Sport", "Culture", "Beauté", "Sorties"];
 
-export default async function LoginPage({ searchParams }: { searchParams: Promise<{ error?: string; erreur?: string }> }) {
-  const { error, erreur } = await searchParams;
+export default async function LoginPage({ searchParams }: { searchParams: Promise<{ error?: string; erreur?: string; espace?: string }> }) {
+  const { error, erreur, espace } = await searchParams;
+  const auth = espace === "1" ? "/auth/login?suite=espace" : "/auth/login?suite=inscription";
   const code = erreur ?? error ?? "";
   const message = ERRORS[code];
   const demo = process.env.NODE_ENV !== "production" && process.env.PORTAL_DEV_LOGIN === "true";
@@ -71,13 +72,13 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
                 {message}
               </p>
             )}
-            <a className="btn primary login-cta" href="/auth/login?suite=inscription">
+            <a className="btn primary login-cta" href={auth}>
               Continuer avec Google <ArrowRight size={18} aria-hidden />
             </a>
-            <a className="btn outline login-cta" href="/auth/login?methode=email&suite=inscription">
+            <a className="btn outline login-cta" href={`${auth}${auth.includes("?") ? "&" : "?"}methode=email`}>
               Continuer avec un e-mail
             </a>
-            <a className="btn ghost login-cta" href="/auth/login?methode=email&creer=1&suite=inscription">
+            <a className="btn ghost login-cta" href={`${auth}${auth.includes("?") ? "&" : "?"}methode=email&creer=1`}>
               Créer un compte avec un e-mail
             </a>
             <p className="login-secure">

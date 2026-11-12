@@ -1,102 +1,108 @@
-import { ArrowRight, BadgeCheck, CalendarDays, QrCode, Wallet } from "lucide-react";
+"use client";
 
-const OFFERS = [
-  { image: "/visuels/login-sport.jpg", title: "Sport", text: "Salles, cours et bassins réservés en crédits." },
-  { image: "/visuels/login-atelier.jpg", title: "Culture", text: "Ateliers, musées et scènes ouverts aux membres." },
-  { image: "/visuels/login-beaute.jpg", title: "Beauté", text: "Soins et instituts, avec un passage simple." },
+import {
+  BarChart3,
+  Building2,
+  CalendarDays,
+  Flower2,
+  Home,
+  MessageCircle,
+  ScanLine,
+  Star,
+  Users,
+  Wallet,
+  type LucideIcon,
+} from "lucide-react";
+import { useState } from "react";
+
+const SECTIONS: { id: string; label: string; short: string; icon: LucideIcon; text: string }[] = [
+  { id: "accueil", label: "Vue d’ensemble", short: "Accueil", icon: Home, text: "L’activité du jour, les prestations et les paiements à venir." },
+  { id: "planning", label: "Planning", short: "Planning", icon: CalendarDays, text: "Les créneaux réservés par les membres, jour par jour." },
+  { id: "scanner", label: "Scanner", short: "Scanner", icon: ScanLine, text: "La validation du QR code au moment du passage." },
+  { id: "prestations", label: "Prestations", short: "Offres", icon: Flower2, text: "Le catalogue publié dans l’application : prix, durée, photos." },
+  { id: "equipe", label: "Équipe", short: "Équipe", icon: Users, text: "Les personnes qui accueillent et valident les passages." },
+  { id: "reglements", label: "Règlements", short: "Règlements", icon: Wallet, text: "Les montants à recevoir après chaque prestation confirmée." },
+  { id: "statistiques", label: "Statistiques", short: "Stats", icon: BarChart3, text: "La fréquentation et les crédits utilisés chez vous." },
+  { id: "messages", label: "Messages", short: "Messages", icon: MessageCircle, text: "Les échanges avec les membres après leur première demande." },
+  { id: "avis", label: "Avis", short: "Avis", icon: Star, text: "Les retours laissés après une visite." },
+  { id: "etablissement", label: "Établissement", short: "Lieu", icon: Building2, text: "La fiche visible des clients : adresse, photos, horaires." },
 ];
 
-const STEPS = [
-  { icon: BadgeCheck, title: "Votre établissement", text: "SIRET vérifié, adresse placée sur la carte." },
-  { icon: CalendarDays, title: "Vos prestations", text: "Photos, prix en crédits et horaires depuis le portail." },
-  { icon: QrCode, title: "Le passage", text: "Le membre présente son QR code, vous validez." },
-  { icon: Wallet, title: "Le règlement", text: "Chaque prestation confirmée est suivie dans votre espace." },
-];
-
-/** Site commerçant public : visible sans compte, connexion dans l'en-tête. */
+/** Premier tableau de bord commerçant, visible sans compte. La connexion ouvre l'autre. */
 export function MerchantSite({ signedIn }: { signedIn: boolean }) {
+  const [section, setSection] = useState(SECTIONS[0]!.id);
+  const current = SECTIONS.find((item) => item.id === section) ?? SECTIONS[0]!;
+  const Icon = current.icon;
+  const enter = signedIn ? "/partner" : "/login?espace=1";
+
   return (
-    <main className="partner-landing marketing merchant-site">
-      <header className="site-header">
-        <a href="/" aria-label="XPASS, accueil commerçant">
+    <div className="shell">
+      <a className="skip-link" href="#contenu">Aller au contenu</a>
+      <aside className="sidebar" aria-label="Sections du commerçant">
+        <div className="brand">
           <img src="/logo.png" alt="XPASS" />
-        </a>
-        <nav className="site-nav" aria-label="Site commerçant">
-          <a href="#offre">Offre</a>
-          <a href="#parcours">Parcours</a>
-          <a href="/devenir-partenaire">Rejoindre</a>
-        </nav>
-        <a className="btn primary" href={signedIn ? "/partner" : "/login"}>
-          {signedIn ? "Mon espace" : "Connexion"}
-        </a>
-      </header>
-
-      <section className="landing-hero">
-        <img className="landing-hero-bg" src="/visuels/promo-partenaires.jpg" alt="" />
-        <div className="landing-hero-copy">
-          <p className="brand-mark">XPASS</p>
-          <h1>Le site des commerçants du réseau</h1>
-          <p className="lead">
-            Sport, culture, beauté et sorties. Les membres réservent avec leurs crédits. Vous accueillez, vous validez, vous êtes réglés.
-          </p>
-          <div className="landing-actions">
-            <a className="btn primary" href="/devenir-partenaire">
-              Rejoindre le réseau <ArrowRight size={18} aria-hidden />
-            </a>
-            <a className="btn outline" href="/login">
-              Connexion
-            </a>
-          </div>
+          <small>Commerçant</small>
         </div>
-      </section>
-
-      <div className="landing-body">
-        <section id="offre">
-          <p className="eyebrow">Visible sans compte</p>
-          <h2 style={{ marginTop: 10 }}>Ce que les membres viennent réserver</h2>
-          <div className="offer-grid">
-            {OFFERS.map((offer) => (
-              <article key={offer.title} className="offer-card">
-                <img src={offer.image} alt="" />
-                <div>
-                  <h3>{offer.title}</h3>
-                  <p className="muted">{offer.text}</p>
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section id="parcours">
-          <p className="eyebrow">Parcours</p>
-          <h2 style={{ marginTop: 10 }}>De la candidature au premier client</h2>
-          <ol className="landing-steps">
-            {STEPS.map(({ icon: Icon, title, text }, i) => (
-              <li key={title}>
-                <span className="step-n" aria-hidden>
-                  {i + 1}
-                </span>
-                <div>
-                  <strong>
-                    <Icon size={18} aria-hidden /> {title}
-                  </strong>
-                  <p className="muted" style={{ marginTop: 4 }}>
-                    {text}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </section>
-      </div>
-
-      <footer className="site-footer">
-        <span>© XPASS</span>
-        <nav aria-label="Informations légales">
-          <a href="/legal/confidentialite">Confidentialité</a>
-          <a href="/legal/cgu">Conditions</a>
+        <nav aria-label="Sections" style={{ display: "contents" }}>
+          {SECTIONS.map((item) => {
+            const ItemIcon = item.icon;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                className={`nav-link ${item.id === current.id ? "active" : ""}`}
+                aria-current={item.id === current.id ? "page" : undefined}
+                onClick={() => setSection(item.id)}
+              >
+                <ItemIcon size={20} aria-hidden />
+                <span>{item.label}</span>
+              </button>
+            );
+          })}
         </nav>
-      </footer>
-    </main>
+      </aside>
+      <div className="main">
+        <header className="topbar">
+          <strong style={{ marginRight: "auto" }}>Tableau de bord</strong>
+          <a className="btn primary" href={enter}>
+            {signedIn ? "Entrer dans mon espace" : "Connexion"}
+          </a>
+        </header>
+        <main className="content" id="contenu" tabIndex={-1}>
+          <p className="eyebrow">Commerçant</p>
+          <h1>{current.label}</h1>
+          <p className="muted" style={{ maxWidth: "46ch", marginTop: 8 }}>{current.text}</p>
+          <section className="card" style={{ marginTop: 22, display: "grid", gridTemplateColumns: "160px 1fr", gap: 18, alignItems: "center" }}>
+            <img src="/visuels/promo-partenaires.jpg" alt="" style={{ width: "100%", height: 120, objectFit: "cover", borderRadius: 16 }} />
+            <div>
+              <Icon size={22} aria-hidden />
+              <h2 style={{ marginTop: 8 }}>Section ouverte</h2>
+              <p className="muted" style={{ marginTop: 6 }}>
+                Les chiffres, les réservations et les réglages de votre établissement sont dans le second tableau de bord, après la connexion.
+              </p>
+              <a className="btn primary" href={enter} style={{ marginTop: 14 }}>
+                {signedIn ? "Entrer dans mon espace" : "Connexion"}
+              </a>
+            </div>
+          </section>
+        </main>
+      </div>
+      <nav className="bottom-nav" aria-label="Sections principales">
+        {SECTIONS.slice(0, 5).map((item) => {
+          const ItemIcon = item.icon;
+          return (
+            <button
+              key={item.id}
+              type="button"
+              className={`bottom-item ${item.id === current.id ? "active" : ""} ${item.id === "accueil" ? "first" : ""}`}
+              onClick={() => setSection(item.id)}
+            >
+              <span className="glyph"><ItemIcon size={22} aria-hidden /></span>
+              <span className="label">{item.short}</span>
+            </button>
+          );
+        })}
+      </nav>
+    </div>
   );
 }

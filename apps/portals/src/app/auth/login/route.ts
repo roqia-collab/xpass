@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
 
   const p = newPending();
   const suite = req.nextUrl.searchParams.get("suite");
-  const next = suite === "inscription" ? AFTER_LOGIN.inscription : undefined;
+  const next = suite === "inscription" ? AFTER_LOGIN.inscription : suite === "espace" ? AFTER_LOGIN.espace : undefined;
   const register = req.nextUrl.searchParams.get("creer") === "1";
   const method = req.nextUrl.searchParams.get("methode") === "email" ? "email" : "google";
   const res = NextResponse.redirect(authorizeUrl(p.state, p.challenge, register, origin, method));

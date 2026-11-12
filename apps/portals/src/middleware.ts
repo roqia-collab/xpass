@@ -36,7 +36,7 @@ export function middleware(req: NextRequest) {
   if (!req.cookies.get("xpass_session") && GUARDED.some((prefix) => path === prefix || path.startsWith(`${prefix}/`))) {
     const url = req.nextUrl.clone();
     url.pathname = path === "/inscription-partenaire" ? "/devenir-partenaire" : "/login";
-    url.search = "";
+    url.search = path.startsWith("/partner") ? "espace=1" : "";
     return NextResponse.redirect(url);
   }
   return NextResponse.next();
