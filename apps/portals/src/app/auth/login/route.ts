@@ -15,7 +15,7 @@ import {
 /** Démarre la connexion OIDC : état + vérificateur PKCE dans un cookie HttpOnly propre à cette tentative. */
 export async function GET(req: NextRequest) {
   if (!oidcConfigured()) {
-    return NextResponse.redirect(new URL("/login?erreur=oidc", OIDC.publicUrl || "http://localhost:3000"));
+    return NextResponse.redirect(new URL("/login?erreur=oidc", requestOrigin(req)));
   }
 
   // Le cookie PKCE doit être posé sur la même origine que /auth/callback (tunnel HTTPS).

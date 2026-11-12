@@ -37,7 +37,7 @@ export default async function PartnerLayout({ children }: { children: ReactNode 
       accountDetail={me.memberships.find((m) => m.scope_type === "merchant")?.scope_name ?? ""}
       contextSwitcher={
         <>
-          <SpaceSwitcher spaces={spacesFor(me)} appUrl={clientAppUrl()} homes={spaceHrefs()} />
+          <SpaceSwitcher spaces={spacesFor(me)} appUrl={clientAppUrl()} homes={await spaceHrefs()} />
           {location && (
             <LocationSwitcher
               currentId={location.id}

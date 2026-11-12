@@ -26,7 +26,7 @@ export default async function CompanyLayout({ children }: { children: ReactNode 
       searchPlaceholder="Rechercher un salarié, une information…"
       accountName={me.display_name}
       accountDetail={me.memberships.find((m) => m.scope_type === "organization")?.scope_name ?? ""}
-      contextSwitcher={<SpaceSwitcher spaces={spacesFor(me)} appUrl={clientAppUrl()} homes={spaceHrefs()} />}
+      contextSwitcher={<SpaceSwitcher spaces={spacesFor(me)} appUrl={clientAppUrl()} homes={await spaceHrefs()} />}
     >
       {children}
     </PortalShell>

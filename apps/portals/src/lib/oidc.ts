@@ -42,8 +42,16 @@ export function originForHost(host: string | null): string {
   return found ?? OIDC.publicUrl;
 }
 
+const PUBLIC_HOSTS = new Set(["xpass.fr", "www.xpass.fr", "admin.xpass.fr", "rh.xpass.fr"]);
+
 export function requestOrigin(req: { headers: { get(name: string): string | null }; nextUrl: { host: string } }): string {
-  return originForHost(req.headers.get("x-forwarded-host") ?? req.headers.get("host") ?? req.nextUrl.host);
+  const raw = (req.headers.get("x-forwarded-host") ?? req.headers.get("host") ?? req.nextUrl.host)
+    .split(",")[0]
+    .trim()
+    .toLowerCase();
+  const host = raw.replace(/:\d+$/, "");
+  if (PUBLIC_HOSTS.has(host)) return `https://${host === "www.xpass.fr" ? "xpass.fr" : host}`;
+  return originForHost(raw);
 }
 
 export const redirectUri = (origin = OIDC.publicUrl) => `${origin}/auth/callback`;

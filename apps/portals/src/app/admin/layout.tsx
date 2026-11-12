@@ -31,7 +31,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
       searchPlaceholder="Rechercher un commerçant, une demande, un numéro…"
       accountName={me.display_name}
       accountDetail="Opérations XPASS"
-      contextSwitcher={<SpaceSwitcher spaces={spacesFor(me)} appUrl={clientAppUrl()} homes={spaceHrefs()} />}
+      contextSwitcher={<SpaceSwitcher spaces={spacesFor(me)} appUrl={clientAppUrl()} homes={await spaceHrefs()} />}
     >
       {children}
     </PortalShell>

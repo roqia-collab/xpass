@@ -86,7 +86,16 @@ export const mediaUrl = (key: string | null) =>
 export const clientAppUrl = () => process.env.APP_PUBLIC_URL ?? "http://localhost:5174";
 
 /** Adresse de chaque espace. En production, admin, RH et commerçant ont chacun leur site. */
-export function spaceHrefs(): Record<"admin" | "company" | "partner", string> {
+export async function spaceHrefs(): Promise<Record<"admin" | "company" | "partner", string>> {
+  const { headers } = await import("next/headers");
+  const host = ((await headers()).get("x-forwarded-host") ?? (await headers()).get("host") ?? "").toLowerCase();
+  if (host.includes("xpass.fr")) {
+    return {
+      admin: "https://admin.xpass.fr/admin",
+      company: "https://rh.xpass.fr/company",
+      partner: "https://xpass.fr/partner",
+    };
+  }
   const dedicated = Boolean(process.env.ADMIN_PUBLIC_URL);
   const base = {
     admin: process.env.ADMIN_PUBLIC_URL,

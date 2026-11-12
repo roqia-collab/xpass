@@ -25,7 +25,7 @@ export default async function Home() {
   const spaces = spacesFor(me);
   if (spaces.length === 0) redirect("/login?erreur=acces");
   const app = clientAppUrl();
-  const homes = spaceHrefs();
+  const homes = await spaceHrefs();
   return (
     <div className="hub">
       <header className="hub-head">
