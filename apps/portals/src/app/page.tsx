@@ -2,7 +2,7 @@ import { ArrowRight, Building2, ShieldCheck, Smartphone, Store } from "lucide-re
 import { headers } from "next/headers";
 import Link from "next/link";
 
-import { MerchantSite } from "@/components/merchant-site";
+import { MerchantPresentation } from "@/components/merchant-presentation";
 import { NETWORK_LINE, SPACE_LABEL, spacesFor } from "@/lib/roles";
 import { clientAppUrl, getMe, spaceHrefs } from "@/lib/session";
 import type { Space } from "@/lib/types";
@@ -39,7 +39,7 @@ export default async function Home() {
   } catch {
     me = null;
   }
-  if (merchantHost(host) || !me) return <MerchantSite signedIn={Boolean(me)} />;
+  if (merchantHost(host) || !me) return <MerchantPresentation signedIn={Boolean(me)} />;
 
   const spaces = spacesFor(me);
   const app = clientAppUrl();

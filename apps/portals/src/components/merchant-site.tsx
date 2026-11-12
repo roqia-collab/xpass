@@ -39,10 +39,10 @@ export function MerchantSite({ signedIn }: { signedIn: boolean }) {
     <div className="shell">
       <a className="skip-link" href="#contenu">Aller au contenu</a>
       <aside className="sidebar" aria-label="Sections du commerçant">
-        <div className="brand">
+        <a className="brand" href="/" aria-label="Retour à la présentation">
           <img src="/logo.png" alt="XPASS" />
           <small>Commerçant</small>
-        </div>
+        </a>
         <nav aria-label="Sections" style={{ display: "contents" }}>
           {SECTIONS.map((item) => {
             const ItemIcon = item.icon;
