@@ -73,6 +73,16 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
                 {message}
               </p>
             )}
+            {!oidc && !demo && (
+              <p className="login-alert" role="alert">
+                La connexion sécurisée n’est pas encore publiée sur cette adresse. Sur cet ordinateur, ouvrez la plateforme locale.
+              </p>
+            )}
+            {!oidc && !demo && (
+              <a className="btn primary login-cta" href="http://localhost:3080/login">
+                Ouvrir la plateforme <ArrowRight size={18} aria-hidden />
+              </a>
+            )}
             {oidc && (
               <>
                 <a className="btn primary login-cta" href="/auth/login?suite=inscription">
