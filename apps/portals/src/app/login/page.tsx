@@ -1,7 +1,6 @@
 import { ArrowRight, Building2, CircleHelp, Lock, ShieldCheck, Store } from "lucide-react";
 import type { Metadata } from "next";
 
-import { oidcConfigured } from "@/lib/oidc";
 import { NETWORK_LINE } from "@/lib/roles";
 
 import { LoginForm } from "./login-form";
@@ -29,7 +28,6 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   const { error, erreur } = await searchParams;
   const code = erreur ?? error ?? "";
   const message = ERRORS[code];
-  const oidc = oidcConfigured();
   const demo = process.env.NODE_ENV !== "production" && process.env.PORTAL_DEV_LOGIN === "true";
   const support = process.env.SUPPORT_EMAIL;
   const helpHref = support ? `mailto:${support}` : "/legal/mentions-legales";
@@ -73,32 +71,18 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
                 {message}
               </p>
             )}
-            {!oidc && !demo && (
-              <p className="login-alert" role="alert">
-                La connexion sécurisée n’est pas encore publiée sur cette adresse. Sur cet ordinateur, ouvrez la plateforme locale.
-              </p>
-            )}
-            {!oidc && !demo && (
-              <a className="btn primary login-cta" href="http://localhost:3080/login">
-                Ouvrir la plateforme <ArrowRight size={18} aria-hidden />
-              </a>
-            )}
-            {oidc && (
-              <>
-                <a className="btn primary login-cta" href="/auth/login?suite=inscription">
-                  Continuer avec Google <ArrowRight size={18} aria-hidden />
-                </a>
-                <a className="btn outline login-cta" href="/auth/login?methode=email&suite=inscription">
-                  Continuer avec un e-mail
-                </a>
-                <a className="btn ghost login-cta" href="/auth/login?methode=email&creer=1&suite=inscription">
-                  Créer un compte avec un e-mail
-                </a>
-                <p className="login-secure">
-                  <Lock size={14} aria-hidden /> Le mot de passe est saisi sur la page sécurisée. Un e-mail de confirmation est envoyé pour un nouveau compte.
-                </p>
-              </>
-            )}
+            <a className="btn primary login-cta" href="/auth/login?suite=inscription">
+              Continuer avec Google <ArrowRight size={18} aria-hidden />
+            </a>
+            <a className="btn outline login-cta" href="/auth/login?methode=email&suite=inscription">
+              Continuer avec un e-mail
+            </a>
+            <a className="btn ghost login-cta" href="/auth/login?methode=email&creer=1&suite=inscription">
+              Créer un compte avec un e-mail
+            </a>
+            <p className="login-secure">
+              <Lock size={14} aria-hidden /> Le mot de passe est saisi sur la page sécurisée. Un e-mail de confirmation est envoyé pour un nouveau compte.
+            </p>
             {demo && (
               <>
                 <LoginForm />
