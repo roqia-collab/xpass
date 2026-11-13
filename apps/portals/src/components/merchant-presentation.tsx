@@ -1,10 +1,10 @@
 import { ArrowRight, BadgeCheck, QrCode, Sparkles, Wallet } from "lucide-react";
 
 const WORLDS = [
-  { image: "/visuels/login-sport.jpg", kicker: "01", title: "Sport", text: "Cours, salles et bassins." },
-  { image: "/visuels/login-atelier.jpg", kicker: "02", title: "Culture", text: "Ateliers, musées, scènes." },
-  { image: "/visuels/login-beaute.jpg", kicker: "03", title: "Beauté", text: "Soins et instituts." },
-  { image: "/visuels/promo-partenaires.jpg", kicker: "04", title: "Sorties", text: "Hammams, salles, la ville." },
+  { slug: "sport", image: "/visuels/login-sport.jpg", kicker: "01", title: "Sport", text: "Cours, salles et bassins." },
+  { slug: "culture", image: "/visuels/login-atelier.jpg", kicker: "02", title: "Culture", text: "Ateliers, musées, scènes." },
+  { slug: "beaute", image: "/visuels/login-beaute.jpg", kicker: "03", title: "Beauté", text: "Soins et instituts." },
+  { slug: "sorties", image: "/visuels/promo-partenaires.jpg", kicker: "04", title: "Sorties", text: "Hammams, salles, la ville." },
 ];
 
 const PATH = [
@@ -71,14 +71,15 @@ export function MerchantPresentation({ signedIn, partner = false }: { signedIn: 
         </div>
         <div className="show-mosaic">
           {WORLDS.map((world) => (
-            <article key={world.title}>
+            <a key={world.slug} href={`/demande?activite=${world.slug}`} aria-label={`Choisir ${world.title}`}>
               <img src={world.image} alt="" />
               <div>
                 <small>{world.kicker}</small>
                 <h3>{world.title}</h3>
                 <p>{world.text}</p>
+                <span>Choisir {world.title}</span>
               </div>
-            </article>
+            </a>
           ))}
         </div>
       </section>

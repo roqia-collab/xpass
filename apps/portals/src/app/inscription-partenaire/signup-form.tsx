@@ -24,7 +24,7 @@ export function SignupForm({ categories }: { categories: CategoryOption[] }) {
   const [siret, setSiret] = useState("");
   const [company, setCompany] = useState<CompanyPreview>();
   const [error, setError] = useState<string>();
-  const [done, setDone] = useState<{ address: string; check: string }>();
+  const [done, setDone] = useState<{ address: string; check: string; activity: string }>();
   const [pending, start] = useTransition();
   const [form, setForm] = useState({
     display_name: "",
@@ -45,6 +45,7 @@ export function SignupForm({ categories }: { categories: CategoryOption[] }) {
     return (
       <div className="card" role="status" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         <h2><CheckCircle2 aria-hidden color="#2f7a45" /> Candidature envoyée</h2>
+        <p>Activité retenue : <strong>{done.activity}</strong></p>
         <p>Adresse retenue : <strong>{done.address}</strong></p>
         {done.check === "unavailable" && (
           <p className="notice">L’annuaire des entreprises ne répondait pas : l’équipe XPASS vérifiera votre SIRET à la main.</p>
@@ -115,8 +116,13 @@ export function SignupForm({ categories }: { categories: CategoryOption[] }) {
             e.preventDefault();
             setError(undefined);
             start(async () => {
+              const chosen = categories.flatMap((c) => c.subs).find((s) => s.slug === form.subcategory_slug);
+              if (!chosen) {
+                setError("Choisissez une activité dans la liste.");
+                return;
+              }
               const r = await submitApplication({ ...form, siret });
-              if (r.ok) setDone({ address: r.address, check: r.check });
+              if (r.ok) setDone({ address: r.address, check: r.check, activity: chosen.name });
               else setError(r.error);
             });
           }}
@@ -141,6 +147,9 @@ export function SignupForm({ categories }: { categories: CategoryOption[] }) {
                   </optgroup>
                 ))}
               </select>
+              {form.subcategory_slug && (
+                <small>Activité retenue : {categories.flatMap((c) => c.subs).find((s) => s.slug === form.subcategory_slug)?.name}</small>
+              )}
             </label>
             <label className="field">
               <span>Type d’établissement</span>

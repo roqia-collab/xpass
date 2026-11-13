@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
 
+import { activityName } from "@/lib/activities";
+
 import { AccessForm } from "./form";
 
 export const metadata: Metadata = { title: "Demander un accès" };
 
-export default function AccessRequestPage() {
+export default async function AccessRequestPage({ searchParams }: { searchParams: Promise<{ activite?: string }> }) {
+  const { activite } = await searchParams;
+  const chosen = activityName(activite);
   return (
     <main style={{ maxWidth: 640, margin: "0 auto", padding: "28px 20px 80px" }}>
       <a href="/" aria-label="XPASS">
@@ -16,7 +20,8 @@ export default function AccessRequestPage() {
         L’administrateur reçoit votre demande. S’il l’accepte, il crée votre identifiant — votre Gmail — et un mot de passe, puis il vous les donne.
         Un service RH remet ensuite l’identifiant de ses commerçants. Un commerçant publié apparaît dans l’application.
       </p>
-      <AccessForm />
+      {chosen && <p className="notice mint">Activité choisie : <strong>{chosen}</strong></p>}
+      <AccessForm activity={activite} />
     </main>
   );
 }

@@ -126,6 +126,9 @@ function Fields({
             </optgroup>
           ))}
         </select>
+        {form.subcategory_slug && (
+          <small>Activité retenue : {categories.flatMap((c) => c.subs).find((s) => s.slug === form.subcategory_slug)?.name ?? form.subcategory_slug}</small>
+        )}
       </label>
       <label className="field"><span>Numéro et rue</span><input value={form.address_line} onChange={set("address_line")} placeholder="5 rue de la Roquette" required /></label>
       <div className="grid grid-2">
