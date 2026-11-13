@@ -11,7 +11,7 @@ export function CreateRhForm() {
   const [msg, setMsg] = useState<{ ok: boolean; text: string }>();
   const [form, setForm] = useState({ name: "", city_label: "Paris", hr_email: "", password: "" });
   const [handover, setHandover] = useState<{ email: string; password: string }>();
-  if (!open) return <button className="btn primary" onClick={() => setOpen(true)}>Créer un service RH</button>;
+  if (!open) return <button className="btn primary" onClick={() => setOpen(true)}>Ajouter</button>;
   return (
     <form
       className="card"

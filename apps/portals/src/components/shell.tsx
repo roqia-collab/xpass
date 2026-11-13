@@ -18,6 +18,7 @@ interface ShellProps {
   contextSwitcher?: ReactNode;
   accountName: string;
   accountDetail: string;
+  alerts?: ReactNode;
   children: ReactNode;
 }
 
@@ -52,11 +53,12 @@ export function PortalShell(props: ShellProps) {
             <Search size={18} aria-hidden />
             <input placeholder={props.searchPlaceholder} aria-label={props.searchPlaceholder} disabled />
           </label>
+          {props.alerts}
           <div className="account">
             <div className="avatar" aria-hidden>
               {initials(props.accountName)}
             </div>
-            <div style={{ lineHeight: 1.2 }}>
+            <div className="account-text" style={{ lineHeight: 1.2 }}>
               <strong style={{ display: "block" }}>{props.accountName}</strong>
               <span className="muted" style={{ fontSize: 13 }}>
                 {props.accountDetail}

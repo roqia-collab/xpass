@@ -1,8 +1,10 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useTransition } from "react";
+
+import { merchantDecision } from "../actions";
 
 import { Badge } from "@/components/ui";
 import { COMMERCIAL_LABEL, PSP_LABEL } from "@/lib/roles";
@@ -20,12 +22,43 @@ async function fetchMerchants(status: string): Promise<AdminMerchants> {
   return res.json();
 }
 
+function RemoveMerchant({ id, name }: { id: string; name: string }) {
+  const [pending, start] = useTransition();
+  const [error, setError] = useState("");
+  const client = useQueryClient();
+  return (
+    <span>
+      <button
+        className="btn ghost"
+        disabled={pending}
+        onClick={() => {
+          const why = window.prompt(`Motif pour retirer ${name} (5 caractères minimum)`);
+          if (!why) return;
+          if (!window.confirm(`Suspendre ${name} ? Il disparaît de l’application.`)) return;
+          setError("");
+          start(async () => {
+            const res = await merchantDecision(id, "suspend", why);
+            if (!res.ok) setError(res.error);
+            else await client.invalidateQueries({ queryKey: ["admin-merchants"] });
+          });
+        }}
+      >
+        Supprimer
+      </button>
+      {error && <span className="error"> {error}</span>}
+    </span>
+  );
+}
+
 export function MerchantsTable() {
   const [status, setStatus] = useState<(typeof FILTERS)[number]>("all");
   const query = useQuery({ queryKey: ["admin-merchants", status], queryFn: () => fetchMerchants(status) });
 
   return (
     <div className="card" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+        <Link className="btn primary" href="/admin/demandes">Ajouter</Link>
+      </div>
       <div className="chip-tabs" role="tablist" aria-label="Filtrer par statut commercial" style={{ flexWrap: "wrap" }}>
         {FILTERS.map((f) => (
           <button key={f} role="tab" aria-selected={f === status} className={f === status ? "on" : ""} onClick={() => setStatus(f)}>
@@ -65,7 +98,10 @@ export function MerchantsTable() {
                 <td>{m.location_count}</td>
                 <td><Badge tone={COMMERCIAL_LABEL[m.commercial_status].tone}>{COMMERCIAL_LABEL[m.commercial_status].label}</Badge></td>
                 <td><Badge tone={m.psp_status === "verified" ? "mint" : "grey"}>{PSP_LABEL[m.psp_status]}</Badge></td>
-                <td><Link className="btn outline" href={`/admin/partenaires/${m.id}`}>Modifier</Link></td>
+                <td style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                  <Link className="btn outline" href={`/admin/partenaires/${m.id}`}>Modifier</Link>
+                  {m.commercial_status !== "suspended" && <RemoveMerchant id={m.id} name={m.display_name} />}
+                </td>
               </tr>
             ))}
             {query.data.items.length === 0 && (

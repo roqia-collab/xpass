@@ -23,3 +23,25 @@ export async function createAdministrator(raw: unknown) {
     return { ok: false as const, error: e instanceof Error ? e.message : "Création impossible." };
   }
 }
+
+export async function renameAdministrator(email: string, fullName: string) {
+  const name = fullName.trim();
+  if (name.length < 2) return { ok: false as const, error: "Indiquez le nom." };
+  try {
+    await apiFetch("/admin/administrators/rename", { method: "POST", body: JSON.stringify({ email, full_name: name }) });
+    revalidatePath("/admin/administrateurs");
+    return { ok: true as const };
+  } catch (e) {
+    return { ok: false as const, error: e instanceof Error ? e.message : "Modification impossible." };
+  }
+}
+
+export async function removeAdministrator(email: string) {
+  try {
+    await apiFetch("/admin/administrators/remove", { method: "POST", body: JSON.stringify({ email, full_name: "" }) });
+    revalidatePath("/admin/administrateurs");
+    return { ok: true as const };
+  } catch (e) {
+    return { ok: false as const, error: e instanceof Error ? e.message : "Suppression impossible." };
+  }
+}

@@ -213,7 +213,7 @@ export function EventBoard({
           {events.length === 0 ? "Aucune séance" : `${events.length} séance${events.length > 1 ? "s" : ""} · ${visible} visible${visible > 1 ? "s" : ""} dans l’application`}
         </p>
         {!open && !editing && (
-          <button className="btn primary" onClick={() => setOpen(true)}>Ajouter un événement</button>
+          <button className="btn primary" onClick={() => setOpen(true)}>Ajouter</button>
         )}
       </div>
       {open && <Editor venues={venues} initial={blank} eventId={null} save={save} upload={upload} onDone={() => setOpen(false)} />}
@@ -295,7 +295,7 @@ function EventLine({ event, published, onEdit, hide }: { event: VenueEventRow; p
               });
             }}
           >
-            {published ? "Retirer de l’application" : "Remettre"}
+            {published ? "Supprimer" : "Ajouter"}
           </button>
         </div>
         {msg && <p className="error">{msg}</p>}

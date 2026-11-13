@@ -48,7 +48,7 @@ export function DecideRequest({ id, gmail, kind }: { id: string; gmail: string; 
           });
         }}
       >
-        Refuser
+        Supprimer
       </button>
       {error && <p className="error" role="alert" style={{ flexBasis: "100%" }}>{error}</p>}
     </form>
@@ -79,7 +79,7 @@ export function ResetAccessPassword({ gmail, kind }: { gmail: string; kind: "rh"
       }}
     >
       <input type="text" aria-label={`Nouveau mot de passe pour ${gmail}`} autoComplete="new-password" placeholder="Nouveau mot de passe" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8} />
-      <button className="btn outline" disabled={pending}>Enregistrer le mot de passe</button>
+      <button className="btn outline" disabled={pending}>Modifier</button>
       {message && <p className="notice mint" style={{ flexBasis: "100%", margin: 0 }}>{message}</p>}
       {error && <p className="error" role="alert" style={{ flexBasis: "100%", margin: 0 }}>{error}</p>}
     </form>

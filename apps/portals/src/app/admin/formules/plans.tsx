@@ -103,6 +103,34 @@ function PlanEditor({ plan, onDone }: { plan: AdminPlan | null; onDone: () => vo
   );
 }
 
+function RemovePlan({ plan }: { plan: AdminPlan }) {
+  const [pending, start] = useTransition();
+  const [error, setError] = useState("");
+  return (
+    <span>
+      <button
+        className="btn ghost"
+        disabled={pending || !plan.is_active}
+        onClick={() => {
+          if (plan.subscribers > 0) {
+            setError("Des abonnés utilisent cette formule. Ajoutez-en une autre.");
+            return;
+          }
+          if (!window.confirm(`Retirer la formule ${plan.name} ?`)) return;
+          setError("");
+          start(async () => {
+            const res = await savePlan(plan.id, { ...toForm(plan), is_active: false });
+            if (!res.ok) setError(res.error);
+          });
+        }}
+      >
+        Supprimer
+      </button>
+      {error && <span className="error"> {error}</span>}
+    </span>
+  );
+}
+
 export function PlansManager({ plans, canEdit }: { plans: AdminPlan[]; canEdit: boolean }) {
   const [editing, setEditing] = useState<string | "new" | null>(null);
   return (
@@ -122,10 +150,11 @@ export function PlansManager({ plans, canEdit }: { plans: AdminPlan[]; canEdit: 
                 <td>{p.subscribers}</td>
                 <td><Badge tone={p.is_active ? "mint" : "grey"}>{p.is_active ? "Proposée" : "Retirée"}</Badge></td>
                 {canEdit && (
-                  <td>
+                  <td style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                     <button className="btn ghost" onClick={() => setEditing(p.id)} aria-label={`Modifier ${p.name}`}>
                       <Pencil size={16} aria-hidden /> Modifier
                     </button>
+                    <RemovePlan plan={p} />
                   </td>
                 )}
               </tr>
@@ -138,7 +167,7 @@ export function PlansManager({ plans, canEdit }: { plans: AdminPlan[]; canEdit: 
       </div>
       {canEdit && editing === null && (
         <button className="btn primary" style={{ alignSelf: "flex-start" }} onClick={() => setEditing("new")}>
-          <Plus size={18} aria-hidden /> Nouvelle formule
+          <Plus size={18} aria-hidden /> Ajouter
         </button>
       )}
       {canEdit && editing !== null && (

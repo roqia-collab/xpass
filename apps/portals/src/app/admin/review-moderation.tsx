@@ -17,7 +17,7 @@ export function ReviewModeration({ rows }: { rows: AdminReview[] }) {
             key={r.id}
             title={`${r.location_name} · ${"★".repeat(r.rating)}${"☆".repeat(5 - r.rating)} · ${r.author}`}
             description={r.comment ?? "(sans commentaire)"}
-            buttons={[{ label: "Masquer l’avis", confirm: "Masquer cet avis de la fiche publique ?", run: (why) => hideReview(r.id, why) }]}
+            buttons={[{ label: "Supprimer", confirm: "Retirer cet avis de la fiche publique ?", run: (why) => hideReview(r.id, why) }]}
           />
         )
       ))}

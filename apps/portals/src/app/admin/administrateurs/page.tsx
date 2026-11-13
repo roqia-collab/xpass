@@ -1,6 +1,7 @@
-import { Badge, ErrorCard, PageHead } from "@/components/ui";
+import { ErrorCard, PageHead } from "@/components/ui";
 import { mediaUrl, tryApi } from "@/lib/session";
 
+import { AdminRows } from "./rows";
 import { CreateAdminForm } from "./create-admin";
 
 export const metadata = { title: "Administrateurs" };
@@ -20,13 +21,7 @@ export default async function AdministratorsPage() {
         action={<CreateAdminForm />}
       />
       {!loaded.data && <ErrorCard message={loaded.error ?? "La liste n’a pas pu être chargée. Le formulaire de création reste disponible."} />}
-      {rows.map((row) => (
-        <p key={row.email} style={{ margin: 0, display: "flex", gap: 10, alignItems: "center" }}>
-          <strong>{row.display_name}</strong>
-          <span className="muted">{row.original ? "Identifiant admin" : row.email}</span>
-          {row.original && <Badge tone="coral">Origine</Badge>}
-        </p>
-      ))}
+      <AdminRows rows={rows} />
     </>
   );
 }

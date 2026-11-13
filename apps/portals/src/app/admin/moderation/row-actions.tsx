@@ -23,7 +23,7 @@ export function ModerationActions({ id, published }: { id: string; published: bo
       }}
     >
       <input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Motif" aria-label="Motif" required style={{ minWidth: 140 }} />
-      <button className="btn outline" disabled={pending}>{published ? "Retirer" : "Publier"}</button>
+      <button className="btn outline" disabled={pending}>{published ? "Supprimer" : "Ajouter"}</button>
       {msg && <span className={msg.ok ? "muted" : "error"}>{msg.text}</span>}
     </form>
   );

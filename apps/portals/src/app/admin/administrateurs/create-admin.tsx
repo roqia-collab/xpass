@@ -32,7 +32,7 @@ export function CreateAdminForm() {
         });
       }}
     >
-      <h3>Nouvel admin</h3>
+      <h3>Ajouter un admin</h3>
       <label className="field"><span>Nom</span><input value={form.full_name} onChange={set("full_name")} required /></label>
       <label className="field"><span>Gmail, c’est son identifiant</span><input type="email" value={form.email} onChange={set("email")} placeholder="prenom.nom@gmail.com" required /></label>
       <label className="field"><span>Mot de passe à lui remettre</span><input type="text" autoComplete="new-password" value={form.password} onChange={set("password")} required minLength={8} /><small>8 caractères minimum, avec une lettre et un chiffre. Gmail uniquement. Il s’affiche après la création.</small></label>
@@ -44,7 +44,7 @@ export function CreateAdminForm() {
           <p style={{ margin: "6px 0 0" }}>Connexion : admin.xpass.fr, avec ce Gmail et ce mot de passe.</p>
         </div>
       )}
-      <button className="btn primary" disabled={pending}>Créer l’admin</button>
+      <button className="btn primary" disabled={pending}>Ajouter</button>
     </form>
   );
 }

@@ -90,7 +90,7 @@ export function AccessPanel({
                 run(() => revokeAccess(r.id), "Accès retiré (tracé dans le journal d’audit).", { kind: "remove", id: r.id });
               }}
             >
-              <UserMinus size={18} aria-hidden /> Retirer
+              <UserMinus size={18} aria-hidden /> Supprimer
             </button>
           )}
         </div>
@@ -116,7 +116,7 @@ export function AccessPanel({
               {roles.map((r) => <option key={r.value} value={r.value}>{r.label}</option>)}
             </select>
           </label>
-          <button className="btn primary" type="submit" disabled={pending}>Donner l’accès</button>
+          <button className="btn primary" type="submit" disabled={pending}>Ajouter</button>
         </form>
       ) : (
         <p className="muted" style={{ fontSize: 13 }}>Seul un administrateur peut donner ou retirer un accès.</p>
