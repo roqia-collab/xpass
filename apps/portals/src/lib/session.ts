@@ -10,7 +10,11 @@ import type { Me, Space } from "./types";
 
 export const SESSION_COOKIE = "xpass_session";
 function apiUrl(): string {
-  return process.env.XPASS_API_URL || baked.apiUrl || "https://api.xpass.fr";
+  const value = process.env.XPASS_API_URL || baked.apiUrl || "";
+  if (!value || (process.env.NODE_ENV === "production" && /localhost|127\.0\.0\.1/.test(value))) {
+    return "https://api.xpass.fr";
+  }
+  return value;
 }
 
 export class ApiError extends Error {

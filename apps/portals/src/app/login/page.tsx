@@ -68,7 +68,7 @@ const FACES: Record<
     word: "ADMIN",
     kicker: "Administration",
     title: "Le réseau, sous vos yeux.",
-    text: "Entrez l’identifiant d’origine, ou le Gmail d’un admin que vous avez créé.",
+    text: "Entrez support@xpass.fr, l’identifiant admin, ou le Gmail d’un admin que vous avez créé.",
     pills: ["Réseau", "Comptes", "Contrôle"],
     panel: "Administration",
     panelText: "Réservé à l’équipe XPASS.",
@@ -127,7 +127,7 @@ export default async function LoginPage({
   const code = erreur ?? error ?? "";
   const message = ERRORS[code];
   const demo = process.env.NODE_ENV !== "production" && process.env.PORTAL_DEV_LOGIN === "true";
-  const support = process.env.SUPPORT_EMAIL;
+  const support = "support@xpass.fr";
   const helpHref = support ? `mailto:${support}` : "/legal/mentions-legales";
   const Icon = view.icon;
   return (
@@ -189,7 +189,7 @@ export default async function LoginPage({
             <p className="login-secure">
               <Lock size={14} aria-hidden />{" "}
               {view.suite === "admin"
-                ? "L’admin d’origine entre avec son identifiant. Les autres admins entrent avec leur Gmail."
+                ? "L’admin d’origine entre avec support@xpass.fr ou l’identifiant admin. Les autres admins entrent avec leur Gmail."
                 : "L’identifiant est le Gmail. Le mot de passe, remis par l’administrateur ou le RH, se saisit avec « Continuer avec un e-mail »."}
             </p>
             {demo && (

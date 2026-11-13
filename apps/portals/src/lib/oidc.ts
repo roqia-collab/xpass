@@ -21,10 +21,23 @@ function env(name: string): string {
   return value ?? "";
 }
 
+const PUBLIC_ISSUER = "https://auth.xpass.fr/realms/xpass";
+
+/** En production le site est chez Hostinger : une adresse locale ou interne ne répond pas. */
+export function tokenIssuer(): string {
+  const value = env("OIDC_ISSUER") || baked.issuer || PUBLIC_ISSUER;
+  if (process.env.NODE_ENV === "production") return PUBLIC_ISSUER;
+  return value;
+}
+
 export const OIDC = {
-  get issuer() { return env("OIDC_ISSUER") || baked.issuer || "https://auth.xpass.fr/realms/xpass"; },
-  /** Adresse Keycloak vue par le navigateur. Vide = même que issuer. */
-  get browserIssuer() { return env("OIDC_ISSUER_PUBLIC") || env("OIDC_ISSUER"); },
+  get issuer() { return tokenIssuer(); },
+  /** Adresse Keycloak vue par le navigateur. En production, toujours l’adresse publique. */
+  get browserIssuer() {
+    const value = env("OIDC_ISSUER_PUBLIC") || env("OIDC_ISSUER") || PUBLIC_ISSUER;
+    if (process.env.NODE_ENV === "production" && !value.includes("auth.xpass.fr")) return PUBLIC_ISSUER;
+    return value;
+  },
   get clientId() { return env("OIDC_PORTALS_CLIENT_ID") || "xpass-portals"; },
   get clientSecret() { return env("OIDC_PORTALS_CLIENT_SECRET") || baked.secret; },
   get publicUrl() { return env("PORTALS_PUBLIC_URL") || baked.publicUrl || "https://xpass.fr"; },
@@ -121,23 +134,41 @@ export function authorizeUrl(
   return url.toString();
 }
 
+async function postToken(body: URLSearchParams): Promise<Response> {
+  let last: unknown;
+  const url = `${tokenIssuer()}/protocol/openid-connect/token`;
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      return await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body,
+        cache: "no-store",
+        signal: AbortSignal.timeout(12_000),
+      });
+    } catch (error) {
+      last = error;
+    }
+  }
+  throw last instanceof Error ? last : new Error("Le serveur d’identité ne répond pas.");
+}
+
 /** Connexion par identifiant et mot de passe, sans Google. Le secret reste sur le serveur. */
 export async function passwordGrant(username: string, password: string) {
   if (!OIDC.clientSecret) throw new Error("Identifiant ou mot de passe incorrect.");
-  const res = await fetch(`${OIDC.issuer}/protocol/openid-connect/token`, {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({
+  let res: Response;
+  try {
+    res = await postToken(new URLSearchParams({
       grant_type: "password",
       username,
       password,
       scope: "openid profile email",
       client_id: OIDC.clientId,
       client_secret: OIDC.clientSecret,
-    }),
-    cache: "no-store",
-    signal: AbortSignal.timeout(10_000),
-  });
+    }));
+  } catch {
+    throw new Error("Le serveur d’identité ne répond pas. Réessayez.");
+  }
   if (!res.ok) throw new Error("Identifiant ou mot de passe incorrect.");
   return (await res.json()) as { access_token: string; expires_in: number; id_token?: string };
 }

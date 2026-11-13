@@ -11,7 +11,8 @@ import type { Me } from "@/lib/types";
 /** Connexion de l'administration : identifiant et mot de passe, sans Gmail. */
 export async function loginAdmin(identifiant: string, password: string) {
   const id = identifiant.trim();
-  const username = id.toLowerCase() === "admin" ? "admin@xpass.fr" : id;
+  const key = id.toLowerCase();
+  const username = key === "admin" || key === "support@xpass.fr" ? "admin@xpass.fr" : id;
   if (id.length < 2 || password.length < 8) {
     return { ok: false as const, error: "Indiquez l’identifiant et le mot de passe." };
   }
@@ -31,7 +32,11 @@ export async function loginAdmin(identifiant: string, password: string) {
     jar.set(SESSION_COOKIE, tokens.access_token, { ...opts, maxAge: tokens.expires_in });
     if (tokens.id_token) jar.set(ID_TOKEN_COOKIE, tokens.id_token, { ...opts, maxAge: 60 * 60 * 12 });
   } catch (e) {
-    return { ok: false as const, error: e instanceof Error ? e.message : "Connexion impossible." };
+    const message = e instanceof Error ? e.message : "";
+    if (/fetch failed|ECONN|ENOTFOUND|timeout/i.test(message)) {
+      return { ok: false as const, error: "Le serveur d’identité ne répond pas. Réessayez." };
+    }
+    return { ok: false as const, error: message || "Connexion impossible." };
   }
   redirect("/admin");
 }
