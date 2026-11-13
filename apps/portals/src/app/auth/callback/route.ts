@@ -52,13 +52,18 @@ export async function GET(req: NextRequest) {
     return fail("refus");
   }
   const spaces = spacesFor(me);
-  // Google (ou toute connexion) sans espace pro : ouvrir le dossier commerçant, pas une page d'erreur.
-  const signup = pending.next === AFTER_LOGIN.inscription || spaces.length === 0;
-  const target = signup && !spaces.includes("partner")
-    ? AFTER_LOGIN.inscription
-    : pending.next === AFTER_LOGIN.espace && spaces.includes("partner")
-      ? AFTER_LOGIN.espace
-      : "/";
+  const host = new URL(origin).host;
+  const asked = pending.next;
+  const target =
+    host === "admin.xpass.fr" || asked === AFTER_LOGIN.admin
+      ? spaces.includes("admin") ? "/admin" : "/login?erreur=acces"
+      : host === "rh.xpass.fr" || asked === AFTER_LOGIN.rh
+        ? spaces.includes("company") ? "/company" : "/login?erreur=acces"
+        : spaces.includes("partner") && asked === AFTER_LOGIN.espace
+          ? "/partner"
+          : !spaces.includes("partner")
+            ? AFTER_LOGIN.inscription
+            : "/";
 
   const res = NextResponse.redirect(new URL(target, origin));
   const https = origin.startsWith("https://");

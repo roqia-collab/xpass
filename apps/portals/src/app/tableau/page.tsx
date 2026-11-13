@@ -1,4 +1,5 @@
 import { MerchantSite } from "@/components/merchant-site";
+import { canAccess } from "@/lib/roles";
 import { getMe } from "@/lib/session";
 
 export const metadata = { title: "Tableau de bord" };
@@ -11,5 +12,5 @@ export default async function PublicDashboard() {
   } catch {
     me = null;
   }
-  return <MerchantSite signedIn={Boolean(me)} />;
+  return <MerchantSite signedIn={Boolean(me)} partner={Boolean(me && canAccess(me, "partner"))} />;
 }

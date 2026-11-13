@@ -3,7 +3,7 @@ import { headers } from "next/headers";
 import Link from "next/link";
 
 import { MerchantPresentation } from "@/components/merchant-presentation";
-import { NETWORK_LINE, SPACE_LABEL, spacesFor } from "@/lib/roles";
+import { canAccess, NETWORK_LINE, SPACE_LABEL, spacesFor } from "@/lib/roles";
 import { clientAppUrl, getMe, spaceHrefs } from "@/lib/session";
 import type { Space } from "@/lib/types";
 
@@ -39,7 +39,7 @@ export default async function Home() {
   } catch {
     me = null;
   }
-  if (merchantHost(host) || !me) return <MerchantPresentation signedIn={Boolean(me)} />;
+  if (merchantHost(host) || !me) return <MerchantPresentation signedIn={Boolean(me)} partner={Boolean(me && canAccess(me, "partner"))} />;
 
   const spaces = spacesFor(me);
   const app = clientAppUrl();

@@ -73,11 +73,14 @@ export const getMe = cache(async (): Promise<Me | null> => {
   }
 });
 
-/** Garde d'espace : redirige vers la connexion ou refuse l'accès. */
+/** Garde d'espace : redirige vers la connexion, le dossier commerçant, ou refuse l'accès. */
 export async function requireSpace(space: Space): Promise<Me> {
   const me = await getMe();
   if (!me) redirect("/login");
-  if (!canAccess(me, space)) redirect("/login?error=forbidden");
+  if (!canAccess(me, space)) {
+    if (space === "partner") redirect("/inscription-partenaire");
+    redirect("/login?error=forbidden");
+  }
   return me;
 }
 

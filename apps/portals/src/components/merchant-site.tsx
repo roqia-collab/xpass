@@ -29,11 +29,12 @@ const SECTIONS: { id: string; label: string; short: string; icon: LucideIcon; te
 ];
 
 /** Premier tableau de bord commerçant, visible sans compte. La connexion ouvre l'autre. */
-export function MerchantSite({ signedIn }: { signedIn: boolean }) {
+export function MerchantSite({ signedIn, partner = false }: { signedIn: boolean; partner?: boolean }) {
   const [section, setSection] = useState(SECTIONS[0]!.id);
   const current = SECTIONS.find((item) => item.id === section) ?? SECTIONS[0]!;
   const Icon = current.icon;
-  const enter = signedIn ? "/partner" : "/login?espace=1";
+  const enter = partner ? "/partner" : signedIn ? "/inscription-partenaire" : "/login?espace=1";
+  const label = partner ? "Entrer dans mon espace" : signedIn ? "Ouvrir mon dossier" : "Connexion";
 
   return (
     <div className="shell">
@@ -65,7 +66,7 @@ export function MerchantSite({ signedIn }: { signedIn: boolean }) {
         <header className="topbar">
           <strong style={{ marginRight: "auto" }}>Tableau de bord</strong>
           <a className="btn primary" href={enter}>
-            {signedIn ? "Entrer dans mon espace" : "Connexion"}
+            {label}
           </a>
         </header>
         <main className="content" id="contenu" tabIndex={-1}>
@@ -81,7 +82,7 @@ export function MerchantSite({ signedIn }: { signedIn: boolean }) {
                 Les chiffres, les réservations et les réglages de votre établissement sont dans le second tableau de bord, après la connexion.
               </p>
               <a className="btn primary" href={enter} style={{ marginTop: 14 }}>
-                {signedIn ? "Entrer dans mon espace" : "Connexion"}
+                {label}
               </a>
             </div>
           </section>

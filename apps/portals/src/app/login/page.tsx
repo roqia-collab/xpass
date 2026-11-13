@@ -39,7 +39,7 @@ const FACES: Record<
     panelText: string;
     role: string;
     icon: typeof Store;
-    suite: "inscription" | "espace" | null;
+    suite: "inscription" | "espace" | "admin" | "rh" | null;
     join: boolean;
   }
 > = {
@@ -72,7 +72,7 @@ const FACES: Record<
     panelText: "Réservé à l’équipe XPASS.",
     role: "Équipe XPASS",
     icon: ShieldCheck,
-    suite: null,
+    suite: "admin",
     join: false,
   },
   rh: {
@@ -88,7 +88,7 @@ const FACES: Record<
     panelText: "Le service qui ouvre les commerçants de l’entreprise.",
     role: "Service RH",
     icon: Building2,
-    suite: null,
+    suite: "rh",
     join: false,
   },
 };
@@ -103,7 +103,7 @@ async function face(porte: string | undefined) {
   return FACES[door];
 }
 
-function authHref(kind: "google" | "email" | "create", suite: "inscription" | "espace" | null) {
+function authHref(kind: "google" | "email" | "create", suite: "inscription" | "espace" | "admin" | "rh" | null) {
   const params = new URLSearchParams();
   if (suite) params.set("suite", suite);
   if (kind !== "google") params.set("methode", "email");

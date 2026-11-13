@@ -17,8 +17,9 @@ const PATH = [
 const TICKER = ["Sport", "Culture", "Beauté", "Sorties", "Crédits", "QR code", "Paris"];
 
 /** Présentation du site commerçant, avant le tableau de bord. */
-export function MerchantPresentation({ signedIn }: { signedIn: boolean }) {
-  const enter = signedIn ? "/partner" : "/login?espace=1";
+export function MerchantPresentation({ signedIn, partner = false }: { signedIn: boolean; partner?: boolean }) {
+  const enter = partner ? "/partner" : signedIn ? "/inscription-partenaire" : "/login?espace=1";
+  const label = partner ? "Mon espace" : signedIn ? "Mon dossier" : "Connexion";
   const loop = [...TICKER, ...TICKER];
   return (
     <div className="show">
@@ -33,7 +34,7 @@ export function MerchantPresentation({ signedIn }: { signedIn: boolean }) {
           <a href="/tableau">Tableau de bord</a>
         </nav>
         <a className="btn primary" href={enter}>
-          {signedIn ? "Mon espace" : "Connexion"}
+          {label}
         </a>
       </header>
 
@@ -49,7 +50,7 @@ export function MerchantPresentation({ signedIn }: { signedIn: boolean }) {
               Tableau de bord <ArrowRight size={18} aria-hidden />
             </a>
             <a className="btn outline" href={enter}>
-              {signedIn ? "Mon espace" : "Connexion"}
+              {label}
             </a>
           </div>
         </div>
@@ -116,7 +117,7 @@ export function MerchantPresentation({ signedIn }: { signedIn: boolean }) {
           <a href="#offre">Offre</a>
           <a href="#parcours">Parcours</a>
           <a href="/tableau">Tableau de bord</a>
-          <a href={enter}>{signedIn ? "Mon espace" : "Connexion"}</a>
+          <a href={enter}>{label}</a>
         </nav>
         <nav aria-label="Informations légales">
           <a href="/legal/confidentialite">Confidentialité</a>

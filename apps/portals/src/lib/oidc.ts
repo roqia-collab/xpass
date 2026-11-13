@@ -81,7 +81,12 @@ export function newPending() {
 }
 
 /** Pages autorisées après connexion (liste fermée : pas de redirection ouverte). */
-export const AFTER_LOGIN = { inscription: "/inscription-partenaire", espace: "/partner" } as const;
+export const AFTER_LOGIN = {
+  inscription: "/inscription-partenaire",
+  espace: "/partner",
+  admin: "/admin",
+  rh: "/company",
+} as const;
 
 export function authorizeUrl(
   state: string,
