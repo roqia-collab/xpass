@@ -205,8 +205,8 @@ export default async function LoginPage({
                 </div>
               </>
             )}
-            {view.suite === "rh" && <AccessSection kind="rh" />}
-            {suite === "espace" && <AccessSection kind="merchant" />}
+            {view.suite === "rh" && <AccessSection kind="rh" tone="panel" />}
+            {suite === "espace" && <AccessSection kind="merchant" tone="panel" />}
           </section>
         </main>
 

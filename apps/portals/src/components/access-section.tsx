@@ -19,9 +19,22 @@ const COPY = {
   },
 } as const;
 
-/** Section d’accès : formulaire, puis assistance. Pas un simple bandeau. */
-export function AccessSection({ kind }: { kind: keyof typeof COPY }) {
+/** Section d’accès. Sur la connexion, elle reste dans le panneau, sans seconde carte. */
+export function AccessSection({ kind, tone = "page" }: { kind: keyof typeof COPY; tone?: "panel" | "page" }) {
   const copy = COPY[kind];
+  if (tone === "panel") {
+    return (
+      <section className="login-access" aria-labelledby={`acces-${kind}`}>
+        <h3 id={`acces-${kind}`}>{copy.title}</h3>
+        <p>{copy.lead}</p>
+        <p className="login-partner">
+          <a href="/demande">Remplir le formulaire</a>
+          <span aria-hidden> · </span>
+          <a href="mailto:support@xpass.fr">support@xpass.fr</a>
+        </p>
+      </section>
+    );
+  }
   return (
     <section className="card" aria-labelledby={`acces-${kind}`} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
       <p className="eyebrow">Accès</p>

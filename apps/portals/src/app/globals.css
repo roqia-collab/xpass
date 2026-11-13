@@ -716,6 +716,25 @@ p { margin: 0; }
   color: var(--coral);
   font-weight: 700;
 }
+.login-access {
+  margin-top: 6px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(10, 15, 28, 0.08);
+}
+.login-access h3 {
+  margin: 0;
+  font-size: 16px;
+  letter-spacing: -0.03em;
+}
+.login-access > p {
+  margin: 6px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--navy-muted);
+}
+.login-access .login-partner { margin-top: 8px; }
+.login-rh .login-access a,
+.login-admin .login-access a { color: var(--login-accent); }
 .login-footer {
   display: flex;
   justify-content: space-between;
