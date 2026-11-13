@@ -9,15 +9,7 @@ type AdminRow = { email: string; display_name: string; original: boolean };
 
 export default async function AdministratorsPage() {
   const loaded = await tryApi<AdminRow[]>("/admin/administrators");
-  if (!loaded.data) {
-    return (
-      <>
-        <PageHead eyebrow="Admin" title="Administrateurs" subtitle="Les comptes administrateurs n’ont pas pu être chargés." />
-        <ErrorCard message={loaded.error ?? "La liste n’a pas pu être chargée."} />
-      </>
-    );
-  }
-  const rows = loaded.data;
+  const rows = loaded.data ?? [];
   return (
     <>
       <PageHead
@@ -27,6 +19,7 @@ export default async function AdministratorsPage() {
         image={mediaUrl("demo/heroes/culture.jpg") ?? undefined}
         action={<CreateAdminForm />}
       />
+      {!loaded.data && <ErrorCard message={loaded.error ?? "La liste n’a pas pu être chargée. Le formulaire de création reste disponible."} />}
       {rows.map((row) => (
         <p key={row.email} style={{ margin: 0, display: "flex", gap: 10, alignItems: "center" }}>
           <strong>{row.display_name}</strong>

@@ -147,6 +147,9 @@ export function SignupForm({ categories }: { categories: CategoryOption[] }) {
                   </optgroup>
                 ))}
               </select>
+              {categories.every((c) => c.subs.length === 0) && (
+                <small>La liste est vide. Rechargez la page avec Ctrl+Shift+R.</small>
+              )}
               {form.subcategory_slug && (
                 <small>Activité retenue : {categories.flatMap((c) => c.subs).find((s) => s.slug === form.subcategory_slug)?.name}</small>
               )}

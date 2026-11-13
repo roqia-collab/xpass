@@ -9,7 +9,8 @@ export function CreateRhForm() {
   const [open, setOpen] = useState(false);
   const [pending, start] = useTransition();
   const [msg, setMsg] = useState<{ ok: boolean; text: string }>();
-  const [form, setForm] = useState({ name: "", city_label: "", hr_email: "", password: "" });
+  const [form, setForm] = useState({ name: "", city_label: "Paris", hr_email: "", password: "" });
+  const [handover, setHandover] = useState<{ email: string; password: string }>();
   if (!open) return <button className="btn primary" onClick={() => setOpen(true)}>Créer un service RH</button>;
   return (
     <form
@@ -19,23 +20,27 @@ export function CreateRhForm() {
         e.preventDefault();
         setMsg(undefined);
         start(async () => {
+          const given = { email: form.hr_email.trim(), password: form.password };
           const res = await createRhService({ name: form.name, city_label: form.city_label, hr_email: form.hr_email });
-          const access = await setStaffPassword(form.hr_email, form.password);
-          if (!res.ok && !access.ok) {
-            setMsg({ ok: false, text: res.error });
-            return;
-          }
+          const access = await setStaffPassword(given.email, given.password);
           if (!access.ok) {
-            setMsg({ ok: false, text: `Service RH créé. Le mot de passe n’a pas été enregistré : ${access.error}` });
+            setHandover(undefined);
+            setMsg({
+              ok: false,
+              text: res.ok
+                ? `Service RH créé, mais le mot de passe n’a pas été enregistré : ${access.error}`
+                : res.error,
+            });
             return;
           }
+          setHandover(given);
           setMsg({
             ok: true,
             text: res.ok
-              ? `Service RH créé. Sur rh.xpass.fr, identifiant : ${form.hr_email}. Donnez-lui ce mot de passe.`
-              : `Mot de passe enregistré pour ${form.hr_email}. Ouvrez rh.xpass.fr et entrez ce Gmail et ce mot de passe.`,
+              ? "Service RH créé. Le mot de passe est affiché ci-dessous : copiez-le, il ne sera plus affiché."
+              : "Mot de passe enregistré. Il est affiché ci-dessous.",
           });
-          if (access.ok) setForm({ name: "", city_label: "", hr_email: "", password: "" });
+          setForm({ name: "", city_label: "Paris", hr_email: "", password: "" });
         });
       }}
     >
@@ -47,8 +52,15 @@ export function CreateRhForm() {
       <label className="field"><span>Nom</span><input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required /></label>
       <label className="field"><span>Ville</span><input value={form.city_label} placeholder="Paris" onChange={(e) => setForm({ ...form, city_label: e.target.value })} /></label>
       <label className="field"><span>Gmail de l’administrateur RH, c’est son identifiant</span><input type="email" value={form.hr_email} onChange={(e) => setForm({ ...form, hr_email: e.target.value })} required /></label>
-      <label className="field"><span>Mot de passe à lui remettre</span><input type="text" autoComplete="new-password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required minLength={8} /></label>
+      <label className="field"><span>Mot de passe à lui remettre</span><input type="text" autoComplete="new-password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required minLength={8} /><small>8 caractères minimum, avec une lettre et un chiffre. Il s’affiche après la création.</small></label>
       {msg && <p role={msg.ok ? "status" : "alert"} className={msg.ok ? "notice mint" : "error"}>{msg.text}</p>}
+      {handover && (
+        <div className="notice mint" role="status">
+          <p style={{ margin: 0 }}>Identifiant : <strong>{handover.email}</strong></p>
+          <p style={{ margin: "6px 0 0" }}>Mot de passe : <strong>{handover.password}</strong></p>
+          <p style={{ margin: "6px 0 0" }}>Ouvrez https://rh.xpass.fr et entrez ce Gmail et ce mot de passe.</p>
+        </div>
+      )}
       <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
         <button type="button" className="btn ghost" onClick={() => setOpen(false)}>Fermer</button>
         <button
@@ -58,10 +70,15 @@ export function CreateRhForm() {
           onClick={() => {
             setMsg(undefined);
             start(async () => {
-              const access = await setStaffPassword(form.hr_email, form.password);
-              setMsg(access.ok
-                ? { ok: true, text: `Mot de passe enregistré pour ${form.hr_email}. Ouvrez rh.xpass.fr et entrez ce Gmail et ce mot de passe.` }
-                : { ok: false, text: access.error });
+              const given = { email: form.hr_email.trim(), password: form.password };
+              const access = await setStaffPassword(given.email, given.password);
+              if (!access.ok) {
+                setHandover(undefined);
+                setMsg({ ok: false, text: access.error });
+                return;
+              }
+              setHandover(given);
+              setMsg({ ok: true, text: "Mot de passe enregistré. Il est affiché ci-dessous." });
             });
           }}
         >
