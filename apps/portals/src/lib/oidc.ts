@@ -169,7 +169,14 @@ export async function passwordGrant(username: string, password: string) {
   } catch {
     throw new Error("Le serveur d’identité ne répond pas. Réessayez.");
   }
-  if (!res.ok) throw new Error("Identifiant ou mot de passe incorrect.");
+  if (!res.ok) {
+    const body = (await res.json().catch(() => null)) as { error_description?: string } | null;
+    const detail = body?.error_description ?? "";
+    if (/not fully set up|account is not fully/i.test(detail)) {
+      throw new Error("Le compte n’est pas prêt. Enregistrez à nouveau le mot de passe depuis la demande, puis réessayez.");
+    }
+    throw new Error("Identifiant ou mot de passe incorrect.");
+  }
   return (await res.json()) as { access_token: string; expires_in: number; id_token?: string };
 }
 

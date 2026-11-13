@@ -14,15 +14,23 @@ const HOME = { admin: "/admin", company: "/company", partner: "/partner" } as co
 export async function loginWithPassword(identifiant: string, password: string, space: keyof typeof HOME) {
   const id = identifiant.trim();
   const key = id.toLowerCase();
-  const username = space === "admin" && (key === "admin" || key === "support@xpass.fr") ? "admin@xpass.fr" : id;
+  const username = space === "admin" && (key === "admin" || key === "support@xpass.fr") ? "admin@xpass.fr" : key;
   if (id.length < 2 || password.length < 8) {
     return { ok: false as const, error: "Indiquez l’identifiant et le mot de passe." };
   }
   try {
     const tokens = await passwordGrant(username, password);
     const me = await apiFetch<Me>("/me", { token: tokens.access_token });
-    if (!spacesFor(me).includes(space)) {
-      return { ok: false as const, error: "Ce compte n’a pas accès à cet espace." };
+    const spaces = spacesFor(me);
+    if (!spaces.includes(space)) {
+      const where = spaces.includes("company")
+        ? "Cet identifiant ouvre l’espace RH : https://rh.xpass.fr"
+        : spaces.includes("partner")
+          ? "Cet identifiant ouvre l’espace commerçant : https://xpass.fr/login?espace=1"
+          : spaces.includes("admin")
+            ? "Cet identifiant ouvre l’administration : https://admin.xpass.fr"
+            : "Ce compte n’a pas accès à cet espace.";
+      return { ok: false as const, error: where };
     }
     const jar = await cookies();
     const opts = {

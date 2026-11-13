@@ -1,7 +1,7 @@
 import { Badge, ErrorCard, PageHead } from "@/components/ui";
 import { mediaUrl, tryApi } from "@/lib/session";
 
-import { DecideRequest } from "./decide";
+import { DecideRequest, ResetAccessPassword } from "./decide";
 
 export const metadata = { title: "Demandes" };
 
@@ -38,7 +38,7 @@ export default async function RequestsPage() {
       <PageHead
         eyebrow="Admin"
         title="Demandes d’accès"
-        subtitle="Le formulaire arrive ici, avec l’activité choisie. Vous acceptez, vous choisissez le mot de passe, vous le donnez à la personne. Elle ouvre rh.xpass.fr et entre son Gmail et ce mot de passe."
+        subtitle="Vous acceptez et vous choisissez le mot de passe. Un service RH se connecte sur rh.xpass.fr. Un commerçant se connecte sur xpass.fr, espace commerçant. L’identifiant est le Gmail."
         image={mediaUrl("demo/heroes/culture.jpg") ?? undefined}
       />
       {pending.length === 0 && <p className="muted">Aucune demande en attente.</p>}
@@ -54,7 +54,7 @@ export default async function RequestsPage() {
           </div>
           <p style={{ margin: 0 }}>{row.place_name} · {row.city}</p>
           {row.message && <p className="muted" style={{ margin: 0 }}>{row.message}</p>}
-          <DecideRequest id={row.id} gmail={row.gmail} />
+          <DecideRequest id={row.id} gmail={row.gmail} kind={row.kind} />
         </article>
         );
       })}
@@ -62,9 +62,12 @@ export default async function RequestsPage() {
         <section style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           <h2>Déjà traitées</h2>
           {done.map((row) => (
-            <p key={row.id} className="muted" style={{ margin: 0 }}>
-              {STATUS[row.status]} · {KIND[row.kind]} · {row.full_name} · {row.gmail}
-            </p>
+            <article key={row.id} className="card" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              <p className="muted" style={{ margin: 0 }}>
+                {STATUS[row.status]} · {KIND[row.kind]} · {row.full_name} · {row.gmail}
+              </p>
+              {row.status === "accepted" && <ResetAccessPassword gmail={row.gmail} kind={row.kind} />}
+            </article>
           ))}
         </section>
       )}
