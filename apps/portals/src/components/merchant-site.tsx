@@ -15,6 +15,8 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
+import { AccessSection } from "@/components/access-section";
+
 const SECTIONS: { id: string; label: string; short: string; icon: LucideIcon; text: string }[] = [
   { id: "accueil", label: "Vue d’ensemble", short: "Accueil", icon: Home, text: "L’activité du jour, les prestations et les paiements à venir." },
   { id: "planning", label: "Planning", short: "Planning", icon: CalendarDays, text: "Les créneaux réservés par les membres, jour par jour." },
@@ -86,6 +88,9 @@ export function MerchantSite({ signedIn, partner = false }: { signedIn: boolean;
               </a>
             </div>
           </section>
+          <div style={{ marginTop: 22 }}>
+            <AccessSection kind="merchant" />
+          </div>
         </main>
       </div>
       <nav className="bottom-nav" aria-label="Sections principales">

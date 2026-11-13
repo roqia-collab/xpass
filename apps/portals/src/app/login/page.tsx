@@ -2,6 +2,8 @@ import { ArrowRight, Building2, CircleHelp, Lock, ShieldCheck, Store } from "luc
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 
+import { AccessSection } from "@/components/access-section";
+
 import { LoginForm } from "./login-form";
 import { PasswordLoginForm } from "./admin-form";
 
@@ -203,11 +205,8 @@ export default async function LoginPage({
                 </div>
               </>
             )}
-            {view.ask && (
-              <p className="login-partner">
-                Pas encore de compte ? <a href="/demande">Remplir le formulaire d’accès</a>
-              </p>
-            )}
+            {view.suite === "rh" && <AccessSection kind="rh" />}
+            {suite === "espace" && <AccessSection kind="merchant" />}
           </section>
         </main>
 

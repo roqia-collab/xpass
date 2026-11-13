@@ -8,6 +8,8 @@ import { apiFetch, mediaUrl } from "@/lib/session";
 import { NETWORK_LINE } from "@/lib/roles";
 import type { Settlements } from "@/lib/types";
 
+import { AccessSection } from "@/components/access-section";
+
 import { getCurrentLocation, getManagedLocation } from "./data";
 
 export const metadata = { title: "Vue d’ensemble" };
@@ -16,9 +18,12 @@ export default async function PartnerOverview() {
   const location = await getCurrentLocation();
   if (!location) {
     return (
-      <Notice>
-        Votre identifiant est ouvert. L’établissement apparaît dans l’application dès que le service RH le publie.
-      </Notice>
+      <>
+        <AccessSection kind="merchant" />
+        <Notice>
+          Votre identifiant est ouvert. L’établissement apparaît dans l’application dès que le service RH le publie.
+        </Notice>
+      </>
     );
   }
   const cover = mediaUrl(location.cover_image_key);
@@ -42,6 +47,7 @@ export default async function PartnerOverview() {
         subtitle={`${location.address_line}, ${location.postal_code} ${location.city_name}`}
         image={cover ?? undefined}
       />
+      <AccessSection kind="merchant" />
       <Notice>
         {NETWORK_LINE}
         {affiliation?.organization_name ? ` Service RH : ${affiliation.organization_name}.` : ""}

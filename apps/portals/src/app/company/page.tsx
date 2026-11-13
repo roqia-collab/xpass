@@ -8,6 +8,8 @@ import { tryApi } from "@/lib/session";
 import { NETWORK_LINE } from "@/lib/roles";
 import type { CompanyInvoice, CompanyOverview, CompanyPolicy } from "@/lib/types";
 
+import { AccessSection } from "@/components/access-section";
+
 import { PolicyEditor } from "./forms";
 
 export const metadata = { title: "Budgets" };
@@ -28,6 +30,7 @@ export default async function CompanyBudgets() {
         <PageHead eyebrow="RH" title="Espace RH" subtitle="Votre service est ouvert." />
         <ErrorCard message={overview.error ?? "Les budgets n’ont pas pu être chargés."} />
         <Link href="/company/commercants" className="btn primary">Vos commerçants</Link>
+        <AccessSection kind="rh" />
       </>
     );
   }
@@ -39,6 +42,7 @@ export default async function CompanyBudgets() {
         <PageHead eyebrow="RH" title="Espace ouvert" subtitle={o.organization_name || "Votre service RH"} />
         <Notice>Les budgets apparaîtront avec les salariés. Vous pouvez déjà ajouter vos commerçants.</Notice>
         <Link href="/company/commercants" className="btn primary">Vos commerçants</Link>
+        <AccessSection kind="rh" />
       </>
     );
   }
@@ -58,6 +62,7 @@ export default async function CompanyBudgets() {
         subtitle={`${o.organization_name} · proposez à vos salariés des avantages bien-être, culture et loisirs.`}
         action={o.contract?.is_demo ? <Badge tone="lavender">Démo</Badge> : undefined}
       />
+      <AccessSection kind="rh" />
       {!o.contract && <Notice>Aucun contrat XPASS n’est actif pour votre organisation : contactez l’équipe XPASS.</Notice>}
       {o.contract && o.contract.status !== "active" && (
         <Notice>Contrat {o.contract.status === "suspended" ? "suspendu" : o.contract.status} : aucune allocation n’est effectuée.</Notice>
