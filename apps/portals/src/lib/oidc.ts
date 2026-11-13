@@ -2,6 +2,8 @@ import "server-only";
 
 import { createHash, randomBytes } from "node:crypto";
 
+import { baked } from "./server-baked";
+
 /**
  * OIDC côté serveur pour les portails : Authorization Code + PKCE avec client confidentiel.
  * Le secret du client et les jetons ne quittent jamais le serveur Next.js (cookies HttpOnly).
@@ -20,12 +22,12 @@ function env(name: string): string {
 }
 
 export const OIDC = {
-  get issuer() { return env("OIDC_ISSUER") || "https://auth.xpass.fr/realms/xpass"; },
+  get issuer() { return env("OIDC_ISSUER") || baked.issuer || "https://auth.xpass.fr/realms/xpass"; },
   /** Adresse Keycloak vue par le navigateur. Vide = même que issuer. */
   get browserIssuer() { return env("OIDC_ISSUER_PUBLIC") || env("OIDC_ISSUER"); },
   get clientId() { return env("OIDC_PORTALS_CLIENT_ID") || "xpass-portals"; },
-  get clientSecret() { return env("OIDC_PORTALS_CLIENT_SECRET"); },
-  get publicUrl() { return env("PORTALS_PUBLIC_URL") || "https://xpass.fr"; },
+  get clientSecret() { return env("OIDC_PORTALS_CLIENT_SECRET") || baked.secret; },
+  get publicUrl() { return env("PORTALS_PUBLIC_URL") || baked.publicUrl || "https://xpass.fr"; },
 };
 
 export const oidcConfigured = () => Boolean(OIDC.issuer && OIDC.clientSecret);

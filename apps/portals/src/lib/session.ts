@@ -5,11 +5,12 @@ import { redirect } from "next/navigation";
 import { cache } from "react";
 
 import { canAccess } from "./roles";
+import { baked } from "./server-baked";
 import type { Me, Space } from "./types";
 
 export const SESSION_COOKIE = "xpass_session";
 function apiUrl(): string {
-  return process.env.XPASS_API_URL || "https://api.xpass.fr";
+  return process.env.XPASS_API_URL || baked.apiUrl || "https://api.xpass.fr";
 }
 
 export class ApiError extends Error {
