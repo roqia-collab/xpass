@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 
-import { createMerchant, locateAddress, setMerchantVisibility, updateMerchant, uploadMerchantPhoto } from "./actions";
+import { createMerchant, locateAddress, setMerchantPassword, setMerchantVisibility, updateMerchant, uploadMerchantPhoto } from "./actions";
 
 export interface MerchantDraft {
   display_name: string;
@@ -36,6 +36,7 @@ function Fields({
   const [msg, setMsg] = useState<{ ok: boolean; text: string }>();
   const [place, setPlace] = useState<{ label: string; latitude: number; longitude: number } | null>(null);
   const [form, setForm] = useState(initial);
+  const [password, setPassword] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const set = (key: keyof MerchantDraft) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setPlace(null);
@@ -64,6 +65,10 @@ function Fields({
           setMsg({ ok: false, text: "Vérifiez l’adresse avant d’enregistrer. Elle doit exister dans la Base Adresse Nationale." });
           return;
         }
+        if (!merchantId && (password.length < 8 || !/[a-zA-Z]/.test(password) || !/\d/.test(password))) {
+          setMsg({ ok: false, text: "Choisissez un mot de passe d’au moins 8 caractères, avec une lettre et un chiffre." });
+          return;
+        }
         setMsg(undefined);
         start(async () => {
           const res = merchantId ? await updateMerchant(merchantId, form) : await createMerchant(form);
@@ -82,7 +87,19 @@ function Fields({
               return;
             }
           }
-          setMsg({ ok: true, text: merchantId ? "Commerçant mis à jour." : "Commerçant publié dans l’application, avec cette adresse." });
+          if (!merchantId) {
+            const access = await setMerchantPassword(form.owner_email, password);
+            if (!access.ok) {
+              setMsg({ ok: false, text: `Commerçant publié. Le mot de passe n’a pas été enregistré : ${access.error}` });
+              return;
+            }
+          }
+          setMsg({
+            ok: true,
+            text: merchantId
+              ? "Commerçant mis à jour."
+              : `Commerçant publié dans l’application. Identifiant : ${form.owner_email}. Donnez-lui ce mot de passe. Il se connecte avec « Continuer avec un e-mail ».`,
+          });
           onDone?.();
         });
       }}
@@ -92,7 +109,13 @@ function Fields({
         L’adresse est vérifiée sur la carte officielle. La photo apparaît dans l’application. Seule Paris est ouverte.
       </p>
       <label className="field"><span>Nom commercial</span><input value={form.display_name} onChange={set("display_name")} required /></label>
-      <label className="field"><span>E-mail du responsable</span><input type="email" value={form.owner_email} onChange={set("owner_email")} required /></label>
+      <label className="field"><span>Gmail du responsable, c’est son identifiant</span><input type="email" value={form.owner_email} onChange={set("owner_email")} required /></label>
+      {!merchantId && (
+        <label className="field">
+          <span>Mot de passe à lui remettre</span>
+          <input type="text" autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+        </label>
+      )}
       <label className="field"><span>Nom de l’établissement</span><input value={form.location_name} onChange={set("location_name")} required /></label>
       <label className="field">
         <span>Activité</span>

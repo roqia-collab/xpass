@@ -77,6 +77,15 @@ const merchantForm = z.object({
   price_credits: z.coerce.number().int().min(1).max(500),
 });
 
+export async function setMerchantPassword(email: string, password: string) {
+  const p = z.object({
+    email: z.string().trim().toLowerCase().email("Adresse e-mail invalide."),
+    password: z.string().min(8, "8 caractères minimum, avec une lettre et un chiffre.").max(72),
+  }).safeParse({ email, password });
+  if (!p.success) return { ok: false, error: p.error.issues[0].message } as const;
+  return call("/company/login-password", "POST", p.data);
+}
+
 export async function createMerchant(raw: unknown) {
   const p = merchantForm.safeParse(raw);
   if (!p.success) return { ok: false, error: p.error.issues[0].message } as const;

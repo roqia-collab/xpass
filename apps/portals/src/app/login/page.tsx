@@ -41,6 +41,7 @@ const FACES: Record<
     icon: typeof Store;
     suite: "inscription" | "espace" | "admin" | "rh" | null;
     join: boolean;
+    ask: boolean;
   }
 > = {
   xpass: {
@@ -58,6 +59,7 @@ const FACES: Record<
     icon: Store,
     suite: "inscription",
     join: true,
+    ask: true,
   },
   admin: {
     meta: "Connexion administration",
@@ -74,6 +76,7 @@ const FACES: Record<
     icon: ShieldCheck,
     suite: "admin",
     join: false,
+    ask: false,
   },
   rh: {
     meta: "Connexion RH",
@@ -90,6 +93,7 @@ const FACES: Record<
     icon: Building2,
     suite: "rh",
     join: false,
+    ask: true,
   },
 };
 
@@ -177,8 +181,7 @@ export default async function LoginPage({
               </a>
             )}
             <p className="login-secure">
-              <Lock size={14} aria-hidden /> Le mot de passe est saisi sur la page sécurisée.
-              {view.join ? " Un e-mail de confirmation est envoyé pour un nouveau compte." : ""}
+              <Lock size={14} aria-hidden /> L’identifiant est le Gmail. Le mot de passe, remis par l’administrateur ou le RH, se saisit avec « Continuer avec un e-mail ».
             </p>
             {demo && (
               <>
@@ -191,12 +194,9 @@ export default async function LoginPage({
                 </div>
               </>
             )}
-            {view.join && (
+            {view.ask && (
               <p className="login-partner">
-                Pas encore partenaire ?{" "}
-                <a href="/devenir-partenaire">
-                  Rejoindre le réseau <ArrowRight size={16} aria-hidden />
-                </a>
+                Pas encore de compte ? <a href="/demande">Remplir le formulaire d’accès</a>
               </p>
             )}
           </section>

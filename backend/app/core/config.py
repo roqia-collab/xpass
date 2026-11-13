@@ -22,6 +22,11 @@ class Settings(BaseSettings):
     oidc_issuer: str = ""
     oidc_audience: str = ""
     oidc_jwks_url: str = ""
+    # Création des mots de passe professionnels (réseau interne Docker, jamais public).
+    keycloak_internal_url: str = "http://keycloak:8080"
+    keycloak_admin_user: str = ""
+    keycloak_admin_password: str = ""
+    keycloak_realm: str = "xpass"
 
     # Stockage objet (compatible S3)
     s3_endpoint: str = "http://localhost:8333"

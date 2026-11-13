@@ -2,7 +2,7 @@ import { ArrowRight, CalendarDays, Flower2, Users } from "lucide-react";
 import Link from "next/link";
 
 import { LiveRefresh } from "@/components/live-refresh";
-import { Badge, ErrorCard, Kpi, Notice, PageHead } from "@/components/ui";
+import { Badge, Kpi, Notice, PageHead } from "@/components/ui";
 import { money } from "@/lib/money";
 import { apiFetch, mediaUrl } from "@/lib/session";
 import { NETWORK_LINE } from "@/lib/roles";
@@ -14,7 +14,13 @@ export const metadata = { title: "Vue d’ensemble" };
 
 export default async function PartnerOverview() {
   const location = await getCurrentLocation();
-  if (!location) return <ErrorCard message="Aucun établissement n’est rattaché à ce compte." />;
+  if (!location) {
+    return (
+      <Notice>
+        Votre identifiant est ouvert. L’établissement apparaît dans l’application dès que le service RH le publie.
+      </Notice>
+    );
+  }
   const cover = mediaUrl(location.cover_image_key);
   const staff = location.team.filter((t) => t.kind === "staff");
   const [visits, managed, settlements, affiliation] = await Promise.all([

@@ -103,6 +103,15 @@ const rhService = z.object({
   hr_email: email,
 });
 
+export async function setStaffPassword(emailAddress: string, password: string) {
+  const p = z.object({
+    email: email,
+    password: z.string().min(8, "8 caractères minimum, avec une lettre et un chiffre.").max(72),
+  }).safeParse({ email: emailAddress, password });
+  if (!p.success) return { ok: false, error: p.error.issues[0].message } as const;
+  return call("/admin/login-password", p.data);
+}
+
 export async function createRhService(raw: unknown) {
   const p = rhService.safeParse(raw);
   if (!p.success) return { ok: false, error: p.error.issues[0].message } as const;

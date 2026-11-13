@@ -107,6 +107,9 @@ export function MerchantPresentation({ signedIn, partner = false }: { signedIn: 
           <a className="btn primary" href="/devenir-partenaire">
             Rejoindre le réseau <ArrowRight size={18} aria-hidden />
           </a>
+          <a className="btn outline" href="/demande" style={{ marginLeft: 12 }}>
+            Demander un accès
+          </a>
         </div>
       </section>
 
@@ -117,6 +120,7 @@ export function MerchantPresentation({ signedIn, partner = false }: { signedIn: 
           <a href="#offre">Offre</a>
           <a href="#parcours">Parcours</a>
           <a href="/tableau">Tableau de bord</a>
+          <a href="/demande">Demander un accès</a>
           <a href={enter}>{label}</a>
         </nav>
         <nav aria-label="Informations légales">

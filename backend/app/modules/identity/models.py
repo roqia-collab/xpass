@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import Boolean, CheckConstraint, DateTime, Enum, ForeignKey, Index, String, UniqueConstraint
+from sqlalchemy import Boolean, CheckConstraint, DateTime, Enum, ForeignKey, Index, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base, IdMixin, TimestampMixin
@@ -72,3 +72,23 @@ class Membership(IdMixin, TimestampMixin, Base):
     role: Mapped[str] = mapped_column(Enum(*ROLE, name="role", native_enum=False, create_constraint=True, length=32))
 
     user: Mapped[User] = relationship(back_populates="memberships")
+
+
+class AccessRequest(IdMixin, TimestampMixin, Base):
+    """Formulaire public : une personne demande un accès RH ou commerçant. L'admin accepte et choisit le mot de passe."""
+
+    __tablename__ = "access_requests"
+    __table_args__ = (
+        CheckConstraint("kind IN ('rh', 'merchant')", name="kind"),
+        CheckConstraint("status IN ('pending', 'accepted', 'refused')", name="status"),
+        Index("ix_access_requests_status", "status"),
+    )
+    kind: Mapped[str] = mapped_column(String(16))
+    gmail: Mapped[str] = mapped_column(String(254))
+    full_name: Mapped[str] = mapped_column(String(120))
+    place_name: Mapped[str] = mapped_column(String(160))
+    city: Mapped[str] = mapped_column(String(80))
+    message: Mapped[str] = mapped_column(Text, default="")
+    status: Mapped[str] = mapped_column(String(16), default="pending")
+    decided_by: Mapped[uuid.UUID | None] = mapped_column()
+    decided_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
