@@ -20,14 +20,21 @@ export function CreateRhForm() {
         setMsg(undefined);
         start(async () => {
           const res = await createRhService({ name: form.name, city_label: form.city_label, hr_email: form.hr_email });
-          if (!res.ok) {
+          const access = await setStaffPassword(form.hr_email, form.password);
+          if (!res.ok && !access.ok) {
             setMsg({ ok: false, text: res.error });
             return;
           }
-          const access = await setStaffPassword(form.hr_email, form.password);
-          setMsg(access.ok
-            ? { ok: true, text: `Service RH créé. Sur rh.xpass.fr, identifiant : ${form.hr_email}. Donnez-lui ce mot de passe.` }
-            : { ok: false, text: `Service RH créé. Le mot de passe n’a pas été enregistré : ${access.error}` });
+          if (!access.ok) {
+            setMsg({ ok: false, text: `Service RH créé. Le mot de passe n’a pas été enregistré : ${access.error}` });
+            return;
+          }
+          setMsg({
+            ok: true,
+            text: res.ok
+              ? `Service RH créé. Sur rh.xpass.fr, identifiant : ${form.hr_email}. Donnez-lui ce mot de passe.`
+              : `Mot de passe enregistré pour ${form.hr_email}. Ouvrez rh.xpass.fr et entrez ce Gmail et ce mot de passe.`,
+          });
           if (access.ok) setForm({ name: "", city_label: "", hr_email: "", password: "" });
         });
       }}
@@ -44,6 +51,22 @@ export function CreateRhForm() {
       {msg && <p role={msg.ok ? "status" : "alert"} className={msg.ok ? "notice mint" : "error"}>{msg.text}</p>}
       <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
         <button type="button" className="btn ghost" onClick={() => setOpen(false)}>Fermer</button>
+        <button
+          type="button"
+          className="btn outline"
+          disabled={pending}
+          onClick={() => {
+            setMsg(undefined);
+            start(async () => {
+              const access = await setStaffPassword(form.hr_email, form.password);
+              setMsg(access.ok
+                ? { ok: true, text: `Mot de passe enregistré pour ${form.hr_email}. Ouvrez rh.xpass.fr et entrez ce Gmail et ce mot de passe.` }
+                : { ok: false, text: access.error });
+            });
+          }}
+        >
+          Enregistrer le mot de passe
+        </button>
         <button className="btn primary" disabled={pending}>Créer</button>
       </div>
     </form>
