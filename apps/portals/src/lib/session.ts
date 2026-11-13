@@ -17,6 +17,16 @@ function apiUrl(): string {
   return value;
 }
 
+/** Charge une section sans faire tomber toute la page si l’API refuse ou ne répond pas. */
+export async function tryApi<T>(path: string): Promise<{ data: T | null; error: string | null }> {
+  try {
+    return { data: await apiFetch<T>(path), error: null };
+  } catch (e) {
+    if (e instanceof ApiError) return { data: null, error: e.message };
+    return { data: null, error: "Le serveur n’a pas répondu." };
+  }
+}
+
 export class ApiError extends Error {
   constructor(
     public status: number,

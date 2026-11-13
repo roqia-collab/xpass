@@ -1,5 +1,5 @@
-import { Badge, PageHead } from "@/components/ui";
-import { apiFetch, mediaUrl } from "@/lib/session";
+import { Badge, ErrorCard, PageHead } from "@/components/ui";
+import { mediaUrl, tryApi } from "@/lib/session";
 
 import { CreateAdminForm } from "./create-admin";
 
@@ -8,7 +8,16 @@ export const metadata = { title: "Administrateurs" };
 type AdminRow = { email: string; display_name: string; original: boolean };
 
 export default async function AdministratorsPage() {
-  const rows = await apiFetch<AdminRow[]>("/admin/administrators");
+  const loaded = await tryApi<AdminRow[]>("/admin/administrators");
+  if (!loaded.data) {
+    return (
+      <>
+        <PageHead eyebrow="Admin" title="Administrateurs" subtitle="Les comptes administrateurs n’ont pas pu être chargés." />
+        <ErrorCard message={loaded.error ?? "La liste n’a pas pu être chargée."} />
+      </>
+    );
+  }
+  const rows = loaded.data;
   return (
     <>
       <PageHead

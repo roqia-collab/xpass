@@ -1,14 +1,14 @@
 import { ArrowRight, Calculator, MessageCircle, Users } from "lucide-react";
 import Link from "next/link";
 
-import { Badge, PageHead } from "@/components/ui";
+import { Badge, ErrorCard, PageHead } from "@/components/ui";
+import { VenuePhotos } from "@/components/venue-photos";
 
 import { DemoLocationsPanel } from "./demo-locations";
 import { ACTOR_LABEL, DISPUTE_LABEL, type AdminOverview, type LaunchStatus } from "@/lib/admin-types";
 import { COMMERCIAL_LABEL, NETWORK_LINE } from "@/lib/roles";
 import { OpenCityForm } from "./launch-city";
-import { VenuePhotos } from "@/components/venue-photos";
-import { apiFetch, mediaUrl } from "@/lib/session";
+import { mediaUrl, tryApi } from "@/lib/session";
 import type { CommercialStatus } from "@/lib/types";
 
 export const metadata = { title: "Pilotage des opérations" };
@@ -18,8 +18,24 @@ const timeFmt = new Intl.DateTimeFormat("fr-FR", { dateStyle: "short", timeStyle
 
 /** Maquette 26 — files réelles : vérifications partenaires, litiges, rapprochement, journal d'audit. */
 export default async function AdminOverviewPage() {
-  const o = await apiFetch<AdminOverview>("/admin/overview");
-  const launch = await apiFetch<LaunchStatus>("/admin/launch").catch(() => null);
+  const loaded = await tryApi<AdminOverview>("/admin/overview");
+  if (!loaded.data) {
+    return (
+      <>
+        <PageHead eyebrow="Admin" title="Pilotage des opérations" subtitle="La vue d’ensemble n’a pas pu être chargée." />
+        <ErrorCard message={loaded.error ?? "Les données n’ont pas pu être chargées."} />
+      </>
+    );
+  }
+  const o = {
+    ...loaded.data,
+    merchants: loaded.data.merchants ?? [],
+    disputes: loaded.data.disputes ?? [],
+    audit: loaded.data.audit ?? [],
+    payouts: loaded.data.payouts ?? {},
+    demo_locations: loaded.data.demo_locations ?? {},
+  };
+  const launch = await tryApi<LaunchStatus>("/admin/launch").then((r) => r.data);
   const p = o.payouts;
   return (
     <>
@@ -57,14 +73,14 @@ export default async function AdminOverviewPage() {
         <Queue title="Commerçants à vérifier" href="/admin/partenaires" empty="Aucun dossier en attente.">
           {o.merchants.map((m) => (
             <Row key={m.id} href={`/admin/partenaires/${m.id}`} title={m.title} subtitle={m.subtitle} at={m.at} image={mediaUrl(m.image_key)}>
-              <Badge tone={COMMERCIAL_LABEL[m.status as CommercialStatus].tone}>{COMMERCIAL_LABEL[m.status as CommercialStatus].label}</Badge>
+              <Badge tone={(COMMERCIAL_LABEL[m.status as CommercialStatus] ?? { tone: "grey" as const, label: m.status }).tone}>{(COMMERCIAL_LABEL[m.status as CommercialStatus] ?? { label: m.status }).label}</Badge>
             </Row>
           ))}
         </Queue>
         <Queue title="File des litiges" href="/admin/litiges" empty="Aucun litige ouvert.">
           {o.disputes.map((d) => (
             <Row key={d.id} href={`/admin/litiges/${d.id}`} title={d.title} subtitle={d.subtitle} at={d.at} image={mediaUrl(d.image_key)}>
-              <Badge tone={DISPUTE_LABEL[d.status].tone}>{DISPUTE_LABEL[d.status].label}</Badge>
+              <Badge tone={(DISPUTE_LABEL[d.status] ?? { tone: "grey" as const, label: d.status }).tone}>{(DISPUTE_LABEL[d.status] ?? { label: d.status }).label}</Badge>
             </Row>
           ))}
         </Queue>
@@ -90,7 +106,7 @@ export default async function AdminOverviewPage() {
               {o.audit.map((a, i) => (
                 <tr key={i}>
                   <td>{timeFmt.format(new Date(a.created_at))}</td>
-                  <td>{a.actor_name ?? ACTOR_LABEL[a.actor_kind]}</td>
+                  <td>{a.actor_name ?? ACTOR_LABEL[a.actor_kind] ?? a.actor_kind}</td>
                   <td>{a.action}</td>
                   <td>{a.object_label}</td>
                   <td>{a.reason ?? "—"}</td>

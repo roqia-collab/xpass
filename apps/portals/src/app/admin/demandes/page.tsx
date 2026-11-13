@@ -1,5 +1,5 @@
-import { Badge, PageHead } from "@/components/ui";
-import { apiFetch, mediaUrl } from "@/lib/session";
+import { Badge, ErrorCard, PageHead } from "@/components/ui";
+import { mediaUrl, tryApi } from "@/lib/session";
 
 import { DecideRequest } from "./decide";
 
@@ -21,7 +21,16 @@ const KIND = { rh: "Service RH", merchant: "Commerçant" };
 const STATUS = { pending: "En attente", accepted: "Acceptée", refused: "Refusée" };
 
 export default async function RequestsPage() {
-  const rows = await apiFetch<RequestRow[]>("/admin/access-requests");
+  const loaded = await tryApi<RequestRow[]>("/admin/access-requests");
+  if (!loaded.data) {
+    return (
+      <>
+        <PageHead eyebrow="Admin" title="Demandes d’accès" subtitle="Les demandes du formulaire public arrivent ici." />
+        <ErrorCard message={loaded.error ?? "Les demandes n’ont pas pu être chargées."} />
+      </>
+    );
+  }
+  const rows = loaded.data;
   const pending = rows.filter((row) => row.status === "pending");
   const done = rows.filter((row) => row.status !== "pending");
   return (
