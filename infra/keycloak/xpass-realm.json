@@ -74,7 +74,7 @@
       "publicClient": false,
       "secret": "dev-portals-secret-0123456789abcdef",
       "standardFlowEnabled": true,
-      "directAccessGrantsEnabled": false,
+      "directAccessGrantsEnabled": true,
       "implicitFlowEnabled": false,
       "redirectUris": [
         "http://localhost:3000/auth/callback"

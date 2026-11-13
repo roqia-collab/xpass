@@ -18,6 +18,8 @@
   --paper: #f3f4f7;
   --glow: rgba(255, 59, 31, 0.22);
   --radius: 18px;
+  --font-display: "Syne", system-ui, sans-serif;
+  --font-body: "Manrope", system-ui, sans-serif;
   --font-sans: var(--font-body), system-ui, sans-serif;
   --font-serif: var(--font-display), system-ui, sans-serif;
 }

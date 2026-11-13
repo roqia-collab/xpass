@@ -39,10 +39,11 @@ def _call(method: str, url: str, token: str | None = None, payload: dict | None 
         raise OpsError("identity_unreachable", "Le serveur d'identité ne répond pas.", 503) from exc
 
 
-def set_login_password(*, email: str, password: str, display_name: str) -> None:
+def set_login_password(*, email: str, password: str, display_name: str, username: str | None = None) -> None:
     """Crée le compte de connexion, ou remplace le mot de passe s'il existe déjà. Google reste possible."""
     password = check_password(password)
     email = email.strip().lower()
+    login = (username or email).strip().lower()
     settings = get_settings()
     if not settings.keycloak_admin_user or not settings.keycloak_admin_password:
         raise OpsError(
@@ -68,9 +69,13 @@ def set_login_password(*, email: str, password: str, display_name: str) -> None:
     if not token:
         raise OpsError("identity_unconfigured", "Le serveur d'identité a refusé la création du mot de passe.", 503)
 
-    query = urllib.parse.urlencode({"email": email, "exact": "true"})
+    query = urllib.parse.urlencode({"username": login, "exact": "true"})
     status, _, body = _call("GET", f"{base}/admin/realms/{realm}/users?{query}", token)
     users = json.loads(body.decode() or "[]") if status == 200 else []
+    if not users and login != email:
+        by_email = urllib.parse.urlencode({"email": email, "exact": "true"})
+        status, _, body = _call("GET", f"{base}/admin/realms/{realm}/users?{by_email}", token)
+        users = json.loads(body.decode() or "[]") if status == 200 else []
     user_id = users[0]["id"] if users else None
     if user_id is None:
         status, headers, _ = _call(
@@ -78,11 +83,11 @@ def set_login_password(*, email: str, password: str, display_name: str) -> None:
             f"{base}/admin/realms/{realm}/users",
             token,
             {
-                "username": email,
+                "username": login,
                 "email": email,
                 "enabled": True,
                 "emailVerified": True,
-                "firstName": (display_name or email.split("@")[0])[:80],
+                "firstName": (display_name or login.split("@")[0])[:80],
                 "requiredActions": [],
             },
         )

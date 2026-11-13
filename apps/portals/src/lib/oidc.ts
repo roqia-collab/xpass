@@ -111,6 +111,27 @@ export function authorizeUrl(
   return url.toString();
 }
 
+/** Connexion par identifiant et mot de passe, sans Google. Le secret reste sur le serveur. */
+export async function passwordGrant(username: string, password: string) {
+  if (!oidcConfigured()) throw new Error("La connexion sécurisée n'est pas configurée.");
+  const res = await fetch(`${OIDC.issuer}/protocol/openid-connect/token`, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      grant_type: "password",
+      username,
+      password,
+      scope: "openid profile email",
+      client_id: OIDC.clientId,
+      client_secret: OIDC.clientSecret,
+    }),
+    cache: "no-store",
+    signal: AbortSignal.timeout(10_000),
+  });
+  if (!res.ok) throw new Error("Identifiant ou mot de passe incorrect.");
+  return (await res.json()) as { access_token: string; expires_in: number; id_token?: string };
+}
+
 export async function exchangeCode(code: string, verifier: string, origin = OIDC.publicUrl) {
   const res = await fetch(`${OIDC.issuer}/protocol/openid-connect/token`, {
     method: "POST",

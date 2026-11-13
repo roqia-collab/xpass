@@ -87,6 +87,38 @@ def notify_admin(db: Session, row: AccessRequest) -> None:
         return
 
 
+def create_gmail_admin(db: Session, *, gmail: str, full_name: str, password: str) -> User:
+    """Un administrateur déjà en place ouvre un autre admin. L'identifiant est le Gmail."""
+    email = _gmail(gmail)
+    name = _clip(full_name, 120, "Le nom")
+    set_login_password(email=email, password=password, display_name=name)
+    user = db.scalar(select(User).where(User.email == email))
+    if user is None:
+        user = User(email=email, display_name=name, is_active=True, is_demo=False)
+        db.add(user)
+        db.flush()
+    elif user.deleted_at is not None or not user.is_active:
+        raise OpsError("account_closed", "Ce compte est fermé.", 409)
+    else:
+        user.display_name = name
+    exists = db.scalar(select(Membership.id).where(
+        Membership.user_id == user.id, Membership.role == "platform_admin", Membership.scope_type == "platform",
+    ))
+    if exists is None:
+        db.add(Membership(user_id=user.id, scope_type="platform", scope_id=None, role="platform_admin"))
+        db.flush()
+    return user
+
+
+def list_admins(db: Session) -> list[User]:
+    return list(db.scalars(
+        select(User)
+        .join(Membership, Membership.user_id == User.id)
+        .where(Membership.role == "platform_admin", User.deleted_at.is_(None))
+        .order_by(User.created_at)
+    ))
+
+
 def list_requests(db: Session) -> list[AccessRequest]:
     return list(db.scalars(select(AccessRequest).order_by(AccessRequest.created_at.desc()).limit(80)))
 

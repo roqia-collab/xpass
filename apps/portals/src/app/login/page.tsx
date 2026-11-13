@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 
 import { LoginForm } from "./login-form";
+import { AdminLoginForm } from "./admin-form";
 
 export async function generateMetadata({
   searchParams,
@@ -68,7 +69,7 @@ const FACES: Record<
     word: "ADMIN",
     kicker: "Administration",
     title: "Le réseau, sous vos yeux.",
-    text: "Ouvrez les services RH, suivez les établissements, gardez la main sur la plateforme.",
+    text: "Entrez l’identifiant d’origine, ou le Gmail d’un admin que vous avez créé.",
     pills: ["Réseau", "Comptes", "Contrôle"],
     panel: "Administration",
     panelText: "Réservé à l’équipe XPASS.",
@@ -169,19 +170,28 @@ export default async function LoginPage({
                 {message}
               </p>
             )}
-            <a className="btn primary login-cta" href={authHref("google", suite)}>
-              Continuer avec Google <ArrowRight size={18} aria-hidden />
-            </a>
-            <a className="btn outline login-cta" href={authHref("email", suite)}>
-              Continuer avec un e-mail
-            </a>
-            {view.join && (
-              <a className="btn ghost login-cta" href={authHref("create", suite)}>
-                Créer un compte avec un e-mail
-              </a>
+            {view.suite === "admin" ? (
+              <AdminLoginForm />
+            ) : (
+              <>
+                <a className="btn primary login-cta" href={authHref("google", suite)}>
+                  Continuer avec Google <ArrowRight size={18} aria-hidden />
+                </a>
+                <a className="btn outline login-cta" href={authHref("email", suite)}>
+                  Continuer avec un e-mail
+                </a>
+                {view.join && (
+                  <a className="btn ghost login-cta" href={authHref("create", suite)}>
+                    Créer un compte avec un e-mail
+                  </a>
+                )}
+              </>
             )}
             <p className="login-secure">
-              <Lock size={14} aria-hidden /> L’identifiant est le Gmail. Le mot de passe, remis par l’administrateur ou le RH, se saisit avec « Continuer avec un e-mail ».
+              <Lock size={14} aria-hidden />{" "}
+              {view.suite === "admin"
+                ? "L’admin d’origine entre avec son identifiant. Les autres admins entrent avec leur Gmail."
+                : "L’identifiant est le Gmail. Le mot de passe, remis par l’administrateur ou le RH, se saisit avec « Continuer avec un e-mail »."}
             </p>
             {demo && (
               <>

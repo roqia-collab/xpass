@@ -30,6 +30,7 @@ class PasswordIn(BaseModel):
 class StaffPasswordIn(BaseModel):
     email: str = Field(max_length=254)
     password: str = Field(min_length=8, max_length=72)
+    full_name: str = Field("", max_length=120)
 
 
 def _http(exc: OpsError | LaunchError | OnboardingError) -> HTTPException:
@@ -105,6 +106,29 @@ def refuse_access_request(request_id: uuid.UUID, principal: CurrentPrincipal, db
         raise _http(exc) from exc
     _run(db, lambda: requests_service.refuse_request(db, request_id, actor_id=principal.user.id))
     return {"ok": True}
+
+
+@router.post("/admin/administrators", status_code=201)
+def create_administrator(body: StaffPasswordIn, principal: CurrentPrincipal, db: DbSession) -> dict:
+    try:
+        require(principal, ("platform_admin",))
+    except OpsError as exc:
+        raise _http(exc) from exc
+    full_name = (body.full_name or "").strip() or body.email.split("@")[0]
+    _run(db, lambda: requests_service.create_gmail_admin(db, gmail=body.email, full_name=full_name, password=body.password))
+    return {"ok": True}
+
+
+@router.get("/admin/administrators")
+def administrators(principal: CurrentPrincipal, db: DbSession) -> list[dict]:
+    try:
+        require(principal, ("platform_admin", "platform_operator"))
+    except OpsError as exc:
+        raise _http(exc) from exc
+    return [
+        {"email": user.email, "display_name": user.display_name, "original": user.email == "admin@xpass.fr"}
+        for user in requests_service.list_admins(db)
+    ]
 
 
 @router.post("/admin/login-password")
