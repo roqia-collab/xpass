@@ -8,7 +8,9 @@ import { canAccess } from "./roles";
 import type { Me, Space } from "./types";
 
 export const SESSION_COOKIE = "xpass_session";
-const API_URL = process.env.XPASS_API_URL ?? "http://localhost:8000";
+function apiUrl(): string {
+  return process.env["XPASS_API_URL"] ?? "http://localhost:8000";
+}
 
 export class ApiError extends Error {
   constructor(
@@ -24,7 +26,7 @@ export async function apiFetch<T>(path: string, init?: RequestInit & { token?: s
   const token = init?.token ?? (await cookies()).get(SESSION_COOKIE)?.value;
   let res: Response;
   try {
-    res = await fetch(`${API_URL}/api/v1${path}`, {
+    res = await fetch(`${apiUrl()}/api/v1${path}`, {
       ...init,
       headers: {
         Accept: "application/json",
@@ -49,7 +51,7 @@ export async function apiFetch<T>(path: string, init?: RequestInit & { token?: s
 export async function apiFetchRaw(path: string): Promise<Response> {
   const token = (await cookies()).get(SESSION_COOKIE)?.value;
   try {
-    return await fetch(`${API_URL}/api/v1${path}`, {
+    return await fetch(`${apiUrl()}/api/v1${path}`, {
       headers: token ? { Authorization: `Bearer ${token}` } : {},
       cache: "no-store",
       signal: AbortSignal.timeout(15_000),

@@ -31,6 +31,7 @@ def main() -> None:
 
     realm = json.loads((ROOT / "infra/keycloak/xpass-realm.json").read_text(encoding="utf-8"))
     app, pro = f"https://app.{args.domain}", f"https://pro.{args.domain}"
+    apex, www = f"https://{args.domain}", f"https://www.{args.domain}"
     admin, rh = f"https://admin.{args.domain}", f"https://rh.{args.domain}"
     realm["users"] = []
     realm["sslRequired"] = "all"
@@ -46,11 +47,16 @@ def main() -> None:
             c["webOrigins"] = [app]
             c["attributes"]["post.logout.redirect.uris"] = f"{app}/*##xpass://auth/*"
         elif c["clientId"] == "xpass-portals":
-            c["baseUrl"] = f"{pro}/"
+            c["baseUrl"] = f"{apex}/"
             c["secret"] = args.portals_secret
-            c["redirectUris"] = [f"{pro}/auth/callback", f"{admin}/auth/callback", f"{rh}/auth/callback"]
-            c["webOrigins"] = [pro, admin, rh]
-            c["attributes"]["post.logout.redirect.uris"] = f"{pro}/login##{admin}/login##{rh}/login"
+            c["redirectUris"] = [
+                f"{apex}/auth/callback", f"{www}/auth/callback", f"{pro}/auth/callback",
+                f"{admin}/auth/callback", f"{rh}/auth/callback",
+            ]
+            c["webOrigins"] = [apex, www, pro, admin, rh]
+            c["attributes"]["post.logout.redirect.uris"] = (
+                f"{apex}/login##{www}/login##{pro}/login##{admin}/login##{rh}/login"
+            )
     out = ROOT / "infra/production/keycloak/xpass-realm.prod.json"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(realm, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

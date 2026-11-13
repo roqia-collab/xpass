@@ -6,7 +6,9 @@ import { z } from "zod";
 
 import { SESSION_COOKIE } from "@/lib/session";
 
-const API_URL = process.env.XPASS_API_URL ?? "http://localhost:8000";
+function apiUrl(): string {
+  return process.env["XPASS_API_URL"] ?? "http://localhost:8000";
+}
 const id = z.string().uuid();
 
 /** Envoi d'une photo (multipart) à l'API, qui la contrôle et la réencode. Le jeton reste côté serveur. */
@@ -24,7 +26,7 @@ export async function uploadPhoto(locationId: string, offerId: string | null, fo
     ? `/partner/locations/${locationId}/offers/${offerId}/image`
     : `/partner/locations/${locationId}/cover`;
   try {
-    const res = await fetch(`${API_URL}/api/v1${path}`, {
+    const res = await fetch(`${apiUrl()}/api/v1${path}`, {
       method: "POST",
       body,
       headers: token ? { Authorization: `Bearer ${token}` } : {},

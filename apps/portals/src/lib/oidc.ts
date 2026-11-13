@@ -6,13 +6,18 @@ import { createHash, randomBytes } from "node:crypto";
  * OIDC côté serveur pour les portails : Authorization Code + PKCE avec client confidentiel.
  * Le secret du client et les jetons ne quittent jamais le serveur Next.js (cookies HttpOnly).
  */
+/** Lecture au démarrage du processus : Next ne doit pas figer ces valeurs à la compilation. */
+function env(name: string): string {
+  return process.env[name] ?? "";
+}
+
 export const OIDC = {
-  issuer: process.env.OIDC_ISSUER ?? "",
-  /** Adresse Keycloak vue par le navigateur (tunnel public). Vide = même que issuer. */
-  browserIssuer: process.env.OIDC_ISSUER_PUBLIC || process.env.OIDC_ISSUER || "",
-  clientId: process.env.OIDC_PORTALS_CLIENT_ID ?? "xpass-portals",
-  clientSecret: process.env.OIDC_PORTALS_CLIENT_SECRET ?? "",
-  publicUrl: process.env.PORTALS_PUBLIC_URL ?? "http://localhost:3000",
+  get issuer() { return env("OIDC_ISSUER"); },
+  /** Adresse Keycloak vue par le navigateur. Vide = même que issuer. */
+  get browserIssuer() { return env("OIDC_ISSUER_PUBLIC") || env("OIDC_ISSUER"); },
+  get clientId() { return env("OIDC_PORTALS_CLIENT_ID") || "xpass-portals"; },
+  get clientSecret() { return env("OIDC_PORTALS_CLIENT_SECRET"); },
+  get publicUrl() { return env("PORTALS_PUBLIC_URL") || "http://localhost:3000"; },
 };
 
 export const oidcConfigured = () => Boolean(OIDC.issuer && OIDC.clientSecret);
@@ -25,7 +30,7 @@ export const isState = (s: string) => /^[A-Za-z0-9_-]{16,64}$/.test(s);
 export const ID_TOKEN_COOKIE = "xpass_id_token";
 /** Origines autorisées pour la connexion. La première reste l’adresse principale (commerçant). */
 export function allowedOrigins(): string[] {
-  const extra = (process.env.PORTALS_PUBLIC_URLS ?? "").split(",").map((s) => s.trim()).filter(Boolean);
+  const extra = (env("PORTALS_PUBLIC_URLS")).split(",").map((s) => s.trim()).filter(Boolean);
   return [...new Set([OIDC.publicUrl, ...extra].filter(Boolean))];
 }
 

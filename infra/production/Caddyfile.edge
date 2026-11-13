@@ -1,0 +1,30 @@
+# HTTPS pour la connexion et l'API seulement.
+# Les sites xpass.fr, admin et rh restent sur l'hébergement Node.
+{
+	email {$ACME_EMAIL}
+}
+
+(securite) {
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+	encode zstd gzip
+}
+
+api.{$DOMAIN} {
+	import securite
+	request_body {
+		max_size 10MB
+	}
+	reverse_proxy api:8000
+}
+
+auth.{$DOMAIN} {
+	import securite
+	@admin path /admin*
+	respond @admin "Introuvable" 404
+	reverse_proxy keycloak:8080
+}

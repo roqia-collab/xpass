@@ -1,0 +1,9 @@
+# Complète la pile de production : sites publics déjà en ligne, seulement l'API et Keycloak ici.
+services:
+  api:
+    environment:
+      PORTALS_PUBLIC_URL: https://xpass.fr
+      APP_PUBLIC_URL: https://xpass.fr/client
+      CORS_ORIGINS: https://xpass.fr,https://www.xpass.fr,https://admin.xpass.fr,https://rh.xpass.fr
+    command: >
+      sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 2 --proxy-headers --forwarded-allow-ips='*'"

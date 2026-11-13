@@ -189,7 +189,7 @@ export async function uploadAdminEventPhoto(id: string, file: File): Promise<Act
   if (!token) return { ok: false, error: "Session expirée." };
   const body = new FormData();
   body.set("file", file, file.name);
-  const res = await fetch(`${process.env.XPASS_API_URL ?? "http://localhost:8000"}/api/v1/admin/events/${id}/cover`, {
+  const res = await fetch(`${process.env["XPASS_API_URL"] ?? "http://localhost:8000"}/api/v1/admin/events/${id}/cover`, {
     method: "POST",
     headers: { Authorization: `Bearer ${token}` },
     body,
