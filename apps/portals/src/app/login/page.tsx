@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 
 import { LoginForm } from "./login-form";
-import { AdminLoginForm } from "./admin-form";
+import { PasswordLoginForm } from "./admin-form";
 
 export async function generateMetadata({
   searchParams,
@@ -169,8 +169,8 @@ export default async function LoginPage({
                 {message}
               </p>
             )}
-            {view.suite === "admin" ? (
-              <AdminLoginForm />
+            {view.suite === "admin" || suite === "rh" || suite === "espace" ? (
+              <PasswordLoginForm space={view.suite === "admin" ? "admin" : suite === "rh" ? "company" : "partner"} />
             ) : (
               <>
                 <a className="btn primary login-cta" href={authHref("google", suite)}>
@@ -190,7 +190,7 @@ export default async function LoginPage({
               <Lock size={14} aria-hidden />{" "}
               {view.suite === "admin"
                 ? "L’admin d’origine entre avec support@xpass.fr ou l’identifiant admin. Les autres admins entrent avec leur Gmail."
-                : "L’identifiant est le Gmail. Le mot de passe, remis par l’administrateur ou le RH, se saisit avec « Continuer avec un e-mail »."}
+                : "Entrez le Gmail et le mot de passe remis par l’administrateur ou le service RH."}
             </p>
             {demo && (
               <>

@@ -38,14 +38,17 @@ export default async function RequestsPage() {
       <PageHead
         eyebrow="Admin"
         title="Demandes d’accès"
-        subtitle="Le formulaire arrive ici. Vous acceptez, vous choisissez le mot de passe, vous le donnez à la personne. L’identifiant est son Gmail. Elle se connecte avec « Continuer avec un e-mail »."
+        subtitle="Le formulaire arrive ici, avec l’activité choisie. Vous acceptez, vous choisissez le mot de passe, vous le donnez à la personne. Elle ouvre rh.xpass.fr et entre son Gmail et ce mot de passe."
         image={mediaUrl("demo/heroes/culture.jpg") ?? undefined}
       />
       {pending.length === 0 && <p className="muted">Aucune demande en attente.</p>}
-      {pending.map((row) => (
+      {pending.map((row) => {
+        const activity = row.message.startsWith("Activité :") ? row.message.split("\n")[0].replace("Activité :", "").trim() : "";
+        return (
         <article key={row.id} className="card" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
             <Badge tone="lavender">{KIND[row.kind]}</Badge>
+            {activity && <Badge tone="coral">{activity}</Badge>}
             <strong>{row.full_name}</strong>
             <span className="muted">{row.gmail}</span>
           </div>
@@ -53,7 +56,8 @@ export default async function RequestsPage() {
           {row.message && <p className="muted" style={{ margin: 0 }}>{row.message}</p>}
           <DecideRequest id={row.id} gmail={row.gmail} />
         </article>
-      ))}
+        );
+      })}
       {done.length > 0 && (
         <section style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           <h2>Déjà traitées</h2>

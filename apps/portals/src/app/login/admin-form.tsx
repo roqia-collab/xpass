@@ -2,9 +2,9 @@
 
 import { useState, useTransition } from "react";
 
-import { loginAdmin } from "./admin-actions";
+import { loginWithPassword } from "./admin-actions";
 
-export function AdminLoginForm() {
+export function PasswordLoginForm({ space }: { space: "admin" | "company" | "partner" }) {
   const [identifiant, setIdentifiant] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -18,13 +18,13 @@ export function AdminLoginForm() {
         e.preventDefault();
         setError("");
         start(async () => {
-          const res = await loginAdmin(identifiant, password);
+          const res = await loginWithPassword(identifiant, password, space);
           if (res && !res.ok) setError(res.error);
         });
       }}
     >
       <label className="field">
-        <span>Identifiant</span>
+        <span>{space === "admin" ? "Identifiant" : "Adresse Gmail"}</span>
         <input autoComplete="username" value={identifiant} onChange={(e) => setIdentifiant(e.target.value)} required />
       </label>
       <label className="field">

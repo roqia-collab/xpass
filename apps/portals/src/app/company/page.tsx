@@ -1,10 +1,10 @@
 import { ArrowRight, Coins, TrendingUp, UserPlus, Users } from "lucide-react";
 import Link from "next/link";
 
-import { Badge, Kpi, Notice, PageHead } from "@/components/ui";
+import { Badge, ErrorCard, Kpi, Notice, PageHead } from "@/components/ui";
 import { money } from "@/lib/money";
 import { VenuePhotos } from "@/components/venue-photos";
-import { apiFetch } from "@/lib/session";
+import { tryApi } from "@/lib/session";
 import { NETWORK_LINE } from "@/lib/roles";
 import type { CompanyInvoice, CompanyOverview, CompanyPolicy } from "@/lib/types";
 
@@ -18,10 +18,30 @@ const COLORS = ["var(--coral)", "var(--lavender-strong)", "var(--navy)", "#e8b6f
 
 /** Maquette 23 — budgets : indicateurs, politique (versionnée), utilisation agrégée par catégorie. */
 export default async function CompanyBudgets() {
-  const [o, invoices] = await Promise.all([
-    apiFetch<CompanyOverview>("/company/overview"),
-    apiFetch<CompanyInvoice[]>("/company/invoices"),
+  const [overview, invoiceLoad] = await Promise.all([
+    tryApi<CompanyOverview>("/company/overview"),
+    tryApi<CompanyInvoice[]>("/company/invoices"),
   ]);
+  if (!overview.data) {
+    return (
+      <>
+        <PageHead eyebrow="RH" title="Espace RH" subtitle="Votre service est ouvert." />
+        <ErrorCard message={overview.error ?? "Les budgets n’ont pas pu être chargés."} />
+        <Link href="/company/commercants" className="btn primary">Vos commerçants</Link>
+      </>
+    );
+  }
+  const o = overview.data;
+  const invoices = invoiceLoad.data ?? [];
+  if (!o.report || !o.categories) {
+    return (
+      <>
+        <PageHead eyebrow="RH" title="Espace ouvert" subtitle={o.organization_name || "Votre service RH"} />
+        <Notice>Les budgets apparaîtront avec les salariés. Vous pouvez déjà ajouter vos commerçants.</Notice>
+        <Link href="/company/commercants" className="btn primary">Vos commerçants</Link>
+      </>
+    );
+  }
   const r = o.report;
   const c = o.contract?.currency ?? r.currency ?? "EUR";
   const names = Object.fromEntries(o.categories.map((x) => [x.slug, x.name]));

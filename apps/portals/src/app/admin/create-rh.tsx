@@ -26,7 +26,7 @@ export function CreateRhForm() {
           }
           const access = await setStaffPassword(form.hr_email, form.password);
           setMsg(access.ok
-            ? { ok: true, text: `Service RH créé. Identifiant : ${form.hr_email}. Donnez-lui ce mot de passe. Connexion : Continuer avec un e-mail.` }
+            ? { ok: true, text: `Service RH créé. Sur rh.xpass.fr, identifiant : ${form.hr_email}. Donnez-lui ce mot de passe.` }
             : { ok: false, text: `Service RH créé. Le mot de passe n’a pas été enregistré : ${access.error}` });
           if (access.ok) setForm({ name: "", city_label: "", hr_email: "", password: "" });
         });
