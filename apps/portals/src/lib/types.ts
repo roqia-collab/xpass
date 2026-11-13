@@ -73,6 +73,7 @@ export interface AdminMerchant {
   commercial_status: CommercialStatus;
   psp_status: PspStatus;
   location_count: number;
+  activities?: string[];
   is_demo: boolean;
   created_at: string;
 }

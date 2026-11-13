@@ -46,6 +46,7 @@ export function MerchantsTable() {
             <tr>
               <th>Commerçant</th>
               <th>Ville</th>
+              <th>Activité</th>
               <th>Établissements</th>
               <th>Statut commercial</th>
               <th>Statut PSP</th>
@@ -60,6 +61,7 @@ export function MerchantsTable() {
                   <div className="muted" style={{ fontSize: 13 }}>{m.legal_name}</div>
                 </td>
                 <td>{m.city_label}</td>
+                <td>{m.activities?.length ? m.activities.join(", ") : "—"}</td>
                 <td>{m.location_count}</td>
                 <td><Badge tone={COMMERCIAL_LABEL[m.commercial_status].tone}>{COMMERCIAL_LABEL[m.commercial_status].label}</Badge></td>
                 <td><Badge tone={m.psp_status === "verified" ? "mint" : "grey"}>{PSP_LABEL[m.psp_status]}</Badge></td>
@@ -68,7 +70,7 @@ export function MerchantsTable() {
             ))}
             {query.data.items.length === 0 && (
               <tr>
-                <td colSpan={6} className="muted">Aucun commerçant avec ce statut.</td>
+                <td colSpan={7} className="muted">Aucun commerçant avec ce statut.</td>
               </tr>
             )}
           </tbody>
