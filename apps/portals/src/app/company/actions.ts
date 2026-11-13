@@ -119,7 +119,7 @@ export async function uploadMerchantPhoto(id: string, form: FormData) {
   const body = new FormData();
   body.set("file", file, file.name);
   try {
-    const res = await fetch(`${process.env["XPASS_API_URL"] ?? "http://localhost:8000"}/api/v1/company/merchants/${id}/cover`, {
+    const res = await fetch(`${process.env.XPASS_API_URL || "https://api.xpass.fr"}/api/v1/company/merchants/${id}/cover`, {
       method: "POST",
       body,
       headers: token ? { Authorization: `Bearer ${token}` } : {},
@@ -171,7 +171,7 @@ export async function uploadCompanyEventPhoto(id: string, file: File): Promise<{
   if (!token) return { ok: false, error: "Session expirée." };
   const body = new FormData();
   body.set("file", file, file.name);
-  const res = await fetch(`${process.env["XPASS_API_URL"] ?? "http://localhost:8000"}/api/v1/company/events/${id}/cover`, {
+  const res = await fetch(`${process.env.XPASS_API_URL || "https://api.xpass.fr"}/api/v1/company/events/${id}/cover`, {
     method: "POST",
     headers: { Authorization: `Bearer ${token}` },
     body,

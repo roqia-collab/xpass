@@ -9,7 +9,7 @@ import type { Me, Space } from "./types";
 
 export const SESSION_COOKIE = "xpass_session";
 function apiUrl(): string {
-  return process.env["XPASS_API_URL"] ?? "http://localhost:8000";
+  return process.env.XPASS_API_URL || "https://api.xpass.fr";
 }
 
 export class ApiError extends Error {

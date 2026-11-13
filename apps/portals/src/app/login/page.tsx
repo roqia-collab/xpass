@@ -20,7 +20,6 @@ const ERRORS: Record<string, string> = {
   annule: "Connexion annulée.",
   etat: "La connexion a expiré ou n’est pas valide. Réessayez.",
   refus: "Connexion refusée par le fournisseur d’identité ou l’API.",
-  oidc: "La connexion sécurisée n’est pas configurée.",
 };
 
 type Door = "xpass" | "admin" | "rh";
@@ -128,7 +127,7 @@ export default async function LoginPage({
   const code = erreur ?? error ?? "";
   const message = ERRORS[code];
   const demo = process.env.NODE_ENV !== "production" && process.env.PORTAL_DEV_LOGIN === "true";
-  const support = process.env["SUPPORT_EMAIL"];
+  const support = process.env.SUPPORT_EMAIL;
   const helpHref = support ? `mailto:${support}` : "/legal/mentions-legales";
   const Icon = view.icon;
   return (

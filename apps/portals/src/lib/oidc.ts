@@ -6,18 +6,26 @@ import { createHash, randomBytes } from "node:crypto";
  * OIDC côté serveur pour les portails : Authorization Code + PKCE avec client confidentiel.
  * Le secret du client et les jetons ne quittent jamais le serveur Next.js (cookies HttpOnly).
  */
-/** Lecture au démarrage du processus : Next ne doit pas figer ces valeurs à la compilation. */
+/** Accès statique : Next recopie ces variables dans le serveur au moment de la compilation Hostinger. */
 function env(name: string): string {
-  return process.env[name] ?? "";
+  const value =
+    name === "OIDC_ISSUER" ? process.env.OIDC_ISSUER
+    : name === "OIDC_ISSUER_PUBLIC" ? process.env.OIDC_ISSUER_PUBLIC
+    : name === "OIDC_PORTALS_CLIENT_ID" ? process.env.OIDC_PORTALS_CLIENT_ID
+    : name === "OIDC_PORTALS_CLIENT_SECRET" ? process.env.OIDC_PORTALS_CLIENT_SECRET
+    : name === "PORTALS_PUBLIC_URL" ? process.env.PORTALS_PUBLIC_URL
+    : name === "PORTALS_PUBLIC_URLS" ? process.env.PORTALS_PUBLIC_URLS
+    : "";
+  return value ?? "";
 }
 
 export const OIDC = {
-  get issuer() { return env("OIDC_ISSUER"); },
+  get issuer() { return env("OIDC_ISSUER") || "https://auth.xpass.fr/realms/xpass"; },
   /** Adresse Keycloak vue par le navigateur. Vide = même que issuer. */
   get browserIssuer() { return env("OIDC_ISSUER_PUBLIC") || env("OIDC_ISSUER"); },
   get clientId() { return env("OIDC_PORTALS_CLIENT_ID") || "xpass-portals"; },
   get clientSecret() { return env("OIDC_PORTALS_CLIENT_SECRET"); },
-  get publicUrl() { return env("PORTALS_PUBLIC_URL") || "http://localhost:3000"; },
+  get publicUrl() { return env("PORTALS_PUBLIC_URL") || "https://xpass.fr"; },
 };
 
 export const oidcConfigured = () => Boolean(OIDC.issuer && OIDC.clientSecret);
@@ -113,7 +121,7 @@ export function authorizeUrl(
 
 /** Connexion par identifiant et mot de passe, sans Google. Le secret reste sur le serveur. */
 export async function passwordGrant(username: string, password: string) {
-  if (!oidcConfigured()) throw new Error("La connexion sécurisée n'est pas configurée.");
+  if (!OIDC.clientSecret) throw new Error("Identifiant ou mot de passe incorrect.");
   const res = await fetch(`${OIDC.issuer}/protocol/openid-connect/token`, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },

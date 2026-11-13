@@ -7,7 +7,7 @@ import { z } from "zod";
 import { SESSION_COOKIE } from "@/lib/session";
 
 function apiUrl(): string {
-  return process.env["XPASS_API_URL"] ?? "http://localhost:8000";
+  return process.env.XPASS_API_URL || "https://api.xpass.fr";
 }
 const id = z.string().uuid();
 
