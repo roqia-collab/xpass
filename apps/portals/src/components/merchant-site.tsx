@@ -87,14 +87,16 @@ export function MerchantSite({ signedIn, partner = false }: { signedIn: boolean;
           <h1>{current.label}</h1>
           {current.id === "accueil" && (
             <>
-              <p className="muted dash-lead">Les places libres, les visites du jour et le net à recevoir. Vos chiffres s’affichent après la connexion.</p>
-              <div className="grid grid-3">
-                <article className="card dash-kpi"><span>Places ouvertes</span><strong>À publier</strong><small>Vous choisissez les créneaux.</small></article>
-                <article className="card dash-kpi"><span>Visites du jour</span><strong>QR code</strong><small>Chaque scan est une visite.</small></article>
-                <article className="card dash-kpi"><span>Net de la semaine</span><strong>90 %</strong><small>1 crédit = 1,00 € brut.</small></article>
+              <p className="muted dash-lead">Vos chiffres arrivent après la connexion. En attendant, une semaine se calcule ici.</p>
+              <div className="dash-film" aria-hidden>
+                <div>
+                  {["/visuels/login-sport.jpg", "/visuels/login-beaute.jpg", "/visuels/login-atelier.jpg", "/visuels/promo-partenaires.jpg", "/visuels/login-sport.jpg", "/visuels/login-beaute.jpg", "/visuels/login-atelier.jpg", "/visuels/promo-partenaires.jpg"].map((src, index) => (
+                    <img key={`${src}-${index}`} src={src} alt="" />
+                  ))}
+                </div>
               </div>
               <section className="card dash-block">
-                <h2>Estimez les revenus</h2>
+                <h2>Une semaine, en euros</h2>
                 <RevenueCalculator />
               </section>
               <section className="card dash-block">
