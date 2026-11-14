@@ -125,7 +125,8 @@ export function PartnerStart({ defaultKind = "merchant" }: { defaultKind?: "merc
         });
       }}
     >
-      <h2>Vous souhaitez remplir vos créneaux ?</h2>
+      <p className="form-kicker">Ouverture du compte</p>
+      <h2>Vos créneaux, remplis.</h2>
       <p>L’adresse de l’entreprise reçoit l’identifiant et le mot de passe.</p>
       <div className="kind-pills" role="group" aria-label="Type de demande">
         <button type="button" className={kind === "merchant" ? "on" : ""} onClick={() => setKind("merchant")}>Commerçant</button>
