@@ -5,10 +5,10 @@ import { LiveRefresh } from "@/components/live-refresh";
 import { Badge, ErrorCard, Notice } from "@/components/ui";
 import { initials } from "@/lib/roles";
 import { apiFetch } from "@/lib/session";
-import type { PartnerBlock, PartnerBooking } from "@/lib/types";
+import type { PartnerBlock, PartnerBooking, PartnerCalendar } from "@/lib/types";
 
 import { getManagedLocation } from "../data";
-import { BlockForm } from "../manage-forms";
+import { BlockForm, CalendarSync } from "../manage-forms";
 
 export const metadata = { title: "Planning" };
 
@@ -32,9 +32,11 @@ export default async function PlanningPage({ searchParams }: { searchParams: Pro
   const weekday = (day.getUTCDay() + 6) % 7; // 0 = lundi
   const from = week ? new Date(day.getTime() - weekday * DAY) : day;
   const span = week ? 7 : 1;
-  const [allBookings, blocks] = await Promise.all([
+  const emptyCalendar: PartnerCalendar = { resource_id: null, import_url: "", export_url: "", last_synced_at: null, last_error: null, keys: [] };
+  const [allBookings, blocks, calendar] = await Promise.all([
     apiFetch<PartnerBooking[]>(`/partner/bookings?date=${isoDate(from)}&days=${span}`),
     apiFetch<PartnerBlock[]>(`/partner/locations/${location.id}/blocks?start=${isoDate(from)}&days=${span}`),
+    apiFetch<PartnerCalendar>(`/partner/locations/${location.id}/calendar`).catch(() => emptyCalendar),
   ]);
   const bookings = allBookings.filter((b) => b.location_id === location.id);
   const step = week ? 7 * DAY : DAY;
@@ -74,6 +76,7 @@ export default async function PlanningPage({ searchParams }: { searchParams: Pro
 
       <aside style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         <Link className="btn primary" href="/partner/scanner"><ScanLine size={20} /> Scanner un client</Link>
+        <CalendarSync location={location} calendar={calendar} />
         {!week && <BlockForm location={location} day={dayStr} blocks={blocks} />}
         <div className="card">
           <strong>Visites</strong>

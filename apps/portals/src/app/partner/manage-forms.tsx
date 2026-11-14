@@ -4,7 +4,7 @@ import { ImagePlus, Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
-import type { BookingModeEditable, ManagedLocation, PartnerBlock } from "@/lib/types";
+import type { BookingModeEditable, ManagedLocation, PartnerBlock, PartnerCalendar } from "@/lib/types";
 
 import * as actions from "./manage-actions";
 import { uploadPhoto } from "./photo-actions";
@@ -580,6 +580,79 @@ export function BlockForm({ location, day, blocks }: { location: ManagedLocation
           </button>
         </div>
       ))}
+    </div>
+  );
+}
+
+export function CalendarSync({ location, calendar }: { location: ManagedLocation; calendar: PartnerCalendar }) {
+  const active = location.resources.filter((r) => r.is_active);
+  const [pending, start] = useTransition();
+  const [url, setUrl] = useState(calendar.import_url);
+  const [resource, setResource] = useState(calendar.resource_id || active[0]?.id || "");
+  const [note, setNote] = useState(calendar.last_error || "");
+  const [tone, setTone] = useState<"ok" | "error">(calendar.last_error ? "error" : "ok");
+  const [secret, setSecret] = useState("");
+  const [exportUrl, setExportUrl] = useState(calendar.export_url);
+  if (!active.length) return null;
+  const run = (fn: () => Promise<Awaited<ReturnType<typeof actions.saveCalendar>>>, success: string) => {
+    start(async () => {
+      const res = await fn();
+      if (!res.ok) {
+        setTone("error");
+        setNote(res.error);
+        return;
+      }
+      setTone(res.detail ? "error" : "ok");
+      setNote(res.detail || success);
+      if (res.exportUrl) setExportUrl(res.exportUrl);
+      if (res.secret) setSecret(res.secret);
+    });
+  };
+  return (
+    <div className="card" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      <strong>Agenda</strong>
+      <p className="muted" style={{ fontSize: 13 }}>
+        Collez le lien secret iCal de Google Agenda ou Outlook. Chaque événement occupé ferme cette ressource.
+        Ajoutez le lien XPASS dans le même agenda pour y voir les réservations.
+      </p>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          run(() => actions.saveCalendar(location.id, { resource_id: resource, import_url: url }), "Agenda enregistré.");
+        }}
+        style={{ display: "flex", flexDirection: "column", gap: 8 }}
+      >
+        <label className="field">
+          <span>Ressource fermée par l’agenda</span>
+          <select value={resource} onChange={(e) => setResource(e.target.value)}>
+            {active.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
+          </select>
+        </label>
+        <label className="field">
+          <span>Lien secret de l’agenda</span>
+          <input value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://calendar.google.com/calendar/ical/…" />
+        </label>
+        <button className="btn primary" type="submit" disabled={pending}>{pending ? "Lecture…" : "Enregistrer"}</button>
+      </form>
+      {exportUrl && (
+        <button className="btn outline" type="button" disabled={pending} onClick={() => run(() => actions.refreshCalendar(location.id), "Agenda relu.")}>
+          Relire l’agenda
+        </button>
+      )}
+      {exportUrl && (
+        <label className="field">
+          <span>Lien à ajouter dans l’agenda</span>
+          <input readOnly value={exportUrl} onFocus={(e) => e.currentTarget.select()} />
+        </label>
+      )}
+      <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "center" }}>
+        <span style={{ fontSize: 13 }}>{calendar.keys[0] ? `Logiciel · ${calendar.keys[0].prefix}…` : "Aucun logiciel branché"}</span>
+        {calendar.keys[0]
+          ? <button className="btn ghost" type="button" disabled={pending} onClick={() => run(() => actions.revokeCalendarKey(location.id, calendar.keys[0].id), "Clé révoquée.")}>Révoquer</button>
+          : <button className="btn ghost" type="button" disabled={pending} onClick={() => run(() => actions.createCalendarKey(location.id), "Clé créée. Copiez-la maintenant.")}>Créer une clé</button>}
+      </div>
+      {secret && <p className="notice mint">Clé, une seule fois : {secret}</p>}
+      {note && <p role={tone === "error" ? "alert" : "status"} className={tone === "error" ? "error" : "notice mint"}>{note}</p>}
     </div>
   );
 }

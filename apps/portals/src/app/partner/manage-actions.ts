@@ -9,19 +9,33 @@ import { apiFetch } from "@/lib/session";
  * Mutations du portail commerçant (Server Actions : origine vérifiée par Next.js, jeton jamais exposé).
  * Les droits et toutes les règles métier sont contrôlés par l'API ; ici, seulement la forme des données.
  */
-export type ActionResult = { ok: true; bookingsOutsideHours: number; id?: string } | { ok: false; error: string };
+export type ActionResult = {
+  ok: true;
+  bookingsOutsideHours: number;
+  id?: string;
+  exportUrl?: string;
+  secret?: string;
+  detail?: string;
+} | { ok: false; error: string };
 
 const id = z.string().uuid();
 const hhmm = z.string().regex(/^\d{2}:\d{2}$/);
 
 async function call(path: string, method: string, body?: unknown): Promise<ActionResult> {
   try {
-    const res = await apiFetch<{ bookings_outside_hours?: number; id?: string }>(path, {
+    const res = await apiFetch<{ bookings_outside_hours?: number; id?: string; export_url?: string; key?: string; last_error?: string | null }>(path, {
       method,
       body: body === undefined ? undefined : JSON.stringify(body),
     });
     revalidatePath("/partner", "layout");
-    return { ok: true, bookingsOutsideHours: res.bookings_outside_hours ?? 0, id: res.id };
+    return {
+      ok: true,
+      bookingsOutsideHours: res.bookings_outside_hours ?? 0,
+      id: res.id,
+      exportUrl: res.export_url,
+      secret: res.key,
+      detail: res.last_error ?? undefined,
+    };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Erreur inattendue." };
   }
@@ -141,4 +155,26 @@ export async function createBlock(locationId: string, raw: unknown) {
 export async function deleteBlock(locationId: string, blockId: string) {
   if (!id.safeParse(blockId).success) return { ok: false, error: "Requête invalide." } as const;
   return call(`/partner/locations/${locationId}/blocks/${blockId}`, "DELETE");
+}
+
+export async function saveCalendar(locationId: string, raw: unknown) {
+  const parsed = z.object({
+    resource_id: id,
+    import_url: z.string().trim().max(2000).refine((value) => value === "" || value.startsWith("https://"), "Le lien commence par https://"),
+  }).safeParse(raw);
+  if (!parsed.success) return invalid(parsed.error);
+  return call(`/partner/locations/${locationId}/calendar`, "PUT", parsed.data);
+}
+
+export async function refreshCalendar(locationId: string) {
+  return call(`/partner/locations/${locationId}/calendar/sync`, "POST");
+}
+
+export async function createCalendarKey(locationId: string) {
+  return call(`/partner/locations/${locationId}/calendar/keys`, "POST", { label: "Logiciel de réservation" });
+}
+
+export async function revokeCalendarKey(locationId: string, keyId: string) {
+  if (!id.safeParse(keyId).success) return { ok: false, error: "Requête invalide." } as const;
+  return call(`/partner/locations/${locationId}/calendar/keys/${keyId}`, "DELETE");
 }

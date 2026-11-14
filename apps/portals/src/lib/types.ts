@@ -191,6 +191,15 @@ export interface ManagedLocation {
   exceptions: { id: string; day: string; is_closed: boolean; opens_at: string | null; closes_at: string | null; reason: string | null }[];
 }
 
+export interface PartnerCalendar {
+  resource_id: string | null;
+  import_url: string;
+  export_url: string;
+  last_synced_at: string | null;
+  last_error: string | null;
+  keys: { id: string; label: string; prefix: string }[];
+}
+
 export interface PartnerBlock {
   id: string;
   resource_id: string;

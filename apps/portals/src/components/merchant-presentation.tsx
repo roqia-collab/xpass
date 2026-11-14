@@ -221,7 +221,7 @@ export function MerchantPresentation({ signedIn, partner = false }: { signedIn: 
         <div>
           <p className="eyebrow">Planning</p>
           <h2>Tout se tient dans le tableau de bord.</h2>
-          <p>Pas d’autre logiciel à brancher. Vous posez les horaires, les prestations, les photos et le nombre de places. Le membre réserve dans l’application. Vous scannez son QR code.</p>
+          <p>Vous posez les horaires, les prestations, les photos et le nombre de places. Un agenda Google ou Outlook peut fermer les créneaux déjà pris, et recevoir les réservations XPASS. Le membre réserve dans l’application. Vous scannez son QR code.</p>
           <a className="btn primary" href="/tableau">Voir le tableau</a>
         </div>
       </section>

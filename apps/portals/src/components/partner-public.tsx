@@ -38,7 +38,7 @@ export const PARTNER_FAQ = [
   },
   {
     q: "Faut-il un autre logiciel de réservation ?",
-    a: "Non. Les horaires, les prestations, les événements et le scanner sont dans le tableau de bord XPASS. Rien d’autre n’est à brancher.",
+    a: "Le planning XPASS suffit. Vous pouvez aussi coller le lien secret d’un agenda Google ou Outlook : les événements occupés ferment le créneau, et un lien XPASS renvoie vos réservations dans cet agenda. Un logiciel de réservation peut utiliser une clé créée dans le planning.",
   },
   {
     q: "Le prix en crédits peut-il changer ?",
