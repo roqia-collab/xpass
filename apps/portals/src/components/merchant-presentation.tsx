@@ -1,4 +1,4 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Handshake, List, Megaphone } from "lucide-react";
 
 import { PartnerFaq, PartnerStart, RevenueCalculator } from "@/components/partner-public";
 
@@ -9,6 +9,24 @@ const FRAMES = [
   { src: "/visuels/login-beaute.jpg", title: "Beauté", href: "/demande?activite=beaute" },
   { src: "/visuels/login-atelier.jpg", title: "Culture", href: "/demande?activite=culture" },
   { src: "/visuels/promo-partenaires.jpg", title: "Sorties", href: "/demande?activite=sorties" },
+];
+
+const CONCEPT = [
+  {
+    icon: List,
+    title: "Envoyez vos informations",
+    text: "Le formulaire dit qui vous êtes, le nom de l’établissement et l’activité. C’est ce qui ouvre le compte.",
+  },
+  {
+    icon: Handshake,
+    title: "Commencez à utiliser XPASS",
+    text: "Après validation, la fiche est prête : planning, prestations, photos et scanner. Vous n’ouvrez que les places à remplir.",
+  },
+  {
+    icon: Megaphone,
+    title: "Générez des revenus",
+    text: "Les membres réservent ces places et paient en crédits. Vous scannez au comptoir. Chaque semaine, 0,90 € par crédit vous sont versés.",
+  },
 ];
 
 const FLOW = [
@@ -32,6 +50,7 @@ export function MerchantPresentation({ signedIn, partner = false }: { signedIn: 
           <img src="/logo.png" alt="XPASS" />
         </a>
         <nav className="partners-nav" aria-label="Présentation">
+          <a href="#concept">Notre concept</a>
           <a href="#parcours">Le flux</a>
           <a href="#calculateur">Calculateur</a>
           <a href="#questions">Questions</a>
@@ -110,6 +129,20 @@ export function MerchantPresentation({ signedIn, partner = false }: { signedIn: 
           ))}
         </div>
       </div>
+
+      <section className="concept" id="concept">
+        <h2>Notre concept</h2>
+        <ol>
+          {CONCEPT.map((step) => (
+            <li key={step.title}>
+              <step.icon size={36} strokeWidth={1.6} aria-hidden />
+              <strong>{step.title}</strong>
+              <p>{step.text}</p>
+              {step.title.startsWith("Envoyez") && <a href="#demarrer">Remplir le formulaire</a>}
+            </li>
+          ))}
+        </ol>
+      </section>
 
       <section className="flux" id="parcours">
         <p className="eyebrow">Le flux</p>
