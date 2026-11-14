@@ -1075,3 +1075,8 @@ p { margin: 0; }
   .login-stage-bg, .show-hero > img, .show-ticker div { animation: none; }
   .login-panel { animation: none; }
 }
+@media (max-width: 960px) {
+  .show-nav, .site-nav { display: none; }
+  .show-header { justify-content: space-between; gap: 12px; }
+  .show-header .btn { margin-left: auto; flex: none; padding: 10px 16px; }
+}
