@@ -7,7 +7,6 @@ import { mediaUrl } from "@/lib/session";
 
 import { BOOKING_MODE_LABEL, getManagedLocation } from "../data";
 import { OfferActiveToggle, OfferEditor } from "../manage-forms";
-import { PhotoUpload } from "../photo-upload";
 
 export const metadata = { title: "Prestations" };
 
@@ -67,10 +66,12 @@ export default async function PrestationsPage({ searchParams }: { searchParams: 
       </div>
       {panel && (
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          {editing && location.can_edit && (
-            <PhotoUpload locationId={location.id} offerId={editing.id} current={mediaUrl(editing.image_key)} label="Photo de la prestation" />
-          )}
-          <OfferEditor key={editing?.id ?? "new"} location={location} offer={editing} />
+          <OfferEditor
+            key={editing?.id ?? "new"}
+            location={location}
+            offer={editing}
+            currentPhoto={editing ? mediaUrl(editing.image_key) : null}
+          />
         </div>
       )}
     </div>

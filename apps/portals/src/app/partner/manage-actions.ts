@@ -9,19 +9,19 @@ import { apiFetch } from "@/lib/session";
  * Mutations du portail commerçant (Server Actions : origine vérifiée par Next.js, jeton jamais exposé).
  * Les droits et toutes les règles métier sont contrôlés par l'API ; ici, seulement la forme des données.
  */
-export type ActionResult = { ok: true; bookingsOutsideHours: number } | { ok: false; error: string };
+export type ActionResult = { ok: true; bookingsOutsideHours: number; id?: string } | { ok: false; error: string };
 
 const id = z.string().uuid();
 const hhmm = z.string().regex(/^\d{2}:\d{2}$/);
 
 async function call(path: string, method: string, body?: unknown): Promise<ActionResult> {
   try {
-    const res = await apiFetch<{ bookings_outside_hours?: number }>(path, {
+    const res = await apiFetch<{ bookings_outside_hours?: number; id?: string }>(path, {
       method,
       body: body === undefined ? undefined : JSON.stringify(body),
     });
     revalidatePath("/partner", "layout");
-    return { ok: true, bookingsOutsideHours: res.bookings_outside_hours ?? 0 };
+    return { ok: true, bookingsOutsideHours: res.bookings_outside_hours ?? 0, id: res.id };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Erreur inattendue." };
   }

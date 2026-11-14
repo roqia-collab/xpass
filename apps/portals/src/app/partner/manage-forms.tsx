@@ -1,12 +1,13 @@
 "use client";
 
-import { Plus, Trash2 } from "lucide-react";
+import { ImagePlus, Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
 import type { BookingModeEditable, ManagedLocation, PartnerBlock } from "@/lib/types";
 
 import * as actions from "./manage-actions";
+import { uploadPhoto } from "./photo-actions";
 
 type Result = Awaited<ReturnType<typeof actions.saveHours>>;
 
@@ -48,9 +49,12 @@ const MODE_LABEL: Record<BookingModeEditable, string> = {
 
 type Offer = ManagedLocation["offers"][number];
 
-export function OfferEditor({ location, offer }: { location: ManagedLocation; offer?: Offer }) {
+export function OfferEditor({ location, offer, currentPhoto = null }: { location: ManagedLocation; offer?: Offer; currentPhoto?: string | null }) {
   const router = useRouter();
   const { pending, run, feedback } = useAction();
+  const [preview, setPreview] = useState<string | null>(currentPhoto);
+  const [photo, setPhoto] = useState<File | null>(null);
+  const [createdId, setCreatedId] = useState<string | null>(null);
   const v = offer?.current;
   const [mode, setMode] = useState<BookingModeEditable>(
     offer && offer.booking_mode !== "external_ticket" ? offer.booking_mode : "resource_slot",
@@ -71,11 +75,28 @@ export function OfferEditor({ location, offer }: { location: ManagedLocation; of
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setForm({ ...form, [k]: e.target.value });
 
+  const sendPhoto = async (offerId: string, file: File) => {
+    const data = new FormData();
+    data.set("file", file, file.name);
+    return uploadPhoto(location.id, offerId, data);
+  };
+
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     const payload = { ...form, capacity: mode === "resource_slot" || !form.capacity ? null : form.capacity, resource_ids: resourceIds };
     run(
-      () => actions.saveOffer(location.id, offer?.id ?? null, payload, offer ? undefined : { booking_mode: mode, publish }),
+      async () => {
+        const knownId = offer?.id ?? createdId;
+        const res = await actions.saveOffer(location.id, knownId, payload, knownId ? undefined : { booking_mode: mode, publish });
+        if (!res.ok) return res;
+        if (res.id) setCreatedId(res.id);
+        if (!photo) return res;
+        const offerId = knownId ?? res.id;
+        if (!offerId) return { ok: false, error: "Prestation créée, mais la photo n’a pas pu être liée." };
+        const up = await sendPhoto(offerId, photo);
+        if (!up.ok) return { ok: false, error: `La prestation est enregistrée. La photo n’a pas été envoyée : ${up.error} Vous pouvez la renvoyer.` };
+        return res;
+      },
       offer ? "Nouvelle version enregistrée. Les réservations existantes gardent leur prix." : "Prestation créée.",
       () => !offer && router.push("/partner/prestations"),
     );
@@ -101,6 +122,34 @@ export function OfferEditor({ location, offer }: { location: ManagedLocation; of
         <span>Description</span>
         <textarea value={form.summary} onChange={set("summary")} disabled={readOnly} maxLength={240} />
       </label>
+      <div>
+        <strong>Photos</strong>
+        <p className="muted" style={{ fontSize: 13, margin: "4px 0 10px" }}>
+          Cette photo s’affiche dans l’application, sur la fiche de la prestation.
+        </p>
+        <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
+          {preview ? (
+            <img src={preview} alt="" style={{ width: 180, height: 120, objectFit: "cover", borderRadius: 14 }} />
+          ) : (
+            <span className="thumb" style={{ width: 180, height: 120, display: "grid", placeItems: "center" }}><ImagePlus aria-hidden /></span>
+          )}
+          <label className="field" style={{ flex: 1, minWidth: 180 }}>
+            <span>Photo</span>
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              disabled={readOnly}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                setPhoto(file);
+                setPreview(URL.createObjectURL(file));
+              }}
+            />
+            <small className="muted">JPEG, PNG ou WebP, 8 Mo maximum, 400 pixels minimum de côté.</small>
+          </label>
+        </div>
+      </div>
       {!offer && (
         <label className="field">
           <span>Mode de réservation</span>
