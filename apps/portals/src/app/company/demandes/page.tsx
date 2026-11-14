@@ -33,7 +33,7 @@ export default async function CompanyRequestsPage() {
       <PageHead
         eyebrow="RH"
         title="Demandes commerçants"
-        subtitle="Vous créez le compte à partir de la demande. Le mot de passe s’affiche ici, il n’est pas envoyé par e-mail. Le commerçant se connecte sur xpass.fr."
+        subtitle="Vous créez le compte à partir de la demande. L’identifiant et le mot de passe partent vers le Gmail du commerçant. Il se connecte sur xpass.fr."
       />
       {pending.length === 0 && <p className="muted">Aucune demande commerçant en attente.</p>}
       {pending.map((row) => {

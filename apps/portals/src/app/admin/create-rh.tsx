@@ -37,8 +37,8 @@ export function CreateRhForm() {
           setMsg({
             ok: true,
             text: res.ok
-              ? "Service RH créé. Le mot de passe est affiché ci-dessous : copiez-le, il ne sera plus affiché."
-              : "Mot de passe enregistré. Il est affiché ci-dessous.",
+              ? "Service RH créé. Le mot de passe est affiché ci-dessous et envoyé au Gmail du service."
+              : "Mot de passe enregistré. Il est affiché ci-dessous et envoyé au Gmail.",
           });
           setForm({ name: "", city_label: "Paris", hr_email: "", password: "" });
         });

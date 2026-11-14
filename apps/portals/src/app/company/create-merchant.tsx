@@ -98,7 +98,7 @@ function Fields({
             ok: true,
             text: merchantId
               ? "Commerçant mis à jour."
-              : `Commerçant publié dans l’application. Identifiant : ${form.owner_email}. Donnez-lui ce mot de passe. Il se connecte avec « Continuer avec un e-mail ».`,
+              : `Commerçant publié. Identifiant : ${form.owner_email}. Le mot de passe est aussi envoyé à ce Gmail. Connexion : https://xpass.fr/login?espace=1`,
           });
           onDone?.();
         });

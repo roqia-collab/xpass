@@ -74,7 +74,7 @@ export function ResetAccessPassword({ gmail, kind }: { gmail: string; kind: "rh"
             setError(res.error);
             return;
           }
-          setMessage(`Mot de passe enregistré. Identifiant : ${gmail}. Mot de passe : ${password}. Connexion : ${DOOR[kind]}`);
+          setMessage(`Mot de passe enregistré. Identifiant : ${gmail}. Mot de passe : ${password}. Un e-mail part vers ${gmail}. Connexion : ${DOOR[kind]}`);
         });
       }}
     >
