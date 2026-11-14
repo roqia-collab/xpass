@@ -103,7 +103,11 @@ export const mediaUrl = (key: string | null) =>
   key ? `${process.env.NEXT_PUBLIC_MEDIA_BASE_URL ?? "http://localhost:8333/xpass-public"}/${key}` : null;
 
 /** Application client (Flutter). Même API que les portails. */
-export const clientAppUrl = () => process.env.APP_PUBLIC_URL ?? "http://localhost:5174";
+export const clientAppUrl = () => {
+  const configured = process.env.APP_PUBLIC_URL ?? "";
+  if (configured.startsWith("http://localhost") || configured.startsWith("http://127.")) return configured;
+  return "https://app.xpass.fr";
+};
 
 /** Adresse de chaque espace. En production, admin, RH et commerçant ont chacun leur site. */
 export async function spaceHrefs(): Promise<Record<"admin" | "company" | "partner", string>> {
