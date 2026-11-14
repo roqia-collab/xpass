@@ -11,11 +11,12 @@ const FRAMES = [
   { src: "/visuels/promo-partenaires.jpg", title: "Sorties", href: "/demande?activite=sorties" },
 ];
 
-const PATH = [
-  ["La demande", "L’adresse de l’établissement, puis la validation."],
-  ["Le planning", "Vous ouvrez les places, pas toute la journée."],
-  ["Le scan", "Le membre montre son QR code au comptoir."],
-  ["Le virement", "Chaque semaine, 10 % déduits."],
+const FLOW = [
+  { n: "01", title: "La demande", text: "Le formulaire, avec l’adresse de l’entreprise.", href: "#demarrer", image: "/visuels/promo-partenaires.jpg", label: "Écrire" },
+  { n: "02", title: "La validation", text: "L’e-mail apporte l’identifiant et le mot de passe.", href: "mailto:support@xpass.fr", image: "/visuels/factures.jpg", label: "Une question" },
+  { n: "03", title: "La porte", text: "Commerçant sur xpass.fr. Service RH sur rh.xpass.fr.", href: "/login?espace=1", image: "/visuels/salaries.jpg", label: "Se connecter" },
+  { n: "04", title: "Le tableau", text: "Places, crédits, photo, scan. Vous publiez.", href: "/tableau", image: "/visuels/login-sport.jpg", label: "Ouvrir" },
+  { n: "05", title: "L’application", text: "Le membre réserve. La visite se scanne au comptoir.", href: "https://app.xpass.fr", image: "/visuels/login-beaute.jpg", label: "Voir l’app" },
 ];
 
 /** Présentation du site commerçant, avant le tableau de bord. */
@@ -31,7 +32,7 @@ export function MerchantPresentation({ signedIn, partner = false }: { signedIn: 
           <img src="/logo.png" alt="XPASS" />
         </a>
         <nav className="partners-nav" aria-label="Présentation">
-          <a href="#parcours">Parcours</a>
+          <a href="#parcours">Le flux</a>
           <a href="#calculateur">Calculateur</a>
           <a href="#questions">Questions</a>
           <a href="/tableau">Tableau de bord</a>
@@ -110,20 +111,24 @@ export function MerchantPresentation({ signedIn, partner = false }: { signedIn: 
         </div>
       </div>
 
-      <section className="partners-concept" id="parcours">
-        <img src="/visuels/login-sport.jpg" alt="" />
-        <div>
-          <p className="eyebrow">Parcours</p>
-          <h2>De la demande au virement.</h2>
-          <ol>
-            {PATH.map(([title, text]) => (
-              <li key={title}>
-                <strong>{title}</strong>
-                <span>{text}</span>
-              </li>
-            ))}
-          </ol>
-        </div>
+      <section className="flux" id="parcours">
+        <p className="eyebrow">Le flux</p>
+        <h2>De la demande à l’application.</h2>
+        <ol>
+          {FLOW.map((step) => (
+            <li key={step.n}>
+              <a href={step.href}>
+                <img src={step.image} alt="" />
+                <span>
+                  <em>{step.n}</em>
+                  <strong>{step.title}</strong>
+                  <small>{step.text}</small>
+                  <b>{step.label}</b>
+                </span>
+              </a>
+            </li>
+          ))}
+        </ol>
       </section>
 
       <section className="partners-calc" id="calculateur">

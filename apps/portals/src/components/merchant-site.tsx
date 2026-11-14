@@ -87,7 +87,13 @@ export function MerchantSite({ signedIn, partner = false }: { signedIn: boolean;
           <h1>{current.label}</h1>
           {current.id === "accueil" && (
             <>
-              <p className="muted dash-lead">Vos chiffres arrivent après la connexion. En attendant, une semaine se calcule ici.</p>
+              <p className="muted dash-lead">Étape 4 du flux. Les chiffres arrivent après la connexion. En attendant, une semaine se calcule ici.</p>
+              <ol className="dash-flow">
+                <li><a href="/#demarrer">01 Demande</a></li>
+                <li><a href="/login?espace=1">02 Connexion</a></li>
+                <li><a href="/tableau" aria-current="page">03 Tableau</a></li>
+                <li><a href="https://app.xpass.fr">04 Application</a></li>
+              </ol>
               <div className="dash-film" aria-hidden>
                 <div>
                   {["/visuels/login-sport.jpg", "/visuels/login-beaute.jpg", "/visuels/login-atelier.jpg", "/visuels/promo-partenaires.jpg", "/visuels/login-sport.jpg", "/visuels/login-beaute.jpg", "/visuels/login-atelier.jpg", "/visuels/promo-partenaires.jpg"].map((src, index) => (

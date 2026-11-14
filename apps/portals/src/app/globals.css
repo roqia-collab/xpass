@@ -1299,6 +1299,7 @@ p { margin: 0; }
 .kind-pills button.on { background: var(--coral); color: #fff; border-color: var(--coral); }
 .partners-form .btn { width: 100%; }
 .partners-form.done { position: static; }
+.partners-form.done .btn.outline { background: transparent; color: #fff; border-color: rgba(255,255,255,0.45); }
 .partners-concept, .partners-calc, .partners-faq { padding: 0; }
 .partners .billboard { background: #fff; max-width: none; margin: 0; padding: 56px clamp(16px, 4vw, 56px) 28px; }
 .billboard-card { background-size: 118%; animation: bg-pan 18s ease-in-out infinite alternate; }
@@ -1313,6 +1314,20 @@ p { margin: 0; }
 .partners-concept li { display: flex; flex-direction: column; gap: 6px; }
 .partners-concept strong { font-size: 18px; }
 .partners-concept li span { color: rgba(255,255,255,0.78); line-height: 1.35; }
+.flux { background: #fff; padding: 56px clamp(16px, 4vw, 56px) 64px; }
+.flux h2 { font-size: clamp(36px, 4vw, 60px); line-height: 0.95; max-width: 12ch; }
+.flux ol { list-style: none; margin: 28px 0 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+.flux a { display: flex; flex-direction: column; min-height: 320px; border-radius: 22px; overflow: hidden; background: #0a0f1c; color: #fff; }
+.flux img { width: 100%; height: 132px; object-fit: cover; }
+.flux a span { display: flex; flex-direction: column; gap: 6px; padding: 14px 14px 16px; }
+.flux em { font-style: normal; color: #ffb4a8; font-weight: 800; letter-spacing: 0.14em; font-size: 12px; }
+.flux small { color: rgba(255,255,255,0.72); line-height: 1.35; }
+.flux b { margin-top: 8px; font-weight: 700; }
+.flux a:hover img { transform: scale(1.04); }
+.flux img { transition: transform .5s ease; }
+.dash-flow { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 0; padding: 0; }
+.dash-flow a { padding: 8px 12px; border-radius: 999px; background: #fff; border: 1px solid var(--line); font-weight: 700; font-size: 13px; }
+.dash-flow a[aria-current="page"] { background: var(--ink); color: #fff; border-color: var(--ink); }
 .partners-calc { display: grid; grid-template-columns: 0.9fr 1.1fr; min-height: 520px; background: #fff; }
 .partners-calc-photo { overflow: hidden; }
 .partners-calc-photo img { width: 100%; height: 100%; object-fit: cover; animation: photo-drift 20s ease-in-out infinite alternate; }
@@ -1356,7 +1371,7 @@ p { margin: 0; }
   .partners-nav { display: none; }
   .partners-header { justify-content: space-between; }
   .partners-header-actions { margin-left: auto; }
-  .partners-hero, .partners-calc, .partners-footer, .partners-concept ol, .form-split { grid-template-columns: 1fr; }
+  .partners-hero, .partners-calc, .partners-footer, .partners-concept ol, .flux ol, .form-split { grid-template-columns: 1fr; }
   .partners-hero { padding: 18px 16px 12px; gap: 16px; }
   .partners-lead h1 { font-size: 40px; max-width: none; }
   .lead-mark { font-size: 44px; margin-bottom: 6px; }
@@ -1369,7 +1384,9 @@ p { margin: 0; }
   .partners-form input, .partners-form select { font-size: 16px; }
   .partners-header .btn.ghost { display: none; }
   .partners-header .btn.primary { padding: 10px 14px; }
-  .partners .billboard, .partners-faq, .partners-calc-copy, .partners-concept div { padding: 28px 16px; }
+  .partners .billboard, .partners-faq, .partners-calc-copy, .partners-concept div, .flux { padding: 28px 16px; }
+  .flux a { min-height: 0; }
+  .flux img { height: 140px; }
   .partners-concept { min-height: 0; }
   .partners-concept img { height: 100%; }
   .partners-calc-photo { height: 200px; }

@@ -88,8 +88,9 @@ export function PartnerStart({ defaultKind = "merchant" }: { defaultKind?: "merc
     return (
       <div className="partners-form done" role="status">
         <h2>Demande envoyée</h2>
-        <p>L’administrateur la voit dans son espace. S’il la valide, l’identifiant et le mot de passe partent vers {email}.</p>
-        <a className="btn primary" href="/tableau">Voir le tableau de bord</a>
+        <p>L’administrateur la voit. S’il la valide, l’identifiant et le mot de passe partent vers {email}. Ensuite, le commerçant ouvre xpass.fr, le service RH ouvre rh.xpass.fr.</p>
+        <a className="btn primary" href="/login?espace=1">Connexion commerçant</a>
+        <a className="btn outline" href="https://rh.xpass.fr">Connexion RH</a>
       </div>
     );
   }
