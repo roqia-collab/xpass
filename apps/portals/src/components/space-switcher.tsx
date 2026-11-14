@@ -11,10 +11,12 @@ export function SpaceSwitcher({
   spaces,
   appUrl,
   homes,
+  showApp = false,
 }: {
   spaces: Space[];
   appUrl: string;
   homes?: Partial<Record<Space, string>>;
+  showApp?: boolean;
 }) {
   const path = usePathname();
   const items = SPACE_ORDER.filter((space) => spaces.includes(space));
@@ -30,9 +32,11 @@ export function SpaceSwitcher({
           <Link key={space} href={href} className={active ? "active" : ""}>{SPACE_LABEL[space]}</Link>
         );
       })}
-      <a href={appUrl} target="_blank" rel="noreferrer">
-        App client
-      </a>
+      {showApp && (
+        <a href={appUrl} target="_blank" rel="noreferrer">
+          App client
+        </a>
+      )}
     </nav>
   );
 }

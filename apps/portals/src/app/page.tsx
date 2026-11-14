@@ -69,17 +69,19 @@ export default async function Home() {
             </li>
           );
         })}
-        <li>
-          <a href={app} className="hub-tile" target="_blank" rel="noreferrer">
-            <img src="/visuels/login-sport.jpg" alt="" />
-            <span>
-              <Smartphone size={18} aria-hidden />
-              <strong>Application client</strong>
-              <em>Réserver sport, culture, beauté et sorties.</em>
-              <ArrowRight size={18} aria-hidden />
-            </span>
-          </a>
-        </li>
+        {canAccess(me, "admin") && (
+          <li>
+            <a href={app} className="hub-tile" target="_blank" rel="noreferrer">
+              <img src="/visuels/login-sport.jpg" alt="" />
+              <span>
+                <Smartphone size={18} aria-hidden />
+                <strong>Application client</strong>
+                <em>Réservée à l’administrateur.</em>
+                <ArrowRight size={18} aria-hidden />
+              </span>
+            </a>
+          </li>
+        )}
       </ul>
     </div>
   );

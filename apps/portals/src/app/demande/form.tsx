@@ -18,10 +18,11 @@ export function AccessForm({ activity, kind = "rh" }: { activity?: string; kind?
 
   if (done) {
     return (
-      <p className="notice mint" role="status">
-        Demande envoyée pour <strong>{form.activity}</strong>. L’administrateur la voit dans son espace. S’il l’accepte, il vous remet votre Gmail comme identifiant et un mot de passe.
-        Vous vous connecterez avec « Continuer avec un e-mail ».
-      </p>
+      <div className="notice mint stack" role="status">
+        <p>Demande envoyée pour <strong>{form.activity}</strong>.</p>
+        <p>L’administrateur la voit dans son espace. S’il valide, l’identifiant et le mot de passe sont envoyés à {form.gmail}.</p>
+        <a className="btn outline" href="/">Retour</a>
+      </div>
     );
   }
 

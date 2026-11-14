@@ -27,7 +27,7 @@ export function DecideRequest({ id, gmail, kind }: { id: string; gmail: string; 
         start(async () => {
           const res = await decideRequest(id, "accept", password);
           if (!res.ok) setError(res.error);
-          else setDone(`Accepté. Identifiant : ${gmail}. Mot de passe : ${password}. Connexion : ${DOOR[kind]}`);
+          else setDone(`Accepté. Identifiant : ${gmail}. Mot de passe : ${password}. Connexion : ${DOOR[kind]}.${res.mailed ? " Un e-mail avec l’identifiant et le mot de passe a été envoyé." : ""}`);
         });
       }}
     >

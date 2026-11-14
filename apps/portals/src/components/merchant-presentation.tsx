@@ -63,25 +63,24 @@ export function MerchantPresentation({ signedIn, partner = false }: { signedIn: 
         </div>
       </section>
 
-      <section className="join-banner" aria-labelledby="rejoindre">
-        <div className="join-banner-copy">
-          <p className="eyebrow">Rejoindre XPASS</p>
-          <h2 id="rejoindre">Deux portes. Un formulaire.</h2>
-          <p>L’administrateur valide le compte service RH. Le service RH ouvre ensuite les comptes commerçants.</p>
-          <a className="join-mail" href="mailto:support@xpass.fr">support@xpass.fr</a>
-        </div>
-        <div className="join-choices">
-          <a className="join-choice rh" href="/demande?profil=rh">
-            <span>Service RH</span>
-            <strong>Devenir un service RH</strong>
-            <small>Vous ouvrez les commerçants de l’entreprise.</small>
+      <section className="billboard" aria-labelledby="rejoindre">
+        <p className="billboard-kicker">Rejoindre XPASS</p>
+        <h2 id="rejoindre">Et si on avançait ensemble ?</h2>
+        <div className="billboard-grid">
+          <a className="billboard-card rh" href="/demande?profil=rh" style={{ backgroundImage: "url(/visuels/salaries.jpg)" }}>
+            <span>Entreprises &amp; services RH</span>
+            <strong>Le bien-être de vos équipes commence ici.</strong>
+            <small>Sport, culture, beauté et sorties avec XPASS.</small>
+            <em>Devenir partenaire RH</em>
           </a>
-          <a className="join-choice" href="/demande?profil=commercant">
-            <span>Commerçant</span>
-            <strong>Devenir commerçant</strong>
-            <small>Vos prestations arrivent dans l’application.</small>
+          <a className="billboard-card" href="/demande?profil=commercant" style={{ backgroundImage: "url(/visuels/promo-partenaires.jpg)" }}>
+            <span>Commerçants &amp; établissements</span>
+            <strong>Votre savoir-faire. De nouveaux clients.</strong>
+            <small>Faites découvrir vos activités aux membres XPASS.</small>
+            <em>Rejoindre le réseau</em>
           </a>
         </div>
+        <p className="billboard-mail">Une question ? <a href="mailto:support@xpass.fr">support@xpass.fr</a></p>
       </section>
 
       <section className="show-stage" id="offre">

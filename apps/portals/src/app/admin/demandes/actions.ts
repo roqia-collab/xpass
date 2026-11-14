@@ -12,12 +12,12 @@ export async function decideRequest(id: string, decision: "accept" | "refuse", p
     if (!p.success) return { ok: false as const, error: p.error.issues[0].message };
   }
   try {
-    await apiFetch(`/admin/access-requests/${id}/${decision}`, {
+    const sent = await apiFetch<{ mailed?: boolean }>(`/admin/access-requests/${id}/${decision}`, {
       method: "POST",
       body: JSON.stringify(decision === "accept" ? { password } : {}),
     });
     revalidatePath("/admin/demandes");
-    return { ok: true as const };
+    return { ok: true as const, mailed: Boolean(sent.mailed) };
   } catch (e) {
     return { ok: false as const, error: e instanceof Error ? e.message : "Décision impossible." };
   }

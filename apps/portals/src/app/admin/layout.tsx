@@ -59,7 +59,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
       accountName={me.display_name}
       accountDetail="Opérations XPASS"
       alerts={<AdminAlerts items={alerts} />}
-      contextSwitcher={<SpaceSwitcher spaces={spacesFor(me)} appUrl={clientAppUrl()} homes={await spaceHrefs()} />}
+      contextSwitcher={<SpaceSwitcher spaces={spacesFor(me)} appUrl={clientAppUrl()} homes={await spaceHrefs()} showApp />}
     >
       {children}
     </PortalShell>

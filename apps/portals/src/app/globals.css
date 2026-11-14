@@ -415,6 +415,10 @@ p { margin: 0; }
 .table td { padding: 12px 8px; border-bottom: 1px solid var(--line); }
 .notice { display: flex; gap: 10px; align-items: flex-start; padding: 14px 16px; border-radius: 14px; background: var(--lavender); font-size: 14px; }
 .notice.mint { background: var(--mint); }
+.notice.stack { display: block; }
+.notice.stack p { margin: 0 0 8px; }
+.demande-page { max-width: 640px; margin: 0 auto; padding: 28px 20px 80px; }
+.demande-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .error { color: #b42318; font-size: 14px; }
 .chip-tabs { display: inline-flex; background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 4px; gap: 4px; }
 .chip-tabs button { border: none; background: transparent; padding: 8px 16px; border-radius: 999px; cursor: pointer; font: inherit; }
@@ -1114,6 +1118,46 @@ p { margin: 0; }
 .join-choice.rh span { color: #7ddecf; }
 .join-choice strong { font-family: var(--font-display); font-size: 28px; line-height: 0.95; letter-spacing: -0.03em; }
 .join-choice small { color: rgba(255,255,255,0.72); font-size: 14px; line-height: 1.4; }
+.billboard { margin: 28px auto 8px; max-width: 1120px; padding: 8px 28px 12px; }
+.billboard-kicker { display: flex; align-items: center; gap: 10px; margin: 0 0 10px; font-size: 13px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink); }
+.billboard-kicker::before { content: ""; width: 4px; height: 18px; border-radius: 4px; background: var(--coral); }
+.billboard h2 { margin: 0 0 18px; font-size: clamp(36px, 4vw, 56px); line-height: 0.95; letter-spacing: -0.04em; max-width: 16ch; }
+.billboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.billboard-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  min-height: 340px;
+  padding: 28px;
+  border-radius: 28px;
+  overflow: hidden;
+  color: #fff;
+  text-decoration: none;
+  background-size: cover;
+  background-position: center;
+}
+.billboard-card::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8,18,32,0.15) 0%, rgba(8,18,32,0.82) 70%); }
+.billboard-card.rh::before { background: linear-gradient(180deg, rgba(8,48,40,0.2) 0%, rgba(8,40,34,0.86) 72%); }
+.billboard-card > * { position: relative; }
+.billboard-card span { font-size: 12px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; }
+.billboard-card strong { margin-top: 10px; font-family: var(--font-display); font-size: clamp(28px, 3vw, 40px); line-height: 0.95; letter-spacing: -0.03em; max-width: 14ch; }
+.billboard-card small { margin-top: 10px; max-width: 28ch; color: rgba(255,255,255,0.82); font-size: 15px; line-height: 1.4; }
+.billboard-card em {
+  margin-top: 18px;
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: var(--coral);
+  color: #fff;
+  font-style: normal;
+  font-weight: 700;
+}
+.billboard-card.rh em { background: #fff; color: var(--ink); }
+.billboard-mail { margin: 16px 0 0; font-size: 15px; }
+.billboard-mail a { color: var(--coral); font-weight: 700; }
 .request-list { display: flex; flex-direction: column; gap: 12px; }
 .request-card { display: flex; flex-direction: column; gap: 10px; }
 .request-line { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
@@ -1140,10 +1184,14 @@ p { margin: 0; }
   .show-band img { height: 220px; border-radius: 22px; }
   .show-footer-mark { font-size: 56px; max-width: 100%; overflow: hidden; }
   .show-footer small { align-self: start; }
-  .join-banner, .join-choices, .intro-split { grid-template-columns: 1fr; }
+  .join-banner, .join-choices, .intro-split, .billboard-grid { grid-template-columns: 1fr; }
   .join-banner { padding: 28px 20px 32px; }
   .join-choice { min-height: 0; }
   .join-choice strong { font-size: 26px; }
+  .billboard { padding: 8px 16px 4px; }
+  .billboard h2 { font-size: 34px; max-width: none; }
+  .billboard-card { min-height: 300px; padding: 22px; }
+  .billboard-card strong { font-size: 30px; }
   .request-actions { flex-direction: column; align-items: stretch; }
   .request-actions .btn { width: 100%; }
 }

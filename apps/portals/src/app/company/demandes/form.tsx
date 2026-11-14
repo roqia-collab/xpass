@@ -21,7 +21,7 @@ export function OpenMerchant({ id, gmail }: { id: string; gmail: string }) {
         start(async () => {
           const res = await decideMerchantRequest(id, "accept", password);
           if (!res.ok) setError(res.error);
-          else setDone(`Compte créé. Identifiant : ${gmail}. Mot de passe : ${password}. Connexion : https://xpass.fr/login?espace=1`);
+          else setDone(`Compte créé. Identifiant : ${gmail}. Mot de passe : ${password}. Connexion : https://xpass.fr/login?espace=1.${res.mailed ? " Un e-mail avec l’identifiant et le mot de passe a été envoyé." : ""}`);
         });
       }}
     >

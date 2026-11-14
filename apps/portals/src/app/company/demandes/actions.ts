@@ -12,13 +12,13 @@ export async function decideMerchantRequest(id: string, decision: "accept" | "re
     if (!parsed.success) return { ok: false as const, error: parsed.error.issues[0].message };
   }
   try {
-    await apiFetch(`/company/access-requests/${id}/${decision}`, {
+    const sent = await apiFetch<{ mailed?: boolean }>(`/company/access-requests/${id}/${decision}`, {
       method: "POST",
       body: JSON.stringify(decision === "accept" ? { password } : {}),
     });
     revalidatePath("/company/demandes");
     revalidatePath("/company/commercants");
-    return { ok: true as const };
+    return { ok: true as const, mailed: Boolean(sent.mailed) };
   } catch (e) {
     return { ok: false as const, error: e instanceof Error ? e.message : "Décision impossible." };
   }
