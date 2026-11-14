@@ -15,7 +15,16 @@ import { getCurrentLocation, getManagedLocation } from "./data";
 export const metadata = { title: "Vue d’ensemble" };
 
 export default async function PartnerOverview() {
-  const location = await getCurrentLocation();
+  let location;
+  try {
+    location = await getCurrentLocation();
+  } catch (e) {
+    return (
+      <Notice>
+        {e instanceof Error ? e.message : "L’espace commerçant n’a pas pu s’ouvrir. Rechargez la page."}
+      </Notice>
+    );
+  }
   if (!location) {
     return (
       <>

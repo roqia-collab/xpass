@@ -67,7 +67,8 @@ function RequestGroup({ title, rows, empty }: { title: string; rows: RequestRow[
       <h2>{title}</h2>
       {rows.length === 0 && <p className="muted">{empty}</p>}
       {rows.map((row) => {
-        const activity = row.message.startsWith("Activité :") ? row.message.split("\n")[0].replace("Activité :", "").trim() : "";
+        const message = row.message || "";
+        const activity = message.startsWith("Activité :") ? message.split("\n")[0].replace("Activité :", "").trim() : "";
         return (
           <article key={row.id} className="card request-card">
             <div className="request-line">
