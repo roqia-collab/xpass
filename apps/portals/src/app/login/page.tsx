@@ -158,6 +158,7 @@ export default async function LoginPage({
             </ul>
           </section>
 
+          <div className="login-side">
           <section className="login-panel">
             <h2>{view.panel}</h2>
             <p className="muted">{view.panelText}</p>
@@ -208,6 +209,7 @@ export default async function LoginPage({
             {view.suite === "rh" && <AccessSection kind="rh" tone="panel" />}
             {suite === "espace" && <AccessSection kind="merchant" tone="panel" />}
           </section>
+          </div>
         </main>
 
         <footer className="login-footer">

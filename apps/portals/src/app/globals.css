@@ -988,15 +988,52 @@ p { margin: 0; }
   to { opacity: 1; transform: none; }
 }
 
+.login-side { display: flex; flex-direction: column; min-width: 0; }
+.join-banner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(220px, 0.7fr);
+  gap: 28px;
+  align-items: center;
+  padding: 36px clamp(20px, 4vw, 56px);
+  background: #fff;
+  color: var(--ink);
+}
+.join-banner h2 { font-size: clamp(32px, 4vw, 48px); max-width: 14ch; line-height: 0.95; }
+.join-banner p:not(.eyebrow) { margin-top: 12px; max-width: 46ch; line-height: 1.45; color: var(--navy-muted); }
+.join-banner-actions { display: flex; flex-direction: column; gap: 10px; }
+.join-banner .btn { width: 100%; }
+.join-banner .btn.outline { background: #fff; }
+.kind-choice { border: 0; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 14px; }
+.access-card { display: flex; flex-direction: column; gap: 12px; }
+.access-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.intro-split { display: grid; grid-template-columns: 160px minmax(0, 1fr); gap: 18px; align-items: center; }
+.intro-split img { width: 100%; height: 120px; object-fit: cover; border-radius: 16px; }
 @media (max-width: 900px) {
   .login-stage { overflow: auto; min-height: 100dvh; height: auto; }
   .login-stage-bg { position: fixed; }
-  .login-hero { grid-template-columns: 1fr; align-items: start; padding-top: 8px; padding-bottom: 28px; }
-  .login-brand { font-size: clamp(52px, 16vw, 80px); margin-bottom: 8px; }
+  .login-hero { display: flex; flex-direction: column; align-items: stretch; gap: 18px; padding: 8px 16px 32px; }
+  .login-side { order: -1; }
+  .login-brand { display: none; }
   .login-title { font-size: 28px; }
-  .login-sub { font-size: 15px; }
-  .login-panel { animation-delay: .1s; padding: 20px 16px; }
+  .login-sub { font-size: 15px; margin-top: 8px; }
+  .login-universes { margin-top: 12px; }
+  .login-panel { width: 100%; animation-delay: .1s; padding: 20px 16px; }
+  .login-secure { justify-content: flex-start; text-align: left; }
+  .login-access .login-partner { display: flex; flex-direction: column; align-items: stretch; gap: 8px; }
+  .login-access .login-partner span { display: none; }
+  .login-access .login-partner a { justify-content: center; min-height: 44px; border-radius: 999px; background: var(--paper); }
   .login-footer { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .show-mark { display: none; }
+  .show-hero { min-height: auto; }
+  .show-hero-copy { padding: 88px 20px 48px; }
+  .show-hero-copy h1 { font-size: 42px; }
+  .show-header { gap: 12px; padding-left: 16px; padding-right: 16px; }
+  .show-header .btn { padding: 10px 14px; font-size: 14px; }
+  .join-banner, .intro-split { grid-template-columns: 1fr; }
+  .join-banner { padding: 28px 20px; }
+  .access-actions { flex-direction: column; }
+  .access-actions .btn, .show-actions .btn { width: 100%; }
+  .kind-choice { flex-direction: column; align-items: flex-start; }
 }
 .alerts { position: relative; }
 .alerts-btn { position: relative; }

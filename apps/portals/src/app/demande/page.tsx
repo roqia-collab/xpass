@@ -6,9 +6,10 @@ import { AccessForm } from "./form";
 
 export const metadata: Metadata = { title: "Demander un accès" };
 
-export default async function AccessRequestPage({ searchParams }: { searchParams: Promise<{ activite?: string }> }) {
-  const { activite } = await searchParams;
+export default async function AccessRequestPage({ searchParams }: { searchParams: Promise<{ activite?: string; profil?: string }> }) {
+  const { activite, profil } = await searchParams;
   const chosen = activityName(activite);
+  const kind = profil === "commercant" || profil === "merchant" ? "merchant" : "rh";
   return (
     <main style={{ maxWidth: 640, margin: "0 auto", padding: "28px 20px 80px" }}>
       <a href="/" aria-label="XPASS">
@@ -21,7 +22,7 @@ export default async function AccessRequestPage({ searchParams }: { searchParams
         Un service RH remet ensuite l’identifiant de ses commerçants. Un commerçant publié apparaît dans l’application.
       </p>
       {chosen && <p className="notice mint">Activité choisie : <strong>{chosen}</strong></p>}
-      <AccessForm activity={activite} />
+      <AccessForm activity={activite} kind={kind} />
     </main>
   );
 }

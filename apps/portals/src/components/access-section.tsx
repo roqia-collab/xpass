@@ -36,14 +36,14 @@ export function AccessSection({ kind, tone = "page" }: { kind: keyof typeof COPY
     );
   }
   return (
-    <section className="card" aria-labelledby={`acces-${kind}`} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+    <section className="card access-card" aria-labelledby={`acces-${kind}`}>
       <p className="eyebrow">Accès</p>
       <h2 id={`acces-${kind}`} style={{ margin: 0 }}>{copy.title}</h2>
       <p style={{ margin: 0 }}>{copy.lead}</p>
       <ol style={{ margin: 0, paddingLeft: 18, display: "flex", flexDirection: "column", gap: 6 }}>
         {copy.steps.map((step) => <li key={step}>{step}</li>)}
       </ol>
-      <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+      <div className="access-actions">
         <a className="btn primary" href="/demande">Remplir le formulaire</a>
         <a className="btn outline" href="mailto:support@xpass.fr">support@xpass.fr</a>
       </div>

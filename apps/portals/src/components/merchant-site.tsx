@@ -75,7 +75,7 @@ export function MerchantSite({ signedIn, partner = false }: { signedIn: boolean;
           <p className="eyebrow">Commerçant</p>
           <h1>{current.label}</h1>
           <p className="muted" style={{ maxWidth: "46ch", marginTop: 8 }}>{current.text}</p>
-          <section className="card" style={{ marginTop: 22, display: "grid", gridTemplateColumns: "160px 1fr", gap: 18, alignItems: "center" }}>
+          <section className="card intro-split" style={{ marginTop: 22 }}>
             <img src="/visuels/promo-partenaires.jpg" alt="" style={{ width: "100%", height: 120, objectFit: "cover", borderRadius: 16 }} />
             <div>
               <Icon size={22} aria-hidden />

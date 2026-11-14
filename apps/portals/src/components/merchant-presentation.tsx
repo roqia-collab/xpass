@@ -63,6 +63,18 @@ export function MerchantPresentation({ signedIn, partner = false }: { signedIn: 
         </div>
       </section>
 
+      <section className="join-banner" aria-labelledby="rejoindre">
+        <div>
+          <p className="eyebrow">Rejoindre XPASS</p>
+          <h2 id="rejoindre">Devenir un service RH, ou commerçant.</h2>
+          <p>Remplissez le formulaire. L’administrateur accepte la demande, puis il vous remet votre Gmail et votre mot de passe. Un problème : support@xpass.fr.</p>
+        </div>
+        <div className="join-banner-actions">
+          <a className="btn primary" href="/demande?profil=rh">Devenir un service RH</a>
+          <a className="btn outline" href="/demande?profil=commercant">Devenir commerçant</a>
+        </div>
+      </section>
+
       <section className="show-stage" id="offre">
         <div className="show-stage-copy">
           <p className="eyebrow">L’offre</p>
@@ -105,12 +117,10 @@ export function MerchantPresentation({ signedIn, partner = false }: { signedIn: 
           <p className="eyebrow">Le réseau</p>
           <h2>Admin. RH. Commerçant. Application.</h2>
           <p>L’admin ouvre le service RH. Le RH ajoute ses commerçants. Leurs prestations publiées apparaissent dans l’application client.</p>
-          <a className="btn primary" href="/devenir-partenaire">
-            Rejoindre le réseau <ArrowRight size={18} aria-hidden />
-          </a>
-          <a className="btn outline" href="/demande" style={{ marginLeft: 12 }}>
-            Demander un accès
-          </a>
+          <div className="show-actions">
+            <a className="btn primary" href="/demande?profil=rh">Devenir un service RH</a>
+            <a className="btn outline" href="/demande?profil=commercant">Devenir commerçant</a>
+          </div>
         </div>
       </section>
 

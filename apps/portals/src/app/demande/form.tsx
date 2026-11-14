@@ -8,8 +8,8 @@ import { submitAccessRequest } from "./actions";
 
 const empty = { kind: "rh" as "rh" | "merchant", activity: "", gmail: "", full_name: "", place_name: "", city: "Paris", message: "", website: "" };
 
-export function AccessForm({ activity }: { activity?: string }) {
-  const [form, setForm] = useState({ ...empty, activity: activityName(activity) });
+export function AccessForm({ activity, kind = "rh" }: { activity?: string; kind?: "rh" | "merchant" }) {
+  const [form, setForm] = useState({ ...empty, activity: activityName(activity), kind });
   const [pending, start] = useTransition();
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
@@ -44,7 +44,7 @@ export function AccessForm({ activity }: { activity?: string }) {
         });
       }}
     >
-      <fieldset style={{ border: 0, padding: 0, display: "flex", gap: 16 }}>
+      <fieldset className="kind-choice">
         <legend className="muted" style={{ marginBottom: 8 }}>Vous demandez un accès</legend>
         <label><input type="radio" name="kind" checked={form.kind === "rh"} onChange={() => setForm({ ...form, kind: "rh" })} /> Service RH</label>
         <label><input type="radio" name="kind" checked={form.kind === "merchant"} onChange={() => setForm({ ...form, kind: "merchant" })} /> Commerçant</label>
