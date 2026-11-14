@@ -44,9 +44,19 @@ export function MerchantPresentation({ signedIn, partner = false }: { signedIn: 
 
       <section className="partners-hero">
         <div className="partners-lead">
+          <p className="lead-mark" aria-hidden>XPASS</p>
           <p className="eyebrow">Commerçants · Paris</p>
-          <h1>Les places vides ont un prix.</h1>
+          <h1>
+            <span>Les places</span>
+            <span>vides ont</span>
+            <span>un prix.</span>
+          </h1>
           <p>Vous ouvrez le créneau. Le membre paie en crédits. Vous scannez, le règlement part en fin de semaine.</p>
+          <ul className="lead-facts">
+            <li><strong>1 €</strong><span>le crédit</span></li>
+            <li><strong>10 %</strong><span>retenus</span></li>
+            <li><strong>QR</strong><span>au comptoir</span></li>
+          </ul>
           <div className="show-actions">
             <a className="btn primary" href="#demarrer">Démarrer <ArrowRight size={18} aria-hidden /></a>
             <a className="btn outline" href="/tableau">Tableau de bord</a>
