@@ -58,7 +58,7 @@ export function AccessForm({ activity, kind = "rh" }: { activity?: string; kind?
         </select>
       </label>
       {form.activity && <p className="notice mint" role="status">Activité retenue : <strong>{form.activity}</strong>. Elle sera envoyée avec la demande.</p>}
-      <label className="field"><span>Adresse Gmail</span><input type="email" required value={form.gmail} onChange={set("gmail")} placeholder="prenom.nom@gmail.com" /></label>
+      <label className="field"><span>Adresse e-mail de l’entreprise</span><input type="email" required value={form.gmail} onChange={set("gmail")} placeholder="contact@entreprise.fr" /></label>
       <label className="field"><span>Votre nom</span><input required value={form.full_name} onChange={set("full_name")} /></label>
       <label className="field">
         <span>{form.kind === "rh" ? "Nom du service RH" : "Nom de l’établissement"}</span>
@@ -68,7 +68,7 @@ export function AccessForm({ activity, kind = "rh" }: { activity?: string; kind?
       <label className="field"><span>Message, facultatif</span><textarea value={form.message} onChange={set("message")} rows={4} /></label>
       <input tabIndex={-1} autoComplete="off" aria-hidden value={form.website} onChange={set("website")} style={{ position: "absolute", left: -9999 }} />
       <p className="notice" role="status">
-        Récapitulatif : {form.activity || "activité non choisie"} · {form.kind === "rh" ? "Service RH" : "Commerçant"} · {form.full_name || "nom"} · {form.place_name || "établissement"} · {form.city || "ville"} · {form.gmail || "Gmail"}
+        Récapitulatif : {form.activity || "activité non choisie"} · {form.kind === "rh" ? "Service RH" : "Commerçant"} · {form.full_name || "nom"} · {form.place_name || "établissement"} · {form.city || "ville"} · {form.gmail || "e-mail"}
       </p>
       {error && <p className="error" role="alert">{error}</p>}
       <button className="btn primary" disabled={pending}>{pending ? "Envoi…" : "Envoyer à l’administrateur"}</button>

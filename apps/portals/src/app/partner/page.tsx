@@ -86,6 +86,17 @@ export default async function PartnerOverview() {
         <Kpi href="/partner/planning" icon={<CalendarDays />} label="Visites du jour" value={visits.length} detail="Consommations validées aujourd’hui" tone="coral" />
       </div>
 
+      <section className="card dash-block">
+        <h3>Places à remplir</h3>
+        <p>Publiez les créneaux libres. Les membres réservent ces places. Vos clients habituels gardent les leurs.</p>
+        <div className="access-actions">
+          <Link className="btn primary" href="/partner/planning">Planning</Link>
+          <Link className="btn outline" href="/partner/evenements">Événements</Link>
+          <Link className="btn outline" href="/partner/scanner">Scanner</Link>
+          <Link className="btn outline" href="/partner/reglements">Règlements</Link>
+        </div>
+      </section>
+
       <section className="card" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
           <h3>Paiements</h3>

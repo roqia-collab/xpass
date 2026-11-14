@@ -21,7 +21,7 @@ export default async function AccessRequestPage({ searchParams }: { searchParams
       <p className="eyebrow" style={{ marginTop: 28 }}>Formulaire</p>
       <h1>Demander un accès</h1>
       <p className="muted">
-        L’administrateur reçoit votre demande. S’il l’accepte, l’identifiant et le mot de passe sont envoyés à l’adresse Gmail du formulaire.
+        L’administrateur reçoit votre demande. S’il l’accepte, l’identifiant et le mot de passe sont envoyés à l’adresse indiquée, celle de l’entreprise ou un Gmail.
         Un service RH remet ensuite l’identifiant de ses commerçants. Un commerçant publié apparaît dans l’application.
       </p>
       {chosen && <p className="notice mint">Activité choisie : <strong>{chosen}</strong></p>}
