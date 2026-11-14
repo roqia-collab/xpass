@@ -2,9 +2,7 @@ import type { ReactNode } from "react";
 
 import type { NavItem } from "@/components/nav-links";
 import { PortalShell } from "@/components/shell";
-import { SpaceSwitcher } from "@/components/space-switcher";
-import { spacesFor } from "@/lib/roles";
-import { clientAppUrl, mediaUrl, requireSpace, spaceHrefs } from "@/lib/session";
+import { mediaUrl, requireSpace } from "@/lib/session";
 
 const NAV: NavItem[] = [
   { href: "/company", label: "Budgets", icon: "wallet" },
@@ -27,7 +25,7 @@ export default async function CompanyLayout({ children }: { children: ReactNode 
       searchPlaceholder="Rechercher un salarié, une information…"
       accountName={me.display_name}
       accountDetail={me.memberships.find((m) => m.scope_type === "organization")?.scope_name ?? ""}
-      contextSwitcher={<SpaceSwitcher spaces={spacesFor(me)} appUrl={clientAppUrl()} homes={await spaceHrefs()} />}
+      contextSwitcher={null}
     >
       {children}
     </PortalShell>

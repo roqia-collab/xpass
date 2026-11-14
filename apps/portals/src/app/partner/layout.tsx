@@ -2,9 +2,7 @@ import type { ReactNode } from "react";
 
 import { PortalShell } from "@/components/shell";
 import type { NavItem } from "@/components/nav-links";
-import { SpaceSwitcher } from "@/components/space-switcher";
-import { spacesFor } from "@/lib/roles";
-import { clientAppUrl, mediaUrl, requireSpace, spaceHrefs } from "@/lib/session";
+import { mediaUrl, requireSpace } from "@/lib/session";
 
 import { getCurrentLocation, getPartnerLocations } from "./data";
 import { LocationSwitcher } from "./location-switcher";
@@ -38,7 +36,6 @@ export default async function PartnerLayout({ children }: { children: ReactNode 
       accountDetail={me.memberships.find((m) => m.scope_type === "merchant")?.scope_name ?? ""}
       contextSwitcher={
         <>
-          <SpaceSwitcher spaces={spacesFor(me)} appUrl={clientAppUrl()} homes={await spaceHrefs()} />
           {location && (
             <LocationSwitcher
               currentId={location.id}

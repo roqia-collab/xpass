@@ -4,8 +4,7 @@ import type { NavItem } from "@/components/nav-links";
 import { PortalShell } from "@/components/shell";
 import { SpaceSwitcher } from "@/components/space-switcher";
 import type { AdminOverview } from "@/lib/admin-types";
-import { spacesFor } from "@/lib/roles";
-import { clientAppUrl, mediaUrl, requireSpace, spaceHrefs, tryApi } from "@/lib/session";
+import { clientAppUrl, mediaUrl, requireSpace, tryApi } from "@/lib/session";
 
 import { AdminAlerts, type AdminAlert } from "./alerts";
 
@@ -59,7 +58,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
       accountName={me.display_name}
       accountDetail="Opérations XPASS"
       alerts={<AdminAlerts items={alerts} />}
-      contextSwitcher={<SpaceSwitcher spaces={spacesFor(me)} appUrl={clientAppUrl()} homes={await spaceHrefs()} showApp />}
+      contextSwitcher={<SpaceSwitcher spaces={["admin"]} appUrl={clientAppUrl()} showApp />}
     >
       {children}
     </PortalShell>

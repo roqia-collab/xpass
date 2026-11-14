@@ -119,6 +119,11 @@ export function OfferEditor({ location, offer, currentPhoto = null }: { location
         <input value={form.title} onChange={set("title")} disabled={readOnly} required maxLength={120} />
       </label>
       <label className="field">
+        <span>Crédits</span>
+        <input type="number" min={1} value={form.price_credits} onChange={set("price_credits")} disabled={readOnly} required />
+        <small className="muted">Prix payé par le salarié. Ce nombre de crédits s’affiche dans l’application.</small>
+      </label>
+      <label className="field">
         <span>Description</span>
         <textarea value={form.summary} onChange={set("summary")} disabled={readOnly} maxLength={240} />
       </label>
@@ -169,11 +174,6 @@ export function OfferEditor({ location, offer, currentPhoto = null }: { location
               <option key={d} value={d}>{d < 60 ? `${d} min` : `${Math.floor(d / 60)} h${d % 60 ? ` ${d % 60}` : ""}`}</option>
             ))}
           </select>
-        </label>
-        <label className="field">
-          <span>Prix de base en crédits XPASS</span>
-          <input type="number" min={1} value={form.price_credits} onChange={set("price_credits")} disabled={readOnly} required />
-          <small className="muted">Ajusté automatiquement par créneau : +20 % aux heures de pointe, +20 % si le créneau est presque plein, −20 % en dernière minute.</small>
         </label>
         <label className="field">
           <span>Annulation gratuite (heures avant)</span>
