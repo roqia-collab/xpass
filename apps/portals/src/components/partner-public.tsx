@@ -41,6 +41,10 @@ export const PARTNER_FAQ = [
     a: "Non. Les horaires, les prestations, les événements et le scanner sont dans le tableau de bord XPASS. Rien d’autre n’est à brancher.",
   },
   {
+    q: "Le prix en crédits peut-il changer ?",
+    a: "Oui. Le prix de base est celui de la prestation. Il monte de 20 % le soir en semaine, le samedi et le dimanche, et quand le créneau est rempli à 70 % ou plus. Il baisse de 20 % s’il commence dans moins de 6 heures et qu’il est encore vide. La première visite d’un membre chez vous coûte la moitié, une seule fois. Ensuite le prix du créneau s’applique. Il est figé à la réservation, et vous êtes payé sur les crédits réellement scannés.",
+  },
+  {
     q: "Comment un membre découvre mon établissement ?",
     a: "Il le voit dans l’application, paie en crédits, puis montre son QR code au comptoir. La visite n’est réglée qu’après le scan.",
   },
