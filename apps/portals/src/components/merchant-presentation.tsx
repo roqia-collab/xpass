@@ -11,6 +11,19 @@ const FRAMES = [
   { src: "/visuels/promo-partenaires.jpg", title: "Sorties", href: "/demande?activite=sorties" },
 ];
 
+const WHY = [
+  { image: "/visuels/login-sport.jpg", title: "Remplir les places vides", text: "Vous choisissez le créneau et le nombre de places. Le reste de la journée ne change pas." },
+  { image: "/visuels/login-beaute.jpg", title: "Garder votre clientèle", text: "Les membres ne prennent que les places publiées. Vos rendez-vous habituels restent à vous." },
+  { image: "/visuels/salaries.jpg", title: "Voir de nouveaux visages", text: "Des particuliers abonnés, et des salariés dont l’entreprise a ouvert un service RH." },
+];
+
+const RULES = [
+  ["1,00 €", "le crédit, payé par le membre"],
+  ["10 %", "retenus par XPASS"],
+  ["0,90 €", "pour vous, par crédit scanné"],
+  ["Paris", "la seule ville ouverte"],
+];
+
 const CONCEPT = [
   {
     icon: List,
@@ -50,8 +63,8 @@ export function MerchantPresentation({ signedIn, partner = false }: { signedIn: 
           <img src="/logo.png" alt="XPASS" />
         </a>
         <nav className="partners-nav" aria-label="Présentation">
+          <a href="#pourquoi">Pourquoi</a>
           <a href="#concept">Notre concept</a>
-          <a href="#parcours">Le flux</a>
           <a href="#calculateur">Calculateur</a>
           <a href="#questions">Questions</a>
           <a href="/tableau">Tableau de bord</a>
@@ -98,6 +111,23 @@ export function MerchantPresentation({ signedIn, partner = false }: { signedIn: 
           {words.map((word, index) => <span key={`${word}-${index}`}>{word}</span>)}
         </div>
       </div>
+
+      <section className="why" id="pourquoi">
+        <p className="eyebrow">Pourquoi XPASS</p>
+        <h2>Les places que vous n’avez pas vendues.</h2>
+        <p className="why-lead">Vous vous occupez de vos clients. XPASS remplit ce que vous ouvrez dans le planning.</p>
+        <ol>
+          {WHY.map((item) => (
+            <li key={item.title}>
+              <img src={item.image} alt="" />
+              <div>
+                <strong>{item.title}</strong>
+                <p>{item.text}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
 
       <section className="billboard" aria-labelledby="rejoindre">
         <p className="billboard-kicker">Rejoindre XPASS</p>
@@ -164,6 +194,16 @@ export function MerchantPresentation({ signedIn, partner = false }: { signedIn: 
         </ol>
       </section>
 
+      <section className="rules" id="regles">
+        <h2>Les règles, pas une promesse.</h2>
+        <ul>
+          {RULES.map(([figure, caption]) => (
+            <li key={figure}><strong>{figure}</strong><span>{caption}</span></li>
+          ))}
+        </ul>
+        <p>Le volume dépend des places ouvertes et des visites scannées. Rien n’est garanti.</p>
+      </section>
+
       <section className="partners-calc" id="calculateur">
         <div className="partners-calc-photo" aria-hidden>
           <img src="/visuels/login-atelier.jpg" alt="" />
@@ -176,10 +216,29 @@ export function MerchantPresentation({ signedIn, partner = false }: { signedIn: 
         </div>
       </section>
 
+      <section className="planning-note" id="planning">
+        <img src="/visuels/login-sport.jpg" alt="" />
+        <div>
+          <p className="eyebrow">Planning</p>
+          <h2>Tout se tient dans le tableau de bord.</h2>
+          <p>Pas d’autre logiciel à brancher. Vous posez les horaires, les prestations, les photos et le nombre de places. Le membre réserve dans l’application. Vous scannez son QR code.</p>
+          <a className="btn primary" href="/tableau">Voir le tableau</a>
+        </div>
+      </section>
+
       <section className="partners-faq" id="questions">
         <p className="eyebrow">Questions</p>
         <h2>Avant d’ouvrir le compte.</h2>
         <PartnerFaq />
+      </section>
+
+      <section className="ready">
+        <h2>Prêt à ouvrir ?</h2>
+        <p>Le compte est gratuit. La commission de 10 % part seulement sur les visites scannées.</p>
+        <div>
+          <a className="btn primary" href="#demarrer">Démarrer</a>
+          <a className="btn outline" href={enter}>{label}</a>
+        </div>
       </section>
 
       <footer className="partners-footer">
@@ -187,8 +246,11 @@ export function MerchantPresentation({ signedIn, partner = false }: { signedIn: 
         <nav aria-label="Partenaires">
           <strong>Partenaires</strong>
           <a href="#demarrer">Devenir commerçant</a>
+          <a href="#pourquoi">Pourquoi XPASS</a>
+          <a href="#concept">Notre concept</a>
           <a href="#calculateur">Calculateur</a>
           <a href="/tableau">Tableau de bord</a>
+          <a href="https://app.xpass.fr">Application</a>
           <a href={enter}>{label}</a>
         </nav>
         <nav aria-label="Entreprises">

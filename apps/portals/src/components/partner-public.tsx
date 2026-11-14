@@ -32,6 +32,18 @@ export const PARTNER_FAQ = [
     q: "Combien coûte l’ouverture ?",
     a: "Le compte est gratuit. La commission de 10 % est prélevée sur les visites validées, pas à l’inscription.",
   },
+  {
+    q: "Est-ce que je gagne moins qu’avec mes clients habituels ?",
+    a: "Le crédit est à 1,00 €, et vous recevez 0,90 €. C’est le prix des places que vous ouvrez pour XPASS. Vos clients habituels continuent de payer comme aujourd’hui.",
+  },
+  {
+    q: "Faut-il un autre logiciel de réservation ?",
+    a: "Non. Les horaires, les prestations, les événements et le scanner sont dans le tableau de bord XPASS. Rien d’autre n’est à brancher.",
+  },
+  {
+    q: "Comment un membre découvre mon établissement ?",
+    a: "Il le voit dans l’application, paie en crédits, puis montre son QR code au comptoir. La visite n’est réglée qu’après le scan.",
+  },
 ] as const;
 
 export function RevenueCalculator() {
