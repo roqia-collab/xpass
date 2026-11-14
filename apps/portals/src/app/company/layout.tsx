@@ -9,6 +9,7 @@ import { clientAppUrl, mediaUrl, requireSpace, spaceHrefs } from "@/lib/session"
 const NAV: NavItem[] = [
   { href: "/company", label: "Budgets", icon: "wallet" },
   { href: "/company/salaries", label: "Salariés", icon: "users" },
+  { href: "/company/demandes", label: "Demandes", icon: "message" },
   { href: "/company/commercants", label: "Commerçants", icon: "store" },
   { href: "/company/evenements", label: "Événements", icon: "calendar" },
   { href: "/company/factures", label: "Factures et rapports", short: "Factures", icon: "file" },

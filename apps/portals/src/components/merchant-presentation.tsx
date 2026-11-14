@@ -64,14 +64,23 @@ export function MerchantPresentation({ signedIn, partner = false }: { signedIn: 
       </section>
 
       <section className="join-banner" aria-labelledby="rejoindre">
-        <div>
+        <div className="join-banner-copy">
           <p className="eyebrow">Rejoindre XPASS</p>
-          <h2 id="rejoindre">Devenir un service RH, ou commerçant.</h2>
-          <p>Remplissez le formulaire. L’administrateur accepte la demande, puis il vous remet votre Gmail et votre mot de passe. Un problème : support@xpass.fr.</p>
+          <h2 id="rejoindre">Deux portes. Un formulaire.</h2>
+          <p>L’administrateur valide le compte service RH. Le service RH ouvre ensuite les comptes commerçants.</p>
+          <a className="join-mail" href="mailto:support@xpass.fr">support@xpass.fr</a>
         </div>
-        <div className="join-banner-actions">
-          <a className="btn primary" href="/demande?profil=rh">Devenir un service RH</a>
-          <a className="btn outline" href="/demande?profil=commercant">Devenir commerçant</a>
+        <div className="join-choices">
+          <a className="join-choice rh" href="/demande?profil=rh">
+            <span>Service RH</span>
+            <strong>Devenir un service RH</strong>
+            <small>Vous ouvrez les commerçants de l’entreprise.</small>
+          </a>
+          <a className="join-choice" href="/demande?profil=commercant">
+            <span>Commerçant</span>
+            <strong>Devenir commerçant</strong>
+            <small>Vos prestations arrivent dans l’application.</small>
+          </a>
         </div>
       </section>
 
@@ -135,6 +144,7 @@ export function MerchantPresentation({ signedIn, partner = false }: { signedIn: 
           <a href={enter}>{label}</a>
         </nav>
         <nav aria-label="Informations légales">
+          <a href="mailto:support@xpass.fr">support@xpass.fr</a>
           <a href="/legal/confidentialite">Confidentialité</a>
           <a href="/legal/cgu">Conditions</a>
           <a href="/legal/mentions-legales">Mentions</a>
