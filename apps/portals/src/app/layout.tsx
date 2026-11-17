@@ -10,6 +10,7 @@ import type { ReactNode } from "react";
 
 import "./globals.css";
 import { Providers } from "./providers";
+import { MotionLayer } from "@/components/motion-layer";
 
 export const metadata: Metadata = {
   title: { default: "XPASS", template: "%s · XPASS" },
@@ -25,6 +26,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           {`(function(){function wipe(){if(navigator.serviceWorker){navigator.serviceWorker.getRegistrations().then(function(regs){regs.forEach(function(r){r.unregister();});});}if(window.caches){caches.keys().then(function(keys){keys.forEach(function(k){caches.delete(k);});});}}wipe();})();`}
         </Script>
         <Providers>{children}</Providers>
+        <MotionLayer />
       </body>
     </html>
   );

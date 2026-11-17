@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>XPASS — publicité 30 s</title>
+<!--
+  Publicité XPASS, 30 secondes, 1920x1080.
+  Chaque animation est minutée en secondes absolues (animation-delay).
+  render.js fige toutes les animations puis appelle seek(t) image par image.
+  Ouvert seul dans un navigateur, la page se joue en boucle.
+-->
+<style>
+@font-face { font-family: Syne; font-weight: 800; src: url(assets/syne-latin-800-normal.woff2) format("woff2"); }
+@font-face { font-family: Syne; font-weight: 700; src: url(assets/syne-latin-700-normal.woff2) format("woff2"); }
+@font-face { font-family: Manrope; font-weight: 500; src: url(assets/manrope-latin-500-normal.woff2) format("woff2"); }
+@font-face { font-family: Manrope; font-weight: 700; src: url(assets/manrope-latin-700-normal.woff2) format("woff2"); }
+
+:root {
+  --ink: #0a0f1c; --navy: #101a3a; --coral: #ff3b1f; --coral2: #ff8a5c; --paper: #f4f1ec;
+  --ease: cubic-bezier(.16, 1, .3, 1); --snap: cubic-bezier(.7, 0, .2, 1);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1920px; height: 1080px; overflow: hidden; background: #000; }
+body { font-family: Manrope, sans-serif; color: #fff; -webkit-font-smoothing: antialiased; }
+#stage { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: var(--ink); }
+.scene { position: absolute; inset: 0; overflow: hidden; display: none; }
+.display { font-family: Syne, sans-serif; font-weight: 800; letter-spacing: -0.045em; line-height: .9; }
+.abs { position: absolute; }
+.cover { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.mask { overflow: hidden; display: block; }
+.mask > span { display: block; }
+
+/* Grain de film + vignette, sur toute la vidéo. */
+#grain { position: absolute; inset: -50%; z-index: 50; pointer-events: none; opacity: .07;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  animation: grain .5s steps(5) 0s 60 both; }
+#vignette { position: absolute; inset: 0; z-index: 49; pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.45) 100%); }
+#flash { position: absolute; inset: 0; z-index: 48; background: #fff; opacity: 0; pointer-events: none; }
+#bar { position: absolute; left: 0; bottom: 0; height: 6px; width: 100%; z-index: 51; background: var(--coral);
+  transform-origin: 0 50%; animation: grow 30s linear 0s both; }
+
+@keyframes grain { 0% { transform: translate(0,0) } 20% { transform: translate(-5%,3%) } 40% { transform: translate(4%,-6%) } 60% { transform: translate(-3%,5%) } 80% { transform: translate(6%,2%) } 100% { transform: translate(0,0) } }
+@keyframes grow { from { transform: scaleX(0) } to { transform: scaleX(1) } }
+@keyframes up { from { transform: translateY(110%) } to { transform: none } }
+@keyframes upOut { from { transform: none } to { transform: translateY(-115%) } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(40px) } to { opacity: 1; transform: none } }
+@keyframes fadeOut { from { opacity: 1 } to { opacity: 0 } }
+@keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+@keyframes line { from { transform: scaleX(0) } to { transform: scaleX(1) } }
+@keyframes kb1 { from { transform: scale(1.18) translate(2%, 1%) } to { transform: scale(1.02) translate(0, 0) } }
+@keyframes kb2 { from { transform: scale(1.02) translate(-1%, 0) } to { transform: scale(1.16) translate(1.5%, -1%) } }
+@keyframes wipeL { from { clip-path: inset(0 100% 0 0) } to { clip-path: inset(0 0 0 0) } }
+@keyframes wipeR { from { clip-path: inset(0 0 0 100%) } to { clip-path: inset(0 0 0 0) } }
+@keyframes wipeUp { from { clip-path: inset(100% 0 0 0) } to { clip-path: inset(0 0 0 0) } }
+@keyframes irisIn { from { clip-path: circle(0% at 50% 50%) } to { clip-path: circle(75% at 50% 50%) } }
+@keyframes pop { 0% { opacity: 0; transform: scale(.6) } 60% { opacity: 1; transform: scale(1.06) } 100% { opacity: 1; transform: scale(1) } }
+@keyframes slideL { from { opacity: 0; transform: translateX(160px) } to { opacity: 1; transform: none } }
+@keyframes slideR { from { opacity: 0; transform: translateX(-160px) } to { opacity: 1; transform: none } }
+@keyframes cardIn { from { opacity: 0; transform: translateY(120px) rotate(4deg) scale(.92) } to { opacity: 1; transform: none } }
+@keyframes float { 0%, 100% { transform: translateY(0) rotate(-4deg) } 50% { transform: translateY(-18px) rotate(-2deg) } }
+@keyframes spin { from { transform: rotate(0) } to { transform: rotate(360deg) } }
+@keyframes scan { 0% { transform: translateY(0) } 50% { transform: translateY(300px) } 100% { transform: translateY(0) } }
+@keyframes stamp { 0% { opacity: 0; transform: scale(2.2) rotate(-12deg) } 100% { opacity: 1; transform: scale(1) rotate(-8deg) } }
+@keyframes marquee { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+@keyframes zoomOut { from { transform: scale(1) } to { transform: scale(1.35); opacity: 0 } }
+@keyframes shrink { from { width: 100% } to { width: 50% } }
+@keyframes blob { 0% { transform: translate(0,0) scale(1) } 50% { transform: translate(120px,60px) scale(1.2) } 100% { transform: translate(-80px,120px) scale(.9) } }
+
+/* ---------- Scène 1 · accroche ---------- */
+#s1 { background: var(--ink); }
+#s1 .blob { position: absolute; width: 900px; height: 900px; border-radius: 50%; filter: blur(140px); opacity: .5; }
+#s1 h1 { position: absolute; left: 160px; top: 300px; font-size: 150px; white-space: nowrap; }
+#s1 h1 em { font-style: normal; color: var(--coral); }
+#s1 .rule { position: absolute; left: 164px; top: 640px; width: 420px; height: 10px; background: var(--coral); border-radius: 6px; transform-origin: 0 50%; }
+#s1 .kicker { position: absolute; left: 164px; top: 690px; font-size: 34px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: rgba(255,255,255,.7); }
+
+/* ---------- Scène 2 · montage ---------- */
+.cut { position: absolute; inset: 0; overflow: hidden; }
+.cut img { will-change: transform; }
+.cut::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,15,28,0) 40%, rgba(10,15,28,.75) 100%); }
+.cut .word { position: absolute; left: 110px; bottom: 120px; z-index: 2; font-size: 200px; white-space: nowrap; text-transform: uppercase; }
+.cut .tag { position: absolute; left: 118px; bottom: 370px; z-index: 2; font-size: 30px; font-weight: 700; letter-spacing: .24em; text-transform: uppercase;
+  background: var(--coral); padding: 10px 20px; border-radius: 999px; }
+.cut .num { position: absolute; right: 110px; top: 90px; z-index: 2; font-family: Syne; font-weight: 700; font-size: 44px; opacity: .85; }
+
+/* ---------- Scène 3 · le pass ---------- */
+#s3 { background: var(--paper); color: var(--ink); }
+#s3 .half { position: absolute; top: 0; bottom: 0; right: 0; width: 50%; background: var(--coral); }
+#s3 h2 { position: absolute; left: 140px; top: 250px; font-size: 128px; }
+#s3 p.sub { position: absolute; left: 146px; top: 640px; font-size: 44px; font-weight: 500; max-width: 760px; line-height: 1.25; color: #3a4152; }
+#s3 .chips { position: absolute; left: 146px; top: 820px; display: flex; gap: 18px; }
+#s3 .chips span { font-size: 30px; font-weight: 700; padding: 14px 28px; border-radius: 999px; background: #fff; box-shadow: 0 10px 30px -12px rgba(10,15,28,.35); }
+.phone { position: absolute; left: 1210px; top: 110px; width: 470px; height: 900px; border-radius: 64px; background: #0b1020; padding: 18px;
+  box-shadow: 0 60px 120px -30px rgba(10,15,28,.6), inset 0 0 0 3px #2a3150; }
+.screen { position: relative; width: 100%; height: 100%; border-radius: 48px; overflow: hidden; background: #fff; color: var(--ink); }
+.screen .notch { position: absolute; left: 50%; top: 14px; width: 130px; height: 34px; margin-left: -65px; background: #0b1020; border-radius: 20px; z-index: 3; }
+.screen .head { position: relative; height: 330px; }
+.screen .head::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,15,28,.1), rgba(10,15,28,.85)); }
+.screen .bal { position: absolute; left: 34px; bottom: 30px; z-index: 2; color: #fff; }
+.screen .bal small { display: block; font-size: 20px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; opacity: .8; }
+.screen .bal b { font-family: Syne; font-weight: 800; font-size: 80px; white-space: nowrap; letter-spacing: -0.04em; }
+.screen .bal b i { font-style: normal; font-size: 28px; margin-left: 10px; letter-spacing: 0; }
+.screen ul { list-style: none; padding: 26px 26px 0; display: grid; gap: 16px; }
+.screen li { display: grid; grid-template-columns: 92px 1fr auto; gap: 16px; align-items: center; background: #f3f4f7; border-radius: 22px; padding: 12px; }
+.screen li img { width: 92px; height: 92px; object-fit: cover; border-radius: 16px; }
+.screen li strong { display: block; font-size: 22px; }
+.screen li span { font-size: 17px; color: #6b7183; }
+.screen li em { font-style: normal; font-family: Syne; font-weight: 800; font-size: 24px; color: var(--coral); }
+.screen .btn { position: absolute; left: 26px; right: 26px; bottom: 30px; height: 84px; border-radius: 999px; background: var(--coral); color: #fff;
+  display: grid; place-items: center; font-weight: 700; font-size: 26px; }
+
+/* ---------- Scène 4 · trois gestes ---------- */
+#s4 { background: var(--ink); }
+#s4 h2 { position: absolute; left: 140px; top: 100px; font-size: 96px; }
+#s4 h2 em { font-style: normal; color: var(--coral); }
+.step { position: absolute; top: 300px; width: 500px; height: 640px; border-radius: 40px; overflow: hidden; background: #161d33; }
+.step img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.step::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,15,28,0) 35%, rgba(10,15,28,.92) 100%); }
+.step .n { position: absolute; left: 34px; top: 30px; z-index: 2; width: 76px; height: 76px; border-radius: 50%; background: var(--coral); display: grid; place-items: center;
+  font-family: Syne; font-weight: 800; font-size: 38px; }
+.step b { position: absolute; left: 36px; bottom: 96px; z-index: 2; font-family: Syne; font-weight: 800; font-size: 60px; letter-spacing: -0.03em; }
+.step span { position: absolute; left: 38px; bottom: 44px; z-index: 2; font-size: 26px; color: rgba(255,255,255,.8); }
+.qr { position: absolute; left: 50%; top: 48%; z-index: 3; width: 300px; height: 300px; margin: -150px 0 0 -150px; background: #fff; border-radius: 28px; padding: 26px; }
+.qr svg { width: 100%; height: 100%; display: block; }
+.qr .beam { position: absolute; left: 14px; right: 14px; top: 20px; height: 6px; border-radius: 4px; background: var(--coral); box-shadow: 0 0 30px 8px rgba(255,59,31,.6); }
+.ok { position: absolute; z-index: 4; right: -26px; top: -30px; background: #18b46b; color: #fff; font-weight: 700; font-size: 26px; padding: 12px 22px; border-radius: 999px; }
+
+/* ---------- Scène 5 · pour qui ---------- */
+#s5 .pane { position: absolute; top: 0; bottom: 0; width: 50%; overflow: hidden; }
+#s5 .pane::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,15,28,.15), rgba(10,15,28,.85)); }
+#s5 .pane .txt { position: absolute; left: 90px; right: 70px; bottom: 120px; z-index: 2; }
+#s5 .pane small { display: inline-block; font-size: 26px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; background: #fff; color: var(--ink); padding: 10px 20px; border-radius: 999px; }
+#s5 .pane.b small { background: var(--coral); color: #fff; }
+#s5 .pane h3 { margin-top: 26px; font-size: 84px; }
+#s5 .pane p { margin-top: 20px; font-size: 32px; color: rgba(255,255,255,.85); max-width: 680px; line-height: 1.3; }
+#s5 .divider { position: absolute; left: 50%; top: 0; bottom: 0; width: 8px; margin-left: -4px; background: var(--coral); z-index: 3; transform-origin: 50% 0; }
+
+/* ---------- Scène 6 · signature ---------- */
+#s6 { background: var(--ink); }
+#s6 .ring { position: absolute; left: 50%; top: 42%; width: 1400px; height: 1400px; margin: -700px 0 0 -700px; border-radius: 50%;
+  background: conic-gradient(from 0deg, rgba(255,59,31,.0), rgba(255,59,31,.35), rgba(255,138,92,.0) 40%, rgba(120,140,255,.25) 70%, rgba(255,59,31,0)); filter: blur(60px); }
+#s6 .logo { position: absolute; left: 50%; top: 300px; transform: translateX(-50%); display: flex; align-items: center; gap: 40px; }
+#s6 .logo .tile { width: 200px; height: 200px; border-radius: 48px; background: #fff; display: grid; place-items: center; }
+#s6 .logo .tile img { width: 150px; }
+#s6 .logo .word { font-size: 240px; }
+#s6 .tagline { position: absolute; left: 0; right: 0; top: 600px; text-align: center; font-size: 46px; font-weight: 700; letter-spacing: .02em; }
+#s6 .tagline i { font-style: normal; color: var(--coral); padding: 0 16px; }
+#s6 .cta { position: absolute; left: 50%; top: 740px; transform: translateX(-50%); display: flex; gap: 22px; }
+#s6 .cta span { font-size: 36px; font-weight: 700; padding: 24px 48px; border-radius: 999px; background: var(--coral); white-space: nowrap; }
+#s6 .cta span.alt { background: transparent; box-shadow: inset 0 0 0 3px rgba(255,255,255,.7); }
+#s6 .marq { position: absolute; left: 0; bottom: 70px; white-space: nowrap; font-family: Syne; font-weight: 800; font-size: 54px; color: rgba(255,255,255,.12); }
+#s6 .marq div { display: inline-block; }
+#fadeBlack { position: absolute; inset: 0; z-index: 52; background: #000; opacity: 0; }
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- 1 · 0.0 → 3.0 · accroche -->
+  <section class="scene" id="s1" data-start="0" data-end="3.05">
+    <div class="blob" style="background:#ff3b1f; left:-200px; top:-300px; animation: blob 6s ease-in-out 0s both"></div>
+    <div class="blob" style="background:#3a4cff; right:-300px; bottom:-400px; opacity:.35; animation: blob 6s ease-in-out 0s both reverse"></div>
+    <h1 class="display">
+      <span class="mask"><span style="animation: up .9s var(--ease) .25s both, upOut .5s var(--snap) 2.55s both">Paris est plein</span></span>
+      <span class="mask"><span style="animation: up .9s var(--ease) .55s both, upOut .5s var(--snap) 2.6s both">de places <em>libres.</em></span></span>
+    </h1>
+    <div class="rule" style="animation: line .8s var(--ease) 1.1s both, fadeOut .3s linear 2.6s both"></div>
+    <p class="kicker" style="animation: fadeUp .7s var(--ease) 1.4s both, fadeOut .3s linear 2.6s both">Sport · Culture · Beauté · Sorties</p>
+  </section>
+
+  <!-- 2 · 3.0 → 9.0 · montage, une coupe par seconde, calée sur le tempo -->
+  <section class="scene" id="s2" data-start="3" data-end="9.05">
+    <div class="cut" style="animation: wipeUp .45s var(--snap) 3s both"><img class="cover" src="assets/escalade.jpg" style="animation: kb1 1.4s ease-out 3s both"><span class="num">01</span><span class="tag" style="animation: fadeUp .5s var(--ease) 3.2s both">Bloc · 12e</span><span class="word display" style="animation: slideR .6s var(--ease) 3.1s both">Sport</span></div>
+    <div class="cut" style="animation: wipeL .45s var(--snap) 4s both"><img class="cover" src="assets/theatre.jpg" style="animation: kb2 1.4s ease-out 4s both"><span class="num">02</span><span class="tag" style="animation: fadeUp .5s var(--ease) 4.2s both">Théâtre</span><span class="word display" style="animation: slideR .6s var(--ease) 4.1s both">Culture</span></div>
+    <div class="cut" style="animation: wipeR .45s var(--snap) 5s both"><img class="cover" src="assets/beaute.jpg" style="animation: kb1 1.4s ease-out 5s both"><span class="num">03</span><span class="tag" style="animation: fadeUp .5s var(--ease) 5.2s both">Soins</span><span class="word display" style="animation: slideR .6s var(--ease) 5.1s both">Beauté</span></div>
+    <div class="cut" style="animation: irisIn .5s var(--snap) 6s both"><img class="cover" src="assets/concert.jpg" style="animation: kb2 1.4s ease-out 6s both"><span class="num">04</span><span class="tag" style="animation: fadeUp .5s var(--ease) 6.2s both">Concerts</span><span class="word display" style="animation: slideR .6s var(--ease) 6.1s both">Sorties</span></div>
+    <div class="cut" style="animation: wipeUp .45s var(--snap) 7s both"><img class="cover" src="assets/ceramique.jpg" style="animation: kb1 1.4s ease-out 7s both"><span class="num">05</span><span class="tag" style="animation: fadeUp .5s var(--ease) 7.2s both">Céramique</span><span class="word display" style="animation: slideR .6s var(--ease) 7.1s both">Ateliers</span></div>
+    <div class="cut" style="animation: wipeL .45s var(--snap) 8s both"><img class="cover" src="assets/yoga.jpg" style="animation: kb2 1.4s ease-out 8s both"><span class="num">06</span><span class="tag" style="animation: fadeUp .5s var(--ease) 8.2s both">Bien-être</span><span class="word display" style="animation: slideR .6s var(--ease) 8.1s both">Yoga</span></div>
+  </section>
+
+  <!-- 3 · 9.0 → 15.0 · un seul pass, des crédits -->
+  <section class="scene" id="s3" data-start="9" data-end="15.05">
+    <div class="half" style="animation: wipeR .7s var(--snap) 9s both"></div>
+    <h2 class="display">
+      <span class="mask"><span style="animation: up .8s var(--ease) 9.25s both">Un seul</span></span>
+      <span class="mask"><span style="animation: up .8s var(--ease) 9.4s both">pass.</span></span>
+    </h2>
+    <p class="sub" style="animation: fadeUp .8s var(--ease) 10s both">Des crédits pour réserver, partout dans Paris. Sans carte au comptoir.</p>
+    <div class="chips">
+      <span style="animation: pop .5s var(--ease) 10.6s both">1 crédit = 1 €</span>
+      <span style="animation: pop .5s var(--ease) 10.8s both">Réservation en 2 gestes</span>
+    </div>
+    <div class="phone" style="animation: slideL 1s var(--ease) 9.35s both">
+      <div class="screen">
+        <div class="notch"></div>
+        <div class="head"><img class="cover" src="assets/amies.jpg"><div class="bal"><small>Mes crédits</small><b><span data-count="0,120,9.9,1.6">0</span><i>crédits</i></b></div></div>
+        <ul>
+          <li style="animation: slideL .6s var(--ease) 11.2s both"><img src="assets/escalade.jpg"><div><strong>Bloc Nation</strong><span>Aujourd’hui · 19 h</span></div><em>12</em></li>
+          <li style="animation: slideL .6s var(--ease) 11.4s both"><img src="assets/cinema.jpg"><div><strong>Ciné Villette</strong><span>Vendredi · 21 h</span></div><em>8</em></li>
+          <li style="animation: slideL .6s var(--ease) 11.6s both"><img src="assets/ceramique.jpg"><div><strong>Atelier céramique</strong><span>Samedi · 10 h</span></div><em>18</em></li>
+        </ul>
+        <div class="btn" style="animation: pop .5s var(--ease) 12.3s both">Réserver</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · 15.0 → 20.0 · choisir, réserver, scanner -->
+  <section class="scene" id="s4" data-start="15" data-end="20.05">
+    <h2 class="display"><span class="mask"><span style="animation: up .8s var(--ease) 15.1s both">Choisir. Réserver. <em>Scanner.</em></span></span></h2>
+    <div class="step" style="left:140px; animation: cardIn .8s var(--ease) 15.5s both"><img src="assets/selfie.jpg"><div class="n">1</div><b>Choisir</b><span>Une activité près de vous</span></div>
+    <div class="step" style="left:710px; animation: cardIn .8s var(--ease) 15.9s both"><img src="assets/cinema.jpg"><div class="n">2</div><b>Réserver</b><span>Le créneau, payé en crédits</span></div>
+    <div class="step" style="left:1280px; animation: cardIn .8s var(--ease) 16.3s both"><img src="assets/commerce.jpg"><div class="n">3</div><b>Scanner</b><span>Le QR code au comptoir</span>
+      <div class="qr" style="animation: pop .6s var(--ease) 17.1s both">
+        <svg viewBox="0 0 29 29" shape-rendering="crispEdges" id="qrsvg"></svg>
+        <div class="beam" style="animation: scan 1.4s ease-in-out 17.6s both"></div>
+        <div class="ok" style="animation: stamp .45s var(--snap) 19s both">✓ Validé</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · 20.0 → 25.0 · salariés et commerçants -->
+  <section class="scene" id="s5" data-start="20" data-end="25.05">
+    <div class="pane a" style="left:0; animation: wipeUp .7s var(--snap) 20s both, shrink .7s var(--snap) 22.4s both">
+      <img class="cover" src="assets/bureau.jpg" style="animation: kb2 5s ease-out 20s both">
+      <div class="txt"><small style="animation: fadeUp .6s var(--ease) 20.5s both">Entreprises</small>
+        <h3 class="display"><span class="mask"><span style="animation: up .8s var(--ease) 20.7s both">Offrez des</span></span><span class="mask"><span style="animation: up .8s var(--ease) 20.85s both">crédits.</span></span></h3>
+        <p style="animation: fadeUp .7s var(--ease) 21.3s both">Un avantage salarié que vos équipes utilisent vraiment.</p></div>
+    </div>
+    <div class="pane b" style="left:50%; animation: wipeUp .7s var(--snap) 22.5s both">
+      <img class="cover" src="assets/commerce.jpg" style="animation: kb1 3s ease-out 22.5s both">
+      <div class="txt"><small style="animation: fadeUp .6s var(--ease) 23s both">Commerçants</small>
+        <h3 class="display"><span class="mask"><span style="animation: up .8s var(--ease) 23.2s both">Remplissez</span></span><span class="mask"><span style="animation: up .8s var(--ease) 23.35s both">vos créneaux.</span></span></h3>
+        <p style="animation: fadeUp .7s var(--ease) 23.7s both">Vous ouvrez les places. Le règlement part chaque semaine.</p></div>
+    </div>
+    <div class="divider" style="animation: wipeUp .6s var(--snap) 22.5s both"></div>
+  </section>
+
+  <!-- 6 · 25.0 → 30.0 · signature -->
+  <section class="scene" id="s6" data-start="25" data-end="30.1">
+    <div class="ring" style="animation: spin 10s linear 25s both"></div>
+    <div class="logo">
+      <div class="tile" style="animation: pop .7s var(--ease) 25.2s both"><img src="assets/mark.png" alt=""></div>
+      <span class="mask"><span class="word display" style="animation: up .9s var(--ease) 25.5s both">XPASS</span></span>
+    </div>
+    <p class="tagline" style="animation: fadeUp .8s var(--ease) 26.3s both">Sport<i>·</i>Culture<i>·</i>Beauté<i>·</i>Sorties</p>
+    <div class="cta">
+      <span style="animation: pop .6s var(--ease) 27s both">Téléchargez l’app</span>
+      <span class="alt" style="animation: pop .6s var(--ease) 27.2s both">xpass.fr</span>
+    </div>
+    <div class="marq"><div style="animation: marquee 10s linear 25s both">PARIS · SPORT · CULTURE · BEAUTÉ · SORTIES · CRÉDITS · QR CODE · PARIS · SPORT · CULTURE · BEAUTÉ · SORTIES · CRÉDITS · QR CODE · </div></div>
+  </section>
+
+  <div id="flash"></div>
+  <div id="vignette"></div>
+  <div id="grain"></div>
+  <div id="bar"></div>
+  <div id="fadeBlack" style="animation: fadeIn .6s linear 29.4s both"></div>
+</div>
+
+<script>
+// QR code décoratif, déterministe (pas un vrai lien).
+(function () {
+  const svg = document.getElementById("qrsvg");
+  let seed = 7; const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+  const finder = (x, y) => `<rect x="${x}" y="${y}" width="7" height="7" fill="#0a0f1c"/><rect x="${x+1}" y="${y+1}" width="5" height="5" fill="#fff"/><rect x="${x+2}" y="${y+2}" width="3" height="3" fill="#0a0f1c"/>`;
+  let out = "";
+  for (let y = 0; y < 29; y++) for (let x = 0; x < 29; x++) {
+    const inFinder = (x < 8 && y < 8) || (x > 20 && y < 8) || (x < 8 && y > 20);
+    if (!inFinder && rnd() > 0.52) out += `<rect x="${x}" y="${y}" width="1" height="1" fill="#0a0f1c"/>`;
+  }
+  svg.innerHTML = out + finder(0, 0) + finder(22, 0) + finder(0, 22);
+})();
+
+const DURATION = 30;
+// Éclairs blancs très courts sur les temps forts.
+const FLASHES = [3, 9, 15, 20, 25];
+
+/** Place toute la vidéo à l'instant t (en secondes). */
+function seek(t) {
+  document.querySelectorAll(".scene").forEach((s) => {
+    s.style.display = t >= +s.dataset.start && t < +s.dataset.end ? "block" : "none";
+  });
+  document.getAnimations().forEach((a) => { a.pause(); a.currentTime = t * 1000; });
+  document.querySelectorAll("[data-count]").forEach((el) => {
+    const [from, to, start, dur] = el.dataset.count.split(",").map(Number);
+    const k = Math.min(Math.max((t - start) / dur, 0), 1);
+    el.textContent = Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3)));
+  });
+  const f = FLASHES.map((x) => t - x).filter((d) => d >= 0 && d < 0.18)[0];
+  document.getElementById("flash").style.opacity = f === undefined ? 0 : (0.55 * (1 - f / 0.18)).toFixed(3);
+}
+window.seek = seek;
+
+// Lecture directe dans un navigateur (hors rendu).
+if (!location.search.includes("render")) {
+  const t0 = performance.now();
+  const loop = () => { seek(((performance.now() - t0) / 1000) % DURATION); requestAnimationFrame(loop); };
+  document.fonts.ready.then(loop);
+} else {
+  seek(0);
+}
+</script>
+</body>
+</html>
