@@ -21,6 +21,7 @@ const NAV: NavItem[] = [
   { href: "/admin/assistance", label: "Assistance", icon: "message" },
   { href: "/admin/formules", label: "Formules", icon: "coins" },
   { href: "/admin/paiements", label: "Paiements", icon: "card" },
+  { href: "/admin/seo", label: "SEO", icon: "search" },
   { href: "/admin/audit", label: "Audit", icon: "audit" },
 ];
 

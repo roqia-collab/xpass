@@ -1,9 +1,12 @@
 import { ArrowRight, BadgeCheck, CalendarDays, QrCode, Store, Users, Wallet } from "lucide-react";
 import type { Metadata } from "next";
 
+import { SeoJsonLd, seoMetadata } from "@/lib/seo-server";
 import { getMe } from "@/lib/session";
 
-export const metadata: Metadata = { title: "Devenir partenaire" };
+export async function generateMetadata(): Promise<Metadata> {
+  return seoMetadata("/devenir-partenaire", { title: "Devenir partenaire" });
+}
 
 const STEPS = [
   { icon: Store, title: "Votre entreprise", text: "Votre SIRET est vérifié dans l’annuaire public des entreprises." },
@@ -24,6 +27,7 @@ export default async function BecomePartnerPage() {
   const start = me ? "/inscription-partenaire" : "/auth/login?suite=inscription";
   return (
     <main className="partner-landing marketing">
+      <SeoJsonLd path="/devenir-partenaire" />
       <header className="landing-top">
         <a href="/login" aria-label="XPASS, portails professionnels">
           <img src="/logo.png" alt="XPASS" />

@@ -65,6 +65,11 @@ class Settings(BaseSettings):
     app_public_url: str = "http://localhost:5173"
     portals_public_url: str = "http://localhost:3000"
 
+    # Rapports SEO externes (POST /api/v1/admin/seo/reports). Vide = réception désactivée (503).
+    seo_report_webhook_secret: str = ""
+    seo_report_max_bytes: int = 1_000_000
+    seo_report_rate_per_hour: int = 30
+
     @model_validator(mode="after")
     def _refuse_unsafe_production(self) -> "Settings":
         if self.app_env == "production" and self.auth_dev_login_enabled:
@@ -75,6 +80,8 @@ class Settings(BaseSettings):
             raise ValueError("PSP_WEBHOOK_SECRET est obligatoire dès qu'un prestataire est configuré.")
         if self.psp_provider == "stripe" and not self.psp_secret_key:
             raise ValueError("PSP_SECRET_KEY est obligatoire avec PSP_PROVIDER=stripe.")
+        if self.seo_report_webhook_secret and len(self.seo_report_webhook_secret) < 32:
+            raise ValueError("SEO_REPORT_WEBHOOK_SECRET doit contenir au moins 32 caractères.")
         if self.auth_dev_login_enabled and len(self.jwt_dev_secret) < 32:
             raise ValueError("JWT_DEV_SECRET doit contenir au moins 32 caractères.")
         return self

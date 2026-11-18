@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 
 import { activityName } from "@/lib/activities";
+import { SeoJsonLd, seoMetadata } from "@/lib/seo-server";
 
 import { AccessForm } from "./form";
 
-export const metadata: Metadata = { title: "Demander un accès" };
+export async function generateMetadata(): Promise<Metadata> {
+  return seoMetadata("/demande", { title: "Demander un accès" });
+}
 
 export default async function AccessRequestPage({ searchParams }: { searchParams: Promise<{ activite?: string; profil?: string }> }) {
   const { activite, profil } = await searchParams;
@@ -12,6 +15,7 @@ export default async function AccessRequestPage({ searchParams }: { searchParams
   const kind = profil === "commercant" || profil === "merchant" ? "merchant" : "rh";
   return (
     <main className="demande-page">
+      <SeoJsonLd path="/demande" />
       <div className="demande-top">
         <a href="/" aria-label="XPASS">
           <img src="/logo.png" alt="XPASS" width={120} height={36} />
