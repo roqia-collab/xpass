@@ -179,7 +179,7 @@ L’historique (`seo_changes`) n’est pas modifié par ces commandes.
 En local (`docker compose up -d`, portails en `npm run dev`) :
 
 1. Mettez un secret d’au moins 32 caractères dans `SEO_REPORT_WEBHOOK_SECRET` (fichier `.env` à la racine,
-   jamais commité), puis `docker compose up -d --build api` pour appliquer la migration `0020`.
+   jamais commité), puis `docker compose up -d --build api` pour appliquer la migration `0023`.
 2. Envoyez un rapport :
 
 ```bash
@@ -208,20 +208,20 @@ l’échappement du JSON-LD, le rendu Markdown sans HTML, le nom du fichier, les
 ## 8. Déploiement
 
 1. **API (VPS)** : ajoutez `SEO_REPORT_WEBHOOK_SECRET` dans `infra/production/.env.production`, puis
-   reconstruisez l’API. La migration `0020_rapports_seo` (4 tables, aucune table existante modifiée)
+   reconstruisez l’API. La migration `0023_rapports_seo` (4 tables, aucune table existante modifiée ; elle suit `0022_agenda_externe`)
    s’exécute au démarrage, comme les autres (`alembic upgrade head`).
 2. **Portails (Hostinger)** : redéploiement automatique depuis `main` de `roqia-collab/xpass`, après
    fusion de la demande de fusion. Aucune variable nouvelle.
 3. Donnez l’adresse et le secret à l’outil SEO par un canal sûr, puis envoyez un premier rapport de test.
 
 Retour arrière du déploiement : annulez d’abord les balises appliquées (§ 6). La migration se défait avec
-`alembic downgrade 0019`, qui supprime les tables SEO **et leur contenu**.
+`alembic downgrade 0022`, qui supprime les tables SEO **et leur contenu**.
 
 ## 9. Hypothèses
 
-- La limite de requêtes est gardée en mémoire : l’API tourne en un seul processus uvicorn. Elle compte par
-  adresse vue par l’API ; derrière le proxy, tous les envois peuvent partager la même adresse, ce qui en fait
-  une limite globale de 30 envois par heure.
+- La limite d’envois est comptée dans Redis, partagé entre les processus uvicorn (2 en production), par
+  adresse d’origine et par heure. Si Redis ne répond pas, chaque processus applique la même limite en
+  mémoire.
 - Le rapport ne porte que sur xpass.fr : les pages des autres domaines sont enregistrées mais jamais
   appliquées.
 - `robots: { index: false }` reste la valeur par défaut du site. Une recommandation `robots` appliquée ne

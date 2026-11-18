@@ -72,13 +72,38 @@ class SeoError(Exception):
 
 
 class RateLimiter:
-    """Fenêtre glissante d'une heure par émetteur, en mémoire (l'API tourne en un seul processus uvicorn)."""
+    """Envois par émetteur et par heure, comptés dans Redis (partagé entre les processus uvicorn).
+
+    Si Redis ne répond pas, repli sur une fenêtre glissante en mémoire (par processus) : la réception continue,
+    toujours limitée.
+    """
+
+    PREFIX = "xpass:seo:rate:"
 
     def __init__(self) -> None:
         self._hits: dict[str, deque[float]] = {}
         self._lock = threading.Lock()
 
+    def _redis(self):
+        import redis
+
+        from app.core.config import get_settings
+
+        return redis.Redis.from_url(get_settings().redis_url, socket_timeout=1, socket_connect_timeout=1)
+
     def allow(self, key: str, limit: int, window: float = 3600.0) -> bool:
+        try:
+            bucket = f"{self.PREFIX}{key}:{int(time.time() // window)}"
+            client = self._redis()
+            pipe = client.pipeline()
+            pipe.incr(bucket)
+            pipe.expire(bucket, int(window) + 60)
+            count = int(pipe.execute()[0])
+            return count <= limit
+        except Exception:  # noqa: BLE001 — Redis indisponible : limite locale
+            return self._allow_local(key, limit, window)
+
+    def _allow_local(self, key: str, limit: int, window: float) -> bool:
         now = time.monotonic()
         with self._lock:
             hits = self._hits.setdefault(key, deque())
@@ -92,6 +117,13 @@ class RateLimiter:
     def reset(self) -> None:
         with self._lock:
             self._hits.clear()
+        try:
+            client = self._redis()
+            keys = list(client.scan_iter(f"{self.PREFIX}*"))
+            if keys:
+                client.delete(*keys)
+        except Exception:  # noqa: BLE001
+            pass
 
 
 limiter = RateLimiter()

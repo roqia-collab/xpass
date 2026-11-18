@@ -1,7 +1,7 @@
 """Rapports SEO externes, recommandations, balises par page et historique.
 
-Revision ID: 0020
-Revises: 0019
+Revision ID: 0023
+Revises: 0022
 Create Date: 2026-11-17 10:00:00
 """
 from alembic import op
@@ -9,8 +9,8 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 
-revision = "0020"
-down_revision = "0019"
+revision = "0023"
+down_revision = "0022"
 branch_labels = None
 depends_on = None
 

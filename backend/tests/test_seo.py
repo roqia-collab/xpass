@@ -131,6 +131,17 @@ def test_rate_limit(client, monkeypatch):
     assert _send(client, _payload()).status_code == 429
 
 
+def test_rate_limit_falls_back_without_redis(monkeypatch):
+    limiter = seo.RateLimiter()
+
+    def broken():
+        raise ConnectionError("redis indisponible")
+
+    monkeypatch.setattr(limiter, "_redis", broken)
+    assert limiter.allow("x", 2) and limiter.allow("x", 2)
+    assert limiter.allow("x", 2) is False
+
+
 # ---------------------------------------------------------------- permissions et affichage
 
 
