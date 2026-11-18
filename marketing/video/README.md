@@ -22,8 +22,8 @@ Captures de contrôle à des instants précis : `node render.js --preview 2,12,2
 
 | Temps | Scène |
 |---|---|
-| 0–3 s | Accroche « Paris est plein de places libres. » |
-| 3–9 s | Montage : sport, culture, beauté, sorties, ateliers, yoga |
+| 0–3 s | Accroche « Votre ville est pleine de places libres. » |
+| 3–9 s | Montage : sport, culture, beauté, sorties, ateliers, yoga — une ville par plan |
 | 9–15 s | « Un seul pass. » — téléphone, crédits qui défilent |
 | 15–20 s | Choisir · Réserver · Scanner (QR validé) |
 | 20–25 s | Entreprises, puis commerçants |
