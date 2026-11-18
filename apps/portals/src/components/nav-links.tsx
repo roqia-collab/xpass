@@ -14,6 +14,7 @@ import {
   MoreHorizontal,
   RefreshCcw,
   ScanLine,
+  Search,
   Settings,
   ShieldCheck,
   Star,
@@ -43,6 +44,7 @@ const ICONS = {
   audit: ClipboardCheck,
   star: Star,
   coins: Coins,
+  search: Search,
 } satisfies Record<string, LucideIcon>;
 
 export interface NavItem {

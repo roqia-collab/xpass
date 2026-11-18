@@ -13,6 +13,7 @@ const TYPES: Record<string, string> = {
   partner_payout: "Versements",
   payment_event: "Webhooks",
   employer_invoice: "Factures entreprises",
+  seo_recommendation: "SEO",
 };
 
 /** Journal d'audit en ajout seul (ni modification ni suppression possibles en base). */
