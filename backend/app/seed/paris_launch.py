@@ -25,28 +25,6 @@ from app.modules.catalog.models import (
 from app.modules.employer.models import EmployerContract
 from app.modules.identity.models import Membership, Organization, User
 
-COVERS = [
-    "demo/locations/studio-elan.jpg",
-    "demo/locations/club-horizon.jpg",
-    "demo/locations/le-cercle.jpg",
-    "demo/locations/bloc-nation.jpg",
-    "demo/heroes/sport.jpg",
-    "demo/locations/galerie-des-lumieres.jpg",
-    "demo/locations/atelier-ceramique.jpg",
-    "demo/locations/paris-insolite.jpg",
-    "demo/heroes/culture.jpg",
-    "demo/locations/atelier-des-mains.jpg",
-    "demo/locations/atelier-belle-salon.jpg",
-    "demo/heroes/beaute.jpg",
-    "demo/offers/brushing.jpg",
-    "demo/locations/cine-villette.jpg",
-    "demo/locations/theatre-central.jpg",
-    "demo/locations/parc-aventure.jpg",
-    "demo/heroes/divertissement.jpg",
-    "demo/categories/sport.jpg",
-    "demo/categories/culture.jpg",
-    "demo/categories/beaute.jpg",
-]
 
 
 def point(lat: float, lng: float) -> str:
@@ -144,7 +122,8 @@ def seed(db: Session) -> int:
         sub = db.scalar(select(Subcategory).where(Subcategory.slug == sub_slug))
         if sub is None:
             raise RuntimeError(f"Sous-catégorie inconnue : {sub_slug}")
-        cover = COVERS[i % len(COVERS)]
+        # Photo propre au lieu (infra/seed-media/placeholders/paris/<slug>.jpg).
+        cover = f"demo/paris/{slug}.jpg"
         merchant = Merchant(
             market_id=market.id, organization_id=org.id, legal_name=name[:160], display_name=name[:120],
             commercial_status="approved", psp_status="not_started", city_label="Paris", is_demo=False,

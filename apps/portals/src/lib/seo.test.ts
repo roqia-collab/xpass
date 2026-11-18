@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { parseMarkdown, parseInline } from "./markdown";
 import { canAccess } from "./roles";
-import { buildSeoMetadata, defaultSeoValue, markdownFileName, REPORT_STATUS_LABEL, reportQuery, safeJsonLd } from "./seo";
+import { buildSeoMetadata, defaultSeoValue, markdownFileName, publicPageDefaults, REPORT_STATUS_LABEL, reportQuery, safeJsonLd } from "./seo";
 
 describe("métadonnées SEO", () => {
   it("garde la page d’origine sans valeur enregistrée", () => {
@@ -33,7 +33,8 @@ describe("métadonnées SEO", () => {
 
   it("donne la valeur par défaut affichée avant application", () => {
     expect(defaultSeoValue("/demande", "title")).toBe("Demander un accès · XPASS");
-    expect(defaultSeoValue("/", "robots")).toBe("noindex");
+    expect(defaultSeoValue("/", "robots")).toBe("index, follow");
+    expect(defaultSeoValue("/demande", "canonical")).toBe("https://xpass.fr/demande");
     expect(defaultSeoValue("/admin", "title")).toBeNull();
   });
 
@@ -89,5 +90,22 @@ describe("liste des rapports", () => {
   it("réserve l’espace admin aux rôles d’administration", () => {
     expect(canAccess({ memberships: [{ role: "hr_admin" }] } as never, "admin")).toBe(false);
     expect(canAccess({ memberships: [{ role: "platform_admin" }] } as never, "admin")).toBe(true);
+  });
+});
+
+describe("indexation des pages publiques", () => {
+  it("ouvre aux moteurs les pages publiques, avec une adresse canonique sur xpass.fr", () => {
+    expect(publicPageDefaults("/")).toEqual({ robots: { index: true, follow: true }, alternates: { canonical: "https://xpass.fr" } });
+    expect(publicPageDefaults("/legal/cgu").alternates?.canonical).toBe("https://xpass.fr/legal/cgu");
+  });
+
+  it("laisse les espaces privés au noindex du layout", () => {
+    expect(publicPageDefaults("/admin")).toEqual({});
+    expect(publicPageDefaults("/partner/planning")).toEqual({});
+  });
+
+  it("laisse une valeur appliquée depuis l’admin passer avant le défaut", () => {
+    const meta = buildSeoMetadata(publicPageDefaults("/demande"), { robots: "noindex" });
+    expect(meta.robots).toBe("noindex");
   });
 });

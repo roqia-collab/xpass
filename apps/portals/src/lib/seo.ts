@@ -43,7 +43,10 @@ export const SEO_FIELD_LABEL: Record<SeoField, string> = {
 };
 
 const SITE_DESCRIPTION = "Le pass crédits du sport, de la culture, de la beauté et des sorties.";
-const SITE_ROBOTS = "noindex"; // app/layout.tsx : robots: { index: false }
+const SITE_ROBOTS = "index, follow"; // pages publiques : voir publicPageDefaults
+
+/** Domaine public : les adresses canoniques et le plan du site pointent ici. */
+export const SITE_URL = "https://xpass.fr";
 
 /** Titres actuels des pages (repris de leurs `metadata`, gabarit « %s · XPASS » du layout). */
 export const SEO_PAGES: Record<string, { title: string }> = {
@@ -56,6 +59,19 @@ export const SEO_PAGES: Record<string, { title: string }> = {
   "/legal/mentions-legales": { title: "Mentions légales" },
 };
 
+/**
+ * Balises par défaut d’une page publique : indexable par les moteurs de recherche, avec une adresse
+ * canonique sur xpass.fr (une même page servie aussi sur rh.xpass.fr n’est pas vue comme un doublon).
+ * Les autres pages gardent le noindex du layout.
+ */
+export function publicPageDefaults(path: string): Metadata {
+  if (!SEO_PAGES[path]) return {};
+  return {
+    robots: { index: true, follow: true },
+    alternates: { canonical: `${SITE_URL}${path === "/" ? "" : path}` },
+  };
+}
+
 /** Valeur que la page affiche quand aucune valeur n’est enregistrée (null = balise absente). */
 export function defaultSeoValue(path: string, field: SeoField): string | null {
   const page = SEO_PAGES[path];
@@ -63,6 +79,7 @@ export function defaultSeoValue(path: string, field: SeoField): string | null {
   if (field === "title") return path === "/" ? page.title : `${page.title} · XPASS`;
   if (field === "description") return SITE_DESCRIPTION;
   if (field === "robots") return SITE_ROBOTS;
+  if (field === "canonical") return `${SITE_URL}${path === "/" ? "" : path}`;
   return null;
 }
 
