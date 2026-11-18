@@ -2,10 +2,10 @@ import { NextResponse, type NextRequest } from "next/server";
 
 /** Chaque nom public ne montre qu'un espace. En local, les trois restent sur le même site. */
 const SITES: Record<string, { home: string; prefixes: string[] }> = {
-  "admin.xpass.fr": { home: "/admin", prefixes: ["/admin", "/auth", "/login", "/legal", "/api", "/_next", "/favicon.ico", "/logo.png", "/visuels"] },
-  "rh.xpass.fr": { home: "/company", prefixes: ["/company", "/demande", "/auth", "/login", "/legal", "/api", "/_next", "/favicon.ico", "/logo.png", "/visuels"] },
-  "xpass.fr": { home: "/", prefixes: ["/", "/tableau", "/demande", "/partner", "/devenir-partenaire", "/inscription-partenaire", "/auth", "/login", "/legal", "/api", "/_next", "/favicon.ico", "/logo.png", "/visuels"] },
-  "www.xpass.fr": { home: "/", prefixes: ["/", "/tableau", "/demande", "/partner", "/devenir-partenaire", "/inscription-partenaire", "/auth", "/login", "/legal", "/api", "/_next", "/favicon.ico", "/logo.png", "/visuels"] },
+  "admin.xpass.fr": { home: "/admin", prefixes: ["/admin", "/auth", "/login", "/legal", "/api", "/_next", "/favicon.ico", "/robots.txt", "/sitemap.xml", "/site.webmanifest", "/icon-192.png", "/icon-512.png", "/icon-maskable-512.png", "/apple-touch-icon.png", "/logo.png", "/visuels"] },
+  "rh.xpass.fr": { home: "/company", prefixes: ["/company", "/demande", "/auth", "/login", "/legal", "/api", "/_next", "/favicon.ico", "/robots.txt", "/sitemap.xml", "/site.webmanifest", "/icon-192.png", "/icon-512.png", "/icon-maskable-512.png", "/apple-touch-icon.png", "/logo.png", "/visuels"] },
+  "xpass.fr": { home: "/", prefixes: ["/", "/tableau", "/demande", "/partner", "/devenir-partenaire", "/inscription-partenaire", "/auth", "/login", "/legal", "/api", "/_next", "/favicon.ico", "/robots.txt", "/sitemap.xml", "/site.webmanifest", "/icon-192.png", "/icon-512.png", "/icon-maskable-512.png", "/apple-touch-icon.png", "/logo.png", "/visuels"] },
+  "www.xpass.fr": { home: "/", prefixes: ["/", "/tableau", "/demande", "/partner", "/devenir-partenaire", "/inscription-partenaire", "/auth", "/login", "/legal", "/api", "/_next", "/favicon.ico", "/robots.txt", "/sitemap.xml", "/site.webmanifest", "/icon-192.png", "/icon-512.png", "/icon-maskable-512.png", "/apple-touch-icon.png", "/logo.png", "/visuels"] },
 };
 
 const GUARDED = ["/partner", "/company", "/admin", "/inscription-partenaire"];

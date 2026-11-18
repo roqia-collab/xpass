@@ -2,7 +2,7 @@ import "server-only";
 
 import type { Metadata } from "next";
 
-import { buildSeoMetadata, safeJsonLd, type SeoValues } from "./seo";
+import { buildSeoMetadata, publicPageDefaults, safeJsonLd, type SeoValues } from "./seo";
 import { apiUrl } from "./session";
 
 export const SEO_CACHE_TAG = "seo";
@@ -28,7 +28,7 @@ export async function fetchSeoValues(path: string): Promise<SeoValues> {
 }
 
 export async function seoMetadata(path: string, base: Metadata): Promise<Metadata> {
-  return buildSeoMetadata(base, await fetchSeoValues(path));
+  return buildSeoMetadata({ ...publicPageDefaults(path), ...base }, await fetchSeoValues(path));
 }
 
 /** Données structurées de la page, si une valeur JSON-LD a été appliquée. */
