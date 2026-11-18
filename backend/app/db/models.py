@@ -10,6 +10,7 @@ from app.modules.settlement import models as settlement_models  # noqa: F401
 from app.modules.employer import models as employer_models  # noqa: F401
 from app.modules.ops import models as ops_models  # noqa: F401
 from app.modules.wallet import models as wallet_models  # noqa: F401
+from app.modules.seo import models as seo_models  # noqa: F401
 
 __all__ = ["Base"]
 from app.modules.engagement import models as engagement_models  # noqa: F401

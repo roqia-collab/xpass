@@ -1,9 +1,11 @@
 import { ArrowRight, Building2, ShieldCheck, Smartphone, Store } from "lucide-react";
+import type { Metadata } from "next";
 import { headers } from "next/headers";
 import Link from "next/link";
 
 import { MerchantPresentation } from "@/components/merchant-presentation";
 import { canAccess, NETWORK_LINE, SPACE_LABEL, spacesFor } from "@/lib/roles";
+import { SeoJsonLd, seoMetadata } from "@/lib/seo-server";
 import { clientAppUrl, getMe, spaceHrefs } from "@/lib/session";
 import type { Space } from "@/lib/types";
 
@@ -31,6 +33,10 @@ function merchantHost(host: string) {
 }
 
 /** Site commerçant public, ou choix d'espace après connexion en local. */
+export async function generateMetadata(): Promise<Metadata> {
+  return seoMetadata("/", {});
+}
+
 export default async function Home() {
   const host = (await headers()).get("x-forwarded-host") ?? (await headers()).get("host") ?? "";
   let me = null;
@@ -39,7 +45,14 @@ export default async function Home() {
   } catch {
     me = null;
   }
-  if (merchantHost(host) || !me) return <MerchantPresentation signedIn={Boolean(me)} partner={Boolean(me && canAccess(me, "partner"))} />;
+  if (merchantHost(host) || !me) {
+    return (
+      <>
+        <SeoJsonLd path="/" />
+        <MerchantPresentation signedIn={Boolean(me)} partner={Boolean(me && canAccess(me, "partner"))} />
+      </>
+    );
+  }
 
   const spaces = spacesFor(me);
   const app = clientAppUrl();

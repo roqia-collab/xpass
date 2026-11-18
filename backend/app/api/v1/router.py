@@ -13,6 +13,7 @@ from app.api.v1 import (
     partners,
     payments,
     portals,
+    seo,
     redemptions,
     settlements,
     wallet,
@@ -34,3 +35,4 @@ api_router.include_router(company.router)
 api_router.include_router(admin.router)
 api_router.include_router(account.router)
 api_router.include_router(access_requests.router)
+api_router.include_router(seo.router)

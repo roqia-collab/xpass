@@ -4,6 +4,8 @@ import path from "node:path";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { SeoJsonLd, seoMetadata } from "@/lib/seo-server";
+
 /** Documents légaux publics (clients, partenaires, confidentialité, mentions). Sans connexion. */
 const DOCS: Record<string, { file: string; title: string }> = {
   cgu: { file: "cgu.md", title: "Conditions générales d’utilisation" },
@@ -14,7 +16,8 @@ const DOCS: Record<string, { file: string; title: string }> = {
 
 export async function generateMetadata({ params }: { params: Promise<{ doc: string }> }): Promise<Metadata> {
   const { doc } = await params;
-  return { title: DOCS[doc]?.title ?? "Document" };
+  if (!DOCS[doc]) return { title: "Document" };
+  return seoMetadata(`/legal/${doc}`, { title: DOCS[doc].title });
 }
 
 /** Rendu minimal et sûr du Markdown des documents (titres, paragraphes, listes, gras) : aucun HTML injecté. */
@@ -53,6 +56,7 @@ export default async function LegalPage({ params }: { params: Promise<{ doc: str
   const validated = process.env.LEGAL_VALIDATED === "true";
   return (
     <main className="partner-landing" style={{ maxWidth: 820 }}>
+      <SeoJsonLd path={`/legal/${doc}`} />
       <header className="landing-top">
         <a href="/login"><img src="/logo.png" alt="XPASS" style={{ height: 32 }} /></a>
         <nav style={{ display: "flex", gap: 14, flexWrap: "wrap", fontSize: 14 }}>
